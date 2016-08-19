@@ -20,7 +20,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_username"
             android:inputType="text"
-            android:maxLines="1" />
+            android:maxLength="32"
+            android:maxLines="1"
+            android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
     <android.support.design.widget.TextInputLayout
@@ -33,7 +35,9 @@
             android:layout_height="wrap_content"
             android:hint="@string/hint_password"
             android:inputType="textPassword"
-            android:maxLines="1" />
+            android:maxLength="32"
+            android:maxLines="1"
+            android:singleLine="true" />
     </android.support.design.widget.TextInputLayout>
 
     <Button
