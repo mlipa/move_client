@@ -67,7 +67,9 @@ public class LogInActivity extends AppCompatActivity {
 
                                     // TODO: CHANGE TO DASHBOARD ACTIVITY
                                     Intent intent = new Intent(LogInActivity.this, ProfileActivity.class);
+
                                     startActivity(intent);
+                                    finish();
                                 }
 
                                 toast.show();

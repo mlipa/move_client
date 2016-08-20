@@ -80,6 +80,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 Intent intent = new Intent(ProfileActivity.this, LogInActivity.class);
 
                                 startActivity(intent);
+                                finish();
                             }
 
                             toast.show();
