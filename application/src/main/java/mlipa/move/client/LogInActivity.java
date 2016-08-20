@@ -3,6 +3,7 @@ package mlipa.move.client;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
@@ -17,9 +18,13 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LogInActivity extends AppCompatActivity {
-    EditText etUsername;
-    EditText etPassword;
-    Button bLogIn;
+    private Context context;
+    private RequestQueue queue;
+    private LogInRequest request;
+
+    private EditText etUsername;
+    private EditText etPassword;
+    private Button bLogIn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,9 +32,13 @@ public class LogInActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_log_in);
 
-        etUsername = (EditText) findViewById(R.id.username);
-        etPassword = (EditText) findViewById(R.id.password);
-        bLogIn = (Button) findViewById(R.id.log_in);
+        context = getApplicationContext();
+        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(LogInActivity.this);
+        queue = Volley.newRequestQueue(LogInActivity.this);
+
+        etUsername = (EditText) findViewById(R.id.et_username);
+        etPassword = (EditText) findViewById(R.id.et_password);
+        bLogIn = (Button) findViewById(R.id.b_log_in);
 
         bLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -37,23 +46,29 @@ public class LogInActivity extends AppCompatActivity {
                 String username = etUsername.getText().toString();
                 String password = etPassword.getText().toString();
 
-                if (username.trim().equals("")) {
+                if (username.trim().length() == 0) {
                     etUsername.setError("Please fill out this field.");
-                } else if (password.trim().equals("")) {
+                } else if (password.trim().length() == 0) {
                     etPassword.setError("Please fill out this field.");
                 } else {
                     Response.Listener<String> listener = new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             try {
-                                Context context = getApplicationContext();
                                 JSONObject jsonResponse = new JSONObject(response);
                                 boolean success = jsonResponse.getBoolean("success");
                                 String message = jsonResponse.getString("message");
+
                                 Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
 
                                 if (success) {
-                                    Intent intent = new Intent(LogInActivity.this, DashboardActivity.class);
+                                    etUsername.setText("");
+                                    etUsername.clearFocus();
+                                    etPassword.setText("");
+                                    etPassword.clearFocus();
+
+                                    Intent intent = new Intent(LogInActivity.this, ProfileActivity.class);
+
                                     LogInActivity.this.startActivity(intent);
                                 }
 
@@ -64,8 +79,8 @@ public class LogInActivity extends AppCompatActivity {
                         }
                     };
 
-                    LogInRequest request = new LogInRequest(username, password, listener);
-                    RequestQueue queue = Volley.newRequestQueue(LogInActivity.this);
+                    request = new LogInRequest(username, password, listener);
+
                     queue.add(request);
                 }
             }

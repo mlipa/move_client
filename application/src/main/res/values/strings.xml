@@ -1,16 +1,17 @@
 <resources>
-    <!--Application name.-->
+    <!-- Application name. -->
     <string name="application_name">Move</string>
 
-    <!--Activity labels.-->
+    <!-- Activity labels. -->
     <string name="activity_dashboard_label">Dashboard</string>
     <string name="activity_settings_label">Settings</string>
     <string name="activity_profile_label">Profile</string>
 
-    <!--Hints.-->
-    <string name="hint_username">Username</string>
-    <string name="hint_password">Password</string>
-
-    <!--Buttons.-->
-    <string name="button_log_in">Log in</string>
+    <!-- Palette. -->
+    <string name="name">Name</string>
+    <string name="username">Username</string>
+    <string name="email">E-mail</string>
+    <string name="password">Password</string>
+    <string name="log_in">Log in</string>
+    <string name="log_out">Log out</string>
 </resources>

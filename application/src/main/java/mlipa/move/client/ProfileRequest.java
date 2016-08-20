@@ -9,21 +9,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LogInRequest extends StringRequest {
-    private static final String LOG_IN_URL = "http://192.168.1.104:5000/m_log_in"; // "http://move-d.herokuapp.com/m_log_in";
-    private Map<String, String> params;
+public class ProfileRequest extends StringRequest {
+    private static final String PROFILE_URL = "http://192.168.1.104:5000/m_profile"; // "http://move-d.herokuapp.com/m_profile";
 
-    public LogInRequest(String username, String password, Response.Listener<String> listener) {
-        super(Method.POST, LOG_IN_URL, listener, null);
-
-        params = new HashMap<>();
-        params.put("username", username);
-        params.put("password", password);
-    }
-
-    @Override
-    public Map<String, String> getParams() {
-        return params;
+    public ProfileRequest(Response.Listener<String> listener) {
+        super(Method.GET, PROFILE_URL, listener, null);
     }
 
     @Override
