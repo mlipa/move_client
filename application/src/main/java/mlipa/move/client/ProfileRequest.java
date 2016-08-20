@@ -10,6 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileRequest extends StringRequest {
+    // TODO: CHANGE TO PRODUCTION SERVER
     private static final String PROFILE_URL = "http://192.168.1.104:5000/m_profile"; // "http://move-d.herokuapp.com/m_profile";
 
     public ProfileRequest(Response.Listener<String> listener) {
