@@ -13,6 +13,7 @@ import android.widget.Toast;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
+import com.mikhaellopez.circularimageview.CircularImageView;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -23,6 +24,7 @@ public class ProfileActivity extends AppCompatActivity {
     private ProfileRequest profileRequest;
     private LogOutRequest logOutRequest;
 
+    private CircularImageView civAvatar;
     private TextView tvName;
     private TextView tvUsername;
     private TextView tvEmail;
@@ -38,6 +40,7 @@ public class ProfileActivity extends AppCompatActivity {
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this);
         queue = Volley.newRequestQueue(ProfileActivity.this);
 
+        civAvatar = (CircularImageView) findViewById(R.id.civ_avatar);
         tvName = (TextView) findViewById(R.id.tv_name);
         tvUsername = (TextView) findViewById(R.id.tv_username);
         tvEmail = (TextView) findViewById(R.id.tv_email);
