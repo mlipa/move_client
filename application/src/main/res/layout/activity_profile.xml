@@ -32,7 +32,7 @@
         android:id="@+id/tv_name"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="..."
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/black" />
 
@@ -48,7 +48,7 @@
         android:id="@+id/tv_username"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="..."
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/black" />
 
@@ -64,7 +64,7 @@
         android:id="@+id/tv_email"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="..."
         android:textAppearance="?android:attr/textAppearanceMedium"
         android:textColor="@color/black" />
 

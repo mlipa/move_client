@@ -2,6 +2,7 @@ package mlipa.move.client;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -22,6 +23,7 @@ public class ProfileActivity extends AppCompatActivity {
     private Context context;
     private RequestQueue queue;
     private ProfileRequest profileRequest;
+    private AvatarRequest avatarRequest;
     private LogOutRequest logOutRequest;
 
     private CircularImageView civAvatar;
@@ -52,11 +54,25 @@ public class ProfileActivity extends AppCompatActivity {
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
                     boolean success = jsonResponse.getBoolean("success");
+                    boolean avatar = jsonResponse.getBoolean("avatar");
 
                     if (success) {
                         tvName.setText(jsonResponse.getString("name"));
                         tvUsername.setText(jsonResponse.getString("username"));
                         tvEmail.setText(jsonResponse.getString("email"));
+
+                        if (avatar) {
+                            Response.Listener<Bitmap> avatarListener = new Response.Listener<Bitmap>() {
+                                @Override
+                                public void onResponse(Bitmap response) {
+                                    civAvatar.setImageBitmap(response);
+                                }
+                            };
+
+                            avatarRequest = new AvatarRequest(jsonResponse.getString("filename"), avatarListener);
+
+                            queue.add(avatarRequest);
+                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
