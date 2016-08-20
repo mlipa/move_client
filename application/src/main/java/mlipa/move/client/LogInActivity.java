@@ -57,9 +57,7 @@ public class LogInActivity extends AppCompatActivity {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
                                 boolean success = jsonResponse.getBoolean("success");
-                                String message = jsonResponse.getString("message");
-
-                                Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
+                                Toast toast = Toast.makeText(context, jsonResponse.getString("message"), Toast.LENGTH_LONG);
 
                                 if (success) {
                                     etUsername.setText("");
@@ -67,9 +65,9 @@ public class LogInActivity extends AppCompatActivity {
                                     etPassword.setText("");
                                     etPassword.clearFocus();
 
+                                    // TODO: CHANGE TO DASHBOARD ACTIVITY
                                     Intent intent = new Intent(LogInActivity.this, ProfileActivity.class);
-
-                                    LogInActivity.this.startActivity(intent);
+                                    startActivity(intent);
                                 }
 
                                 toast.show();
