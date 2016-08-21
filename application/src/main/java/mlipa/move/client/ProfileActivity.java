@@ -22,9 +22,6 @@ import org.json.JSONObject;
 public class ProfileActivity extends AppCompatActivity {
     private Context context;
     private RequestQueue queue;
-    private ProfileRequest profileRequest;
-    private AvatarRequest avatarRequest;
-    private LogOutRequest logOutRequest;
 
     private CircularImageView civAvatar;
     private TextView tvName;
@@ -53,15 +50,13 @@ public class ProfileActivity extends AppCompatActivity {
             public void onResponse(String response) {
                 try {
                     JSONObject jsonResponse = new JSONObject(response);
-                    boolean success = jsonResponse.getBoolean("success");
-                    boolean avatar = jsonResponse.getBoolean("avatar");
 
-                    if (success) {
+                    if (jsonResponse.getBoolean("success")) {
                         tvName.setText(jsonResponse.getString("name"));
                         tvUsername.setText(jsonResponse.getString("username"));
                         tvEmail.setText(jsonResponse.getString("email"));
 
-                        if (avatar) {
+                        if (jsonResponse.getBoolean("avatar")) {
                             Response.Listener<Bitmap> avatarListener = new Response.Listener<Bitmap>() {
                                 @Override
                                 public void onResponse(Bitmap response) {
@@ -69,9 +64,7 @@ public class ProfileActivity extends AppCompatActivity {
                                 }
                             };
 
-                            avatarRequest = new AvatarRequest(jsonResponse.getString("filename"), avatarListener);
-
-                            queue.add(avatarRequest);
+                            queue.add(new AvatarRequest(jsonResponse.getString("filename"), avatarListener));
                         }
                     }
                 } catch (JSONException e) {
@@ -80,9 +73,7 @@ public class ProfileActivity extends AppCompatActivity {
             }
         };
 
-        profileRequest = new ProfileRequest(profileListener);
-
-        queue.add(profileRequest);
+        queue.add(new ProfileRequest(profileListener));
 
         bLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -92,26 +83,23 @@ public class ProfileActivity extends AppCompatActivity {
                     public void onResponse(String response) {
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
-                            boolean success = jsonResponse.getBoolean("success");
-                            Toast toast = Toast.makeText(context, jsonResponse.getString("message"), Toast.LENGTH_LONG);
 
-                            if (success) {
+                            if (jsonResponse.getBoolean("success")) {
                                 Intent intent = new Intent(ProfileActivity.this, LogInActivity.class);
+                                Toast toast = Toast.makeText(context, jsonResponse.getString("message"), Toast.LENGTH_LONG);
 
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                 startActivity(intent);
-                                finish();
-                            }
 
-                            toast.show();
+                                toast.show();
+                            }
                         } catch (JSONException e) {
                             e.printStackTrace();
                         }
                     }
                 };
 
-                logOutRequest = new LogOutRequest(logOutListener);
-
-                queue.add(logOutRequest);
+                queue.add(new LogOutRequest(logOutListener));
             }
         });
     }

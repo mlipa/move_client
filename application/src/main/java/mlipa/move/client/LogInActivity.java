@@ -20,7 +20,6 @@ import org.json.JSONObject;
 public class LogInActivity extends AppCompatActivity {
     private Context context;
     private RequestQueue queue;
-    private LogInRequest request;
 
     private EditText etUsername;
     private EditText etPassword;
@@ -56,31 +55,28 @@ public class LogInActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
-                                boolean success = jsonResponse.getBoolean("success");
-                                Toast toast = Toast.makeText(context, jsonResponse.getString("message"), Toast.LENGTH_LONG);
 
-                                if (success) {
+                                if (jsonResponse.getBoolean("success")) {
                                     etUsername.setText("");
                                     etUsername.clearFocus();
                                     etPassword.setText("");
                                     etPassword.clearFocus();
 
                                     Intent intent = new Intent(LogInActivity.this, DashboardActivity.class);
+                                    Toast toast = Toast.makeText(context, jsonResponse.getString("message"), Toast.LENGTH_LONG);
 
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(intent);
-                                    finish();
-                                }
 
-                                toast.show();
+                                    toast.show();
+                                }
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }
                         }
                     };
 
-                    request = new LogInRequest(username, password, listener);
-
-                    queue.add(request);
+                    queue.add(new LogInRequest(username, password, listener));
                 }
             }
         });
