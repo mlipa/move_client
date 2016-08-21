@@ -7,13 +7,13 @@
     <application
         android:allowBackup="true"
         android:icon="@mipmap/launcher"
-        android:label="@string/application_name"
+        android:label="@string/move"
         android:supportsRtl="true"
         android:theme="@style/ApplicationTheme">
 
         <activity
             android:name=".LogInActivity"
-            android:label="@string/application_name">
+            android:label="@string/move">
 
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -24,11 +24,11 @@
 
         <activity
             android:name=".DashboardActivity"
-            android:label="@string/activity_dashboard_label" />
+            android:label="@string/dashboard" />
 
         <activity
             android:name=".SettingsActivity"
-            android:label="@string/activity_settings_label"
+            android:label="@string/settings"
             android:parentActivityName=".DashboardActivity">
 
             <meta-data
@@ -38,7 +38,7 @@
 
         <activity
             android:name=".ProfileActivity"
-            android:label="@string/activity_profile_label"
+            android:label="@string/profile"
             android:parentActivityName=".DashboardActivity">
 
             <meta-data

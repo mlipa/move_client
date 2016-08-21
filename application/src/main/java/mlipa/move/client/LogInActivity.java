@@ -65,8 +65,7 @@ public class LogInActivity extends AppCompatActivity {
                                     etPassword.setText("");
                                     etPassword.clearFocus();
 
-                                    // TODO: CHANGE TO DASHBOARD ACTIVITY
-                                    Intent intent = new Intent(LogInActivity.this, ProfileActivity.class);
+                                    Intent intent = new Intent(LogInActivity.this, DashboardActivity.class);
 
                                     startActivity(intent);
                                     finish();
