@@ -19,6 +19,7 @@ import org.json.JSONObject;
 
 public class LogInActivity extends AppCompatActivity {
     private Context context;
+    private Intent dashboardIntent;
     private RequestQueue queue;
 
     private EditText etUsername;
@@ -62,11 +63,11 @@ public class LogInActivity extends AppCompatActivity {
                                     etPassword.setText("");
                                     etPassword.clearFocus();
 
-                                    Intent intent = new Intent(LogInActivity.this, DashboardActivity.class);
+                                    dashboardIntent = new Intent(LogInActivity.this, DashboardActivity.class);
                                     Toast toast = Toast.makeText(context, jsonResponse.getString("message"), Toast.LENGTH_LONG);
 
-                                    intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(intent);
+                                    dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                    startActivity(dashboardIntent);
 
                                     toast.show();
                                 }

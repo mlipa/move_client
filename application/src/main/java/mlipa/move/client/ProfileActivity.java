@@ -2,7 +2,6 @@ package mlipa.move.client;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Bitmap;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +20,11 @@ import org.json.JSONObject;
 
 public class ProfileActivity extends AppCompatActivity {
     private Context context;
+    private Intent intent;
+    private Intent logInIntent;
     private RequestQueue queue;
 
-    private CircularImageView civAvatar;
+    public static CircularImageView civAvatar;
     private TextView tvName;
     private TextView tvUsername;
     private TextView tvEmail;
@@ -36,6 +37,7 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         context = getApplicationContext();
+        intent = getIntent();
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this);
         queue = Volley.newRequestQueue(ProfileActivity.this);
 
@@ -45,35 +47,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvEmail = (TextView) findViewById(R.id.tv_email);
         bLogOut = (Button) findViewById(R.id.b_log_out);
 
-        Response.Listener<String> profileListener = new Response.Listener<String>() {
-            @Override
-            public void onResponse(String response) {
-                try {
-                    JSONObject jsonResponse = new JSONObject(response);
-
-                    if (jsonResponse.getBoolean("success")) {
-                        tvName.setText(jsonResponse.getString("name"));
-                        tvUsername.setText(jsonResponse.getString("username"));
-                        tvEmail.setText(jsonResponse.getString("email"));
-
-                        if (jsonResponse.getBoolean("avatar")) {
-                            Response.Listener<Bitmap> avatarListener = new Response.Listener<Bitmap>() {
-                                @Override
-                                public void onResponse(Bitmap response) {
-                                    civAvatar.setImageBitmap(response);
-                                }
-                            };
-
-                            queue.add(new AvatarRequest(jsonResponse.getString("filename"), avatarListener));
-                        }
-                    }
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
-            }
-        };
-
-        queue.add(new ProfileRequest(profileListener));
+        tvName.setText(intent.getStringExtra("name"));
+        tvUsername.setText(intent.getStringExtra("username"));
+        tvEmail.setText(intent.getStringExtra("email"));
 
         bLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,11 +61,11 @@ public class ProfileActivity extends AppCompatActivity {
                             JSONObject jsonResponse = new JSONObject(response);
 
                             if (jsonResponse.getBoolean("success")) {
-                                Intent intent = new Intent(ProfileActivity.this, LogInActivity.class);
+                                logInIntent = new Intent(ProfileActivity.this, LogInActivity.class);
                                 Toast toast = Toast.makeText(context, jsonResponse.getString("message"), Toast.LENGTH_LONG);
 
-                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                startActivity(intent);
+                                logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                startActivity(logInIntent);
 
                                 toast.show();
                             }
