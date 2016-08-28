@@ -11,7 +11,7 @@ import java.util.Map;
 
 public class LogInRequest extends StringRequest {
     // TODO: CHANGE TO PRODUCTION SERVER
-    private static final String LOG_IN_URL = "http://192.168.1.104:5000/m_log_in"; // "http://move-d.herokuapp.com/m_log_in";
+    private static final String LOG_IN_URL = "http://192.168.1.5:5000/m_log_in"; // "http://move-d.herokuapp.com/m_log_in";
     private Map<String, String> params;
 
     public LogInRequest(String username, String password, Response.Listener<String> listener) {

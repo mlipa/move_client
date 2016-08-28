@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -18,9 +19,12 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LogInActivity extends AppCompatActivity {
+    private static final String TAG = LogInActivity.class.toString();
+
     private Context context;
-    private Intent dashboardIntent;
     private RequestQueue queue;
+
+    private Intent dashboardIntent;
 
     private EditText etUsername;
     private EditText etPassword;
@@ -33,8 +37,11 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
 
         context = getApplicationContext();
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(LogInActivity.this);
         queue = Volley.newRequestQueue(LogInActivity.this);
+
+        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(LogInActivity.this);
+
+        dashboardIntent = new Intent(LogInActivity.this, DashboardActivity.class);
 
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);
@@ -47,16 +54,17 @@ public class LogInActivity extends AppCompatActivity {
                 String password = etPassword.getText().toString();
 
                 if (username.trim().length() == 0) {
-                    etUsername.setError("Please fill out this field.");
+                    etUsername.setError(getString(R.string.required_field));
                 } else if (password.trim().length() == 0) {
-                    etPassword.setError("Please fill out this field.");
+                    etPassword.setError(getString(R.string.required_field));
                 } else {
-                    Response.Listener<String> listener = new Response.Listener<String>() {
+                    Response.Listener<String> logInListener = new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
-                                Toast toast = Toast.makeText(context, jsonResponse.getString("message"), Toast.LENGTH_LONG);
+                                String message = jsonResponse.getString("message");
+                                Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
 
                                 if (jsonResponse.getBoolean("success")) {
                                     etUsername.setText("");
@@ -64,11 +72,11 @@ public class LogInActivity extends AppCompatActivity {
                                     etPassword.setText("");
                                     etPassword.clearFocus();
 
-                                    dashboardIntent = new Intent(LogInActivity.this, DashboardActivity.class);
-
                                     dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(dashboardIntent);
                                 }
+
+                                Log.v(TAG, "message = " + message);
 
                                 toast.show();
                             } catch (JSONException e) {
@@ -77,7 +85,7 @@ public class LogInActivity extends AppCompatActivity {
                         }
                     };
 
-                    queue.add(new LogInRequest(username, password, listener));
+                    queue.add(new LogInRequest(username, password, logInListener));
                 }
             }
         });

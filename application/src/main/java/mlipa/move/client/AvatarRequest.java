@@ -13,7 +13,7 @@ import java.util.Map;
 
 public class AvatarRequest extends ImageRequest {
     // TODO: CHANGE TO PRODUCTION SERVER
-    private static final String AVATAR_URL = "http://192.168.1.104:5000/m_avatar/"; // "http://move-d.herokuapp.com/m_avatar/";
+    private static final String AVATAR_URL = "http://192.168.1.5:5000/m_avatar/"; // "http://move-d.herokuapp.com/m_avatar/";
 
     public AvatarRequest(String filename, Response.Listener<Bitmap> listener) {
         super(AVATAR_URL + filename, listener, 0, 0, null, null);

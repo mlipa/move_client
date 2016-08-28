@@ -1,17 +1,36 @@
 <resources>
-    <!-- Application name. -->
-    <string name="move">Move</string>
 
     <!-- Activity labels. -->
+    <string name="move">Move</string>
     <string name="dashboard">Dashboard</string>
     <string name="settings">Settings</string>
     <string name="profile">Profile</string>
 
-    <!-- Palette. -->
-    <string name="name">Name</string>
+    <!-- Log in. -->
     <string name="username">Username</string>
-    <string name="email">E-mail</string>
     <string name="password">Password</string>
     <string name="log_in">Log in</string>
+    <string name="required_field">Please fill out this field.</string>
+
+    <!-- Dashboard -->
     <string name="log_out">Log out</string>
+    <string name="log_out_message">Do you really want to leave?</string>
+    <string name="yes">Yes</string>
+    <string name="no">No</string>
+
+    <!-- Profile. -->
+    <string name="name">Name</string>
+    <string name="email">E-mail</string>
+    <string name="nothing">&#8230;</string>
+
+    <!-- Settings. -->
+    <string name="classifier">Classifier</string>
+    <string name="classifier_key">classifier</string>
+    <string-array name="classifier_entries">
+        <item>Artificial neural network</item>
+    </string-array>
+    <string-array name="classifier_entry_values">
+        <item>1</item>
+    </string-array>
+    <string name="cancel">Cancel</string>
 </resources>

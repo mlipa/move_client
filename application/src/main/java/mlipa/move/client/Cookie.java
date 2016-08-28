@@ -15,11 +15,10 @@ public class Cookie {
         if (headers.containsKey(SET_COOKIE_KEY) && headers.get(SET_COOKIE_KEY).startsWith(SESSION_KEY)) {
             String cookie = headers.get(SET_COOKIE_KEY);
 
-            if (cookie.length() > 0) {
+            if (cookie.trim().length() > 0) {
                 SharedPreferences.Editor editor = preferences.edit();
 
-                cookie = cookie.split(";")[0];
-                editor.putString(SESSION_KEY, cookie);
+                editor.putString(SESSION_KEY, cookie.split(";")[0]);
                 editor.commit();
             }
         }
@@ -28,7 +27,7 @@ public class Cookie {
     public static void addSessionCookie(Map<String, String> headers) {
         String session = preferences.getString(SESSION_KEY, "");
 
-        if (session.length() > 0) {
+        if (session.trim().length() > 0) {
             StringBuilder builder = new StringBuilder();
 
             builder.append(session);

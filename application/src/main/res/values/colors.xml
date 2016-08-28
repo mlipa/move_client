@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+
     <!-- Black and white. -->
     <color name="black">#000000</color>
     <color name="white">#FFFFFF</color>
 
     <!-- Bootstrap. -->
-    <color name="bootstrap_blue">#337AB7</color>
     <color name="bootstrap_red">#D9534F</color>
+    <color name="bootstrap_blue">#337AB7</color>
 
     <!-- Grey. -->
     <color name="grey_50">#FAFAFA</color>
@@ -19,4 +20,16 @@
     <color name="grey_700">#616161</color>
     <color name="grey_800">#424242</color>
     <color name="grey_900">#212121</color>
+
+    <!-- Teal. -->
+    <color name="teal_50">#E0F2F1</color>
+    <color name="teal_100">#B2DFDB</color>
+    <color name="teal_200">#80CBC4</color>
+    <color name="teal_300">#4DB6AC</color>
+    <color name="teal_400">#26A69A</color>
+    <color name="teal_500">#009688</color>
+    <color name="teal_600">#00897B</color>
+    <color name="teal_700">#00796B</color>
+    <color name="teal_800">#00695C</color>
+    <color name="teal_900">#004D40</color>
 </resources>

@@ -9,12 +9,23 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class ProfileRequest extends StringRequest {
+public class SettingsRequest extends StringRequest {
     // TODO: CHANGE TO PRODUCTION SERVER
-    private static final String PROFILE_URL = "http://192.168.1.5:5000/m_profile"; // "http://move-d.herokuapp.com/m_profile";
+    private static final String SETTINGS_URL = "http://192.168.1.5:5000/m_settings"; // "http://move-d.herokuapp.com/m_settings";
+    private Map<String, String> params;
 
-    public ProfileRequest(Response.Listener<String> listener) {
-        super(Method.GET, PROFILE_URL, listener, null);
+    public SettingsRequest(int method, String classifierId, Response.Listener<String> listener) {
+        super(method, SETTINGS_URL, listener, null);
+
+        if (method == Method.POST) {
+            params = new HashMap<>();
+            params.put("classifierId", classifierId);
+        }
+    }
+
+    @Override
+    public Map<String, String> getParams() {
+        return params;
     }
 
     @Override
