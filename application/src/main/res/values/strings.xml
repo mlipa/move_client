@@ -16,9 +16,9 @@
     <string name="current_activity">Current activity</string>
     <string name="last_five_activities">Last five activities</string>
     <string name="accelerometer">Accelerometer</string>
-    <string name="x_label">x = </string>
-    <string name="y_label">y = </string>
-    <string name="z_label">z = </string>
+    <string name="x_accelerometer">x = </string>
+    <string name="y_accelerometer">y = </string>
+    <string name="z_accelerometer">z = </string>
     <string name="log_out">Log out</string>
     <string name="log_out_message">Do you really want to leave?</string>
     <string name="yes">Yes</string>

@@ -4,6 +4,10 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
@@ -13,6 +17,8 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.android.volley.Request;
@@ -23,7 +29,7 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class DashboardActivity extends AppCompatActivity {
+public class DashboardActivity extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = DashboardActivity.class.toString();
 
     private Context context;
@@ -32,6 +38,19 @@ public class DashboardActivity extends AppCompatActivity {
     private Intent settingsIntent;
     private Intent profileIntent;
     private Intent logInIntent;
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+
+    private ImageView ivCurrentActivity;
+    private ImageView ivFirstActivity;
+    private ImageView ivSecondActivity;
+    private ImageView ivThirdActivity;
+    private ImageView ivFourthActivity;
+    private ImageView ivFifthActivity;
+    private TextView tvXAccelerometer;
+    private TextView tvYAccelerometer;
+    private TextView tvZAccelerometer;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +66,20 @@ public class DashboardActivity extends AppCompatActivity {
         settingsIntent = new Intent(DashboardActivity.this, SettingsActivity.class);
         profileIntent = new Intent(DashboardActivity.this, ProfileActivity.class);
         logInIntent = new Intent(DashboardActivity.this, LogInActivity.class);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        sensorManager.registerListener(DashboardActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+        ivCurrentActivity = (ImageView) findViewById(R.id.iv_current_activity);
+        ivFirstActivity = (ImageView) findViewById(R.id.iv_first_activity);
+        ivSecondActivity = (ImageView) findViewById(R.id.iv_second_activity);
+        ivThirdActivity = (ImageView) findViewById(R.id.iv_third_activity);
+        ivFourthActivity = (ImageView) findViewById(R.id.iv_fourth_activity);
+        ivFifthActivity = (ImageView) findViewById(R.id.iv_fifth_activity);
+        tvXAccelerometer = (TextView) findViewById(R.id.tv_x_accelerometer);
+        tvYAccelerometer = (TextView) findViewById(R.id.tv_y_accelerometer);
+        tvZAccelerometer = (TextView) findViewById(R.id.tv_z_accelerometer);
     }
 
     @Override
@@ -183,5 +216,47 @@ public class DashboardActivity extends AppCompatActivity {
         }
 
         return super.onKeyDown(keyCode, event);
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        sensorManager.unregisterListener(DashboardActivity.this);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+
+        sensorManager.registerListener(DashboardActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        final double alpha = 0.8;
+
+        double[] gravity = new double[3];
+        double[] linearAcceleration = new double[3];
+
+        gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
+        gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
+        gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+
+        linearAcceleration[0] = event.values[0] - gravity[0];
+        linearAcceleration[1] = event.values[1] - gravity[1];
+        linearAcceleration[2] = event.values[2] - gravity[2];
+
+        tvXAccelerometer.setText("");
+        tvYAccelerometer.setText("");
+        tvZAccelerometer.setText("");
+
+        tvXAccelerometer.setText(" " + String.format("%f", linearAcceleration[0]));
+        tvYAccelerometer.setText(" " + String.format("%f", linearAcceleration[1]));
+        tvZAccelerometer.setText(" " + String.format("%f", linearAcceleration[2]));
     }
 }
