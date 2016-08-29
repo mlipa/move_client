@@ -10,6 +10,7 @@ import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -17,6 +18,7 @@ import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -35,6 +37,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     private Context context;
     private RequestQueue queue;
 
+    private Intent addIntent;
     private Intent settingsIntent;
     private Intent profileIntent;
     private Intent logInIntent;
@@ -51,6 +54,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     private TextView tvXAccelerometer;
     private TextView tvYAccelerometer;
     private TextView tvZAccelerometer;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +67,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
 
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(DashboardActivity.this);
 
+        addIntent = new Intent(DashboardActivity.this, AddActivity.class);
         settingsIntent = new Intent(DashboardActivity.this, SettingsActivity.class);
         profileIntent = new Intent(DashboardActivity.this, ProfileActivity.class);
         logInIntent = new Intent(DashboardActivity.this, LogInActivity.class);
@@ -80,6 +85,14 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         tvXAccelerometer = (TextView) findViewById(R.id.tv_x_accelerometer);
         tvYAccelerometer = (TextView) findViewById(R.id.tv_y_accelerometer);
         tvZAccelerometer = (TextView) findViewById(R.id.tv_z_accelerometer);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(addIntent);
+            }
+        });
     }
 
     @Override

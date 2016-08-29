@@ -27,6 +27,16 @@
             android:label="@string/dashboard" />
 
         <activity
+            android:name=".AddActivity"
+            android:label="@string/add_activity"
+            android:parentActivityName=".DashboardActivity">
+
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="mlipa.move.client.DashboardActivity" />
+        </activity>
+
+        <activity
             android:name=".SettingsActivity"
             android:label="@string/settings"
             android:parentActivityName=".DashboardActivity">
