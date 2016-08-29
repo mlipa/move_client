@@ -3,6 +3,7 @@ package mlipa.move.client;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -87,6 +88,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         tvZAccelerometer = (TextView) findViewById(R.id.tv_z_accelerometer);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
+        fab.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.bootstrap_green)));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

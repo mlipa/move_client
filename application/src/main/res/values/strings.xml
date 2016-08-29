@@ -17,15 +17,19 @@
     <string name="current_activity">Current activity</string>
     <string name="last_five_activities">Last five activities</string>
     <string name="accelerometer">Accelerometer</string>
-    <string name="x_accelerometer">x = </string>
-    <string name="y_accelerometer">y = </string>
-    <string name="z_accelerometer">z = </string>
+    <string name="x_accelerometer">x: </string>
+    <string name="y_accelerometer">y: </string>
+    <string name="z_accelerometer">z: </string>
     <string name="log_out">Log out</string>
     <string name="log_out_message">Do you really want to leave?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
     <!-- Add activity. -->
+    <string name="chronometer">Chronometer</string>
+    <string name="chronometer_origin">02:00</string>
+    <string name="start">Start</string>
+    <string name="stop">Stop</string>
 
     <!-- Profile. -->
     <string name="name">Name</string>

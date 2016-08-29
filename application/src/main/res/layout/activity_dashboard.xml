@@ -96,6 +96,7 @@
                 android:id="@+id/tv_x_accelerometer_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="@string/x_accelerometer"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -104,7 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -118,6 +119,7 @@
                 android:id="@+id/tv_y_accelerometer_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="@string/y_accelerometer"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -126,7 +128,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/black" />
         </LinearLayout>
 
@@ -140,6 +142,7 @@
                 android:id="@+id/tv_z_accelerometer_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:text="@string/z_accelerometer"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
@@ -148,7 +151,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textAppearance="?android:attr/textAppearanceLarge"
                 android:textColor="@color/black" />
         </LinearLayout>
     </LinearLayout>

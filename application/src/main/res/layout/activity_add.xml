@@ -10,5 +10,27 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="mlipa.move.client.AddActivity">
 
-    <!-- TODO: ADD ACTIVITY TEMPLATE -->
+    <TextView
+        android:id="@+id/tv_chronometer_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chronometer"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <TextView
+        android:id="@+id/tv_chronometer"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/chronometer_origin"
+        android:textAppearance="?android:attr/textAppearanceLarge" />
+
+    <Button
+        android:id="@+id/b_start_stop"
+        style="?android:textAppearanceSmall"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:background="@color/bootstrap_blue"
+        android:text="@string/start"
+        android:textColor="@color/white" />
 </LinearLayout>
