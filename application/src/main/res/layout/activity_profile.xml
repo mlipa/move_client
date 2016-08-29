@@ -13,8 +13,8 @@
 
     <com.mikhaellopez.circularimageview.CircularImageView
         android:id="@+id/civ_avatar"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
         android:layout_gravity="center"
         android:src="@drawable/avatar_default"
         app:civ_border="true"
