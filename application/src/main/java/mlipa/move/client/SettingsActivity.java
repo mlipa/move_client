@@ -1,5 +1,6 @@
 package mlipa.move.client;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -47,7 +48,21 @@ public class SettingsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: RE-TRAIN ARTIFICIAL NEURAL NETWORK
+                ProgressDialog dialog = new ProgressDialog(SettingsActivity.this);
+
+                dialog.setTitle(getString(R.string.learning));
+                dialog.setMessage(getString(R.string.learning_message));
+                dialog.setProgressStyle(ProgressDialog.STYLE_HORIZONTAL);
+                dialog.setProgress(0);
+                // dialog.setMax();
+                dialog.show();
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        // TODO: RE-TRAIN ARTIFICIAL NEURAL NETWORK
+                    }
+                }).start();
             }
         });
     }

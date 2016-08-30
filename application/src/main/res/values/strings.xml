@@ -51,4 +51,6 @@
         <item>1</item>
     </string-array>
     <string name="cancel">Cancel</string>
+    <string name="learning">Learning</string>
+    <string name="learning_message">Algorithm is learning to give you better results&#8230;</string>
 </resources>
