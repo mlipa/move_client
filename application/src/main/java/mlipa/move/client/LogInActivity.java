@@ -54,9 +54,9 @@ public class LogInActivity extends AppCompatActivity {
                 String password = etPassword.getText().toString();
 
                 if (username.trim().length() == 0) {
-                    etUsername.setError(getString(R.string.required_field));
+                    etUsername.setError(getString(R.string.required_field_message));
                 } else if (password.trim().length() == 0) {
-                    etPassword.setError(getString(R.string.required_field));
+                    etPassword.setError(getString(R.string.required_field_message));
                 } else {
                     Response.Listener<String> logInListener = new Response.Listener<String>() {
                         @Override

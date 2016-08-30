@@ -1,17 +1,28 @@
 package mlipa.move.client;
 
+import android.content.Context;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.TextView;
 
 public class AddActivity extends AppCompatActivity {
+    private Context context;
+    private MediaPlayer player;
+
     private CountDownTimer chronometer;
 
+    private ImageView ivActivity;
+    private RadioGroup rgActivity;
+    private RadioButton rbActivityLie;
     private TextView tvChronometer;
-    private Button bStart;
+    private Button bStartStop;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -19,8 +30,8 @@ public class AddActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_add);
 
-        tvChronometer = (TextView) findViewById(R.id.tv_chronometer);
-        bStart = (Button) findViewById(R.id.b_start_stop);
+        context = getApplicationContext();
+        player = MediaPlayer.create(context, R.raw.notify);
 
         chronometer = new CountDownTimer(120000, 1000) {
             @Override
@@ -33,30 +44,86 @@ public class AddActivity extends AppCompatActivity {
 
             @Override
             public void onFinish() {
+                for (int i = 0; i < rgActivity.getChildCount(); i++) {
+                    rgActivity.getChildAt(i).setEnabled(true);
+                }
+
                 tvChronometer.setText(getString(R.string.chronometer_origin));
 
-                bStart.setText(getString(R.string.start));
-                bStart.setBackgroundColor(getColor(R.color.bootstrap_blue));
+                bStartStop.setText(getString(R.string.start));
+                bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
+
+                player.start();
             }
         };
 
-        bStart.setOnClickListener(new View.OnClickListener() {
+        ivActivity = (ImageView) findViewById(R.id.iv_activity);
+        rgActivity = (RadioGroup) findViewById(R.id.rg_activity);
+        rbActivityLie = (RadioButton) findViewById(R.id.rb_activity_lie);
+        tvChronometer = (TextView) findViewById(R.id.tv_chronometer);
+        bStartStop = (Button) findViewById(R.id.b_start_stop);
+
+        rbActivityLie.toggle();
+        onRadioButtonClicked(rbActivityLie);
+
+        bStartStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bStart.getText().equals("Start")) {
+                if (bStartStop.getText().equals("Start")) {
                     chronometer.start();
 
-                    bStart.setText(getString(R.string.stop));
-                    bStart.setBackgroundColor(getColor(R.color.bootstrap_red));
+                    for (int i = 0; i < rgActivity.getChildCount(); i++) {
+                        rgActivity.getChildAt(i).setEnabled(false);
+                    }
+
+                    bStartStop.setText(getString(R.string.stop));
+                    bStartStop.setBackgroundColor(getColor(R.color.bootstrap_red));
                 } else {
                     chronometer.cancel();
 
+                    for (int i = 0; i < rgActivity.getChildCount(); i++) {
+                        rgActivity.getChildAt(i).setEnabled(true);
+                    }
+
                     tvChronometer.setText(getString(R.string.chronometer_origin));
 
-                    bStart.setText(getString(R.string.start));
-                    bStart.setBackgroundColor(getColor(R.color.bootstrap_blue));
+                    bStartStop.setText(getString(R.string.start));
+                    bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
                 }
             }
         });
+    }
+
+    public void onRadioButtonClicked(View view) {
+        boolean checked = ((RadioButton) view).isChecked();
+
+        switch (view.getId()) {
+            case R.id.rb_activity_lie:
+                if (checked) {
+                    ivActivity.setImageResource(R.drawable.activity_lie);
+                }
+
+                break;
+            case R.id.rb_activity_sit:
+                if (checked) {
+                    ivActivity.setImageResource(R.drawable.activity_sit);
+                }
+
+                break;
+            case R.id.rb_activity_stand:
+                if (checked) {
+                    ivActivity.setImageResource(R.drawable.activity_stand);
+                }
+
+                break;
+            case R.id.rb_activity_walk:
+                if (checked) {
+                    ivActivity.setImageResource(R.drawable.activity_walk);
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 }

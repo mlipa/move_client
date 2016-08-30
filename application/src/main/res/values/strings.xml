@@ -11,21 +11,26 @@
     <string name="username">Username</string>
     <string name="password">Password</string>
     <string name="log_in">Log in</string>
-    <string name="required_field">Please fill out this field.</string>
+    <string name="required_field_message">Please fill out this field.</string>
 
     <!-- Dashboard -->
     <string name="current_activity">Current activity</string>
     <string name="last_five_activities">Last five activities</string>
     <string name="accelerometer">Accelerometer</string>
-    <string name="x_accelerometer">x: </string>
-    <string name="y_accelerometer">y: </string>
-    <string name="z_accelerometer">z: </string>
+    <string name="x">x: </string>
+    <string name="y">y: </string>
+    <string name="z">z: </string>
     <string name="log_out">Log out</string>
     <string name="log_out_message">Do you really want to leave?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
 
     <!-- Add activity. -->
+    <string name="activity">Activity</string>
+    <string name="lie">Lie</string>
+    <string name="sit">Sit</string>
+    <string name="stand">Stand</string>
+    <string name="walk">Walk</string>
     <string name="chronometer">Chronometer</string>
     <string name="chronometer_origin">02:00</string>
     <string name="start">Start</string>

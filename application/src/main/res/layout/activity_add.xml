@@ -10,10 +10,65 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="mlipa.move.client.AddActivity">
 
+    <ImageView
+        android:id="@+id/iv_activity"
+        android:layout_width="128dp"
+        android:layout_height="128dp"
+        android:layout_gravity="center"
+        android:src="@drawable/activity_not_detected" />
+
+    <TextView
+        android:id="@+id/tv_activity_label"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:text="@string/activity"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
+    <RadioGroup
+        android:id="@+id/rg_activity"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <RadioButton
+            android:id="@+id/rb_activity_lie"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/lie"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RadioButton
+            android:id="@+id/rb_activity_sit"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/sit"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RadioButton
+            android:id="@+id/rb_activity_stand"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/stand"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+
+        <RadioButton
+            android:id="@+id/rb_activity_walk"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:onClick="onRadioButtonClicked"
+            android:text="@string/walk"
+            android:textAppearance="?android:attr/textAppearanceMedium" />
+    </RadioGroup>
+
     <TextView
         android:id="@+id/tv_chronometer_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/activity_vertical_margin"
         android:text="@string/chronometer"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 

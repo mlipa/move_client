@@ -97,7 +97,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/x_accelerometer"
+                android:text="@string/x"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -105,8 +105,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/black" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
         <LinearLayout
@@ -120,7 +119,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/y_accelerometer"
+                android:text="@string/y"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -128,8 +127,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/black" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
 
         <LinearLayout
@@ -143,7 +141,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/z_accelerometer"
+                android:text="@string/z"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
@@ -151,8 +149,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceLarge"
-                android:textColor="@color/black" />
+                android:textAppearance="?android:attr/textAppearanceLarge" />
         </LinearLayout>
     </LinearLayout>
 
