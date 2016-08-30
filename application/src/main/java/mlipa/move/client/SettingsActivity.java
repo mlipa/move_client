@@ -1,9 +1,12 @@
 package mlipa.move.client;
 
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
+import android.view.View;
 
 import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
@@ -14,6 +17,8 @@ public class SettingsActivity extends AppCompatActivity {
 
     private SettingsFragment settingsFragment;
     private Bundle args;
+
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -35,5 +40,15 @@ public class SettingsActivity extends AppCompatActivity {
         settingsFragment.setArguments(args);
 
         getFragmentManager().beginTransaction().replace(R.id.layout, settingsFragment).commit();
+
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+
+        fab.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.bootstrap_green)));
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: RE-TRAIN ARTIFICIAL NEURAL NETWORK
+            }
+        });
     }
 }
