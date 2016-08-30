@@ -88,6 +88,9 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         tvZAccelerometer = (TextView) findViewById(R.id.tv_z_accelerometer);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
+        // TODO: CALCULATE CURRENT ACTIVITY FROM ALGORITHM
+        // TODO: ADD LAST FIVE ACTIVITIES ICONS FROM DATABASE
+
         fab.setBackgroundTintList(ColorStateList.valueOf(getColor(R.color.bootstrap_green)));
         fab.setOnClickListener(new View.OnClickListener() {
             @Override

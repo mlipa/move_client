@@ -54,6 +54,8 @@ public class AddActivity extends AppCompatActivity {
                 bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
 
                 player.start();
+
+                // TODO: STOP RECORD ACTIVITY
             }
         };
 
@@ -78,6 +80,8 @@ public class AddActivity extends AppCompatActivity {
 
                     bStartStop.setText(getString(R.string.stop));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_red));
+
+                    // TODO: START RECORD ACTIVITY
                 } else {
                     chronometer.cancel();
 
@@ -89,6 +93,8 @@ public class AddActivity extends AppCompatActivity {
 
                     bStartStop.setText(getString(R.string.start));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
+
+                    // TODO: STOP RECORD ACTIVITY
                 }
             }
         });

@@ -60,7 +60,7 @@ public class SettingsActivity extends AppCompatActivity {
                 new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        // TODO: RE-TRAIN ARTIFICIAL NEURAL NETWORK
+                        // TODO: TRAIN AND RE-TRAIN ARTIFICIAL NEURAL NETWORK
                     }
                 }).start();
             }
