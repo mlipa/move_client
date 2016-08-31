@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -52,6 +53,9 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     private Context context;
     private RequestQueue queue;
 
+    private DatabaseHandler databaseHandler;
+    private SQLiteDatabase database;
+
     private Intent addIntent;
     private Intent settingsIntent;
     private Intent profileIntent;
@@ -79,6 +83,9 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
 
         context = getApplicationContext();
         queue = Volley.newRequestQueue(DashboardActivity.this);
+
+        databaseHandler = new DatabaseHandler(DashboardActivity.this);
+        database = databaseHandler.getReadableDatabase();
 
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(DashboardActivity.this);
 
