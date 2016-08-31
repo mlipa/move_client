@@ -15,7 +15,7 @@
 
     <!-- Dashboard -->
     <string name="current_activity">Current activity</string>
-    <string name="last_five_activities">Last five activities</string>
+    <string name="last_five_activities">Last activities</string>
     <string name="accelerometer">Accelerometer</string>
     <string name="x">x: </string>
     <string name="y">y: </string>
