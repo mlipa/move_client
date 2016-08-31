@@ -15,6 +15,12 @@ import org.json.JSONObject;
 public class SettingsFragment extends PreferenceFragment {
     private static final String TAG = SettingsFragment.class.toString();
 
+    private static final String SERVER_SUCCESS_KEY = "success";
+    private static final String SERVER_CLASSIFIER_ID_KEY = "classifier_id";
+    private static final String SERVER_CLASSIFIER_NAME_KEY = "classifier_name";
+    private static final String CLIENT_CLASSIFIER_ID_KEY = "classifierId";
+    private static final String PREFERENCE_CLASSIFIER_KEY = "classifier";
+
     private ListPreference classifier;
     private Preference.OnPreferenceChangeListener preferenceChangedListener = new Preference.OnPreferenceChangeListener() {
         @Override
@@ -30,12 +36,12 @@ public class SettingsFragment extends PreferenceFragment {
                     try {
                         JSONObject jsonResponse = new JSONObject(response);
 
-                        if (jsonResponse.getBoolean("success")) {
-                            String classifierId = jsonResponse.getString("classifier_id");
-                            String classifierName = jsonResponse.getString("classifier_name");
+                        if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
+                            String classifierId = jsonResponse.getString(SERVER_CLASSIFIER_ID_KEY);
+                            String classifierName = jsonResponse.getString(SERVER_CLASSIFIER_NAME_KEY);
 
-                            Log.v(TAG, "classifier_id = " + classifierId);
-                            Log.v(TAG, "classifier_name = " + classifierName);
+                            Log.v(TAG, SERVER_CLASSIFIER_ID_KEY + " = " + classifierId);
+                            Log.v(TAG, SERVER_CLASSIFIER_NAME_KEY + " = " + classifierName);
                         }
                     } catch (JSONException e) {
                         e.printStackTrace();
@@ -55,9 +61,9 @@ public class SettingsFragment extends PreferenceFragment {
 
         addPreferencesFromResource(R.xml.settings);
 
-        classifier = (ListPreference) findPreference("classifier");
+        classifier = (ListPreference) findPreference(PREFERENCE_CLASSIFIER_KEY);
 
-        classifier.setValue(getArguments().getString("classifierId"));
+        classifier.setValue(getArguments().getString(CLIENT_CLASSIFIER_ID_KEY));
         classifier.setSummary(classifier.getEntry());
 
         changeSummaryToValue(classifier);

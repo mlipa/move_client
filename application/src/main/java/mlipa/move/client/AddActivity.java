@@ -71,7 +71,7 @@ public class AddActivity extends AppCompatActivity {
         bStartStop.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (bStartStop.getText().equals("Start")) {
+                if (bStartStop.getText().equals(getString(R.string.start))) {
                     chronometer.start();
 
                     for (int i = 0; i < rgActivity.getChildCount(); i++) {

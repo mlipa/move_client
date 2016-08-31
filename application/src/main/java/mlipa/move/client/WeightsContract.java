@@ -3,9 +3,6 @@ package mlipa.move.client;
 import android.provider.BaseColumns;
 
 public class WeightsContract {
-    private WeightsContract() {
-    }
-
     public static class Weights implements BaseColumns {
         // TODO: CHANGE WEIGHTS NUMBER TO EQUAL QUALITIES NUMBER
         private final int WEIGHTS_NUMBER = 100;
@@ -18,5 +15,8 @@ public class WeightsContract {
                 COLUMN_NAME_WEIGHT[i] = "weight_" + String.valueOf(i);
             }
         }
+    }
+
+    private WeightsContract() {
     }
 }

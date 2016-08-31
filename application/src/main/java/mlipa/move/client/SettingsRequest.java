@@ -12,6 +12,9 @@ import java.util.Map;
 public class SettingsRequest extends StringRequest {
     // TODO: CHANGE TO PRODUCTION SERVER
     private static final String SETTINGS_URL = "http://192.168.1.5:5000/m_settings"; // "http://move-d.herokuapp.com/m_settings";
+
+    private static final String CLIENT_CLASSIFIER_ID_KEY = "classifierId";
+
     private Map<String, String> params;
 
     public SettingsRequest(int method, String classifierId, Response.Listener<String> listener) {
@@ -19,7 +22,7 @@ public class SettingsRequest extends StringRequest {
 
         if (method == Method.POST) {
             params = new HashMap<>();
-            params.put("classifierId", classifierId);
+            params.put(CLIENT_CLASSIFIER_ID_KEY, classifierId);
         }
     }
 

@@ -35,6 +35,20 @@ import org.json.JSONObject;
 public class DashboardActivity extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = DashboardActivity.class.toString();
 
+    private static final String SERVER_SUCCESS_KEY = "success";
+    private static final String SERVER_CLASSIFIER_ID_KEY = "classifier_id";
+    private static final String SERVER_CLASSIFIER_NAME_KEY = "classifier_name";
+    private static final String SERVER_NAME_KEY = "name";
+    private static final String SERVER_USERNAME_KEY = "username";
+    private static final String SERVER_EMAIL_KEY = "email";
+    private static final String SERVER_AVATAR_KEY = "avatar";
+    private static final String SERVER_FILENAME_KEY = "filename";
+    private static final String SERVER_MESSAGE_KEY = "message";
+    private static final String CLIENT_CLASSIFIER_ID_KEY = "classifierId";
+    private static final String CLIENT_NAME_KEY = "name";
+    private static final String CLIENT_USERNAME_KEY = "username";
+    private static final String CLIENT_EMAIL_KEY = "email";
+
     private Context context;
     private RequestQueue queue;
 
@@ -119,14 +133,14 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
 
-                            if (jsonResponse.getBoolean("success")) {
-                                String classifierId = jsonResponse.getString("classifier_id");
-                                String classifierName = jsonResponse.getString("classifier_name");
+                            if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
+                                String classifierId = jsonResponse.getString(SERVER_CLASSIFIER_ID_KEY);
+                                String classifierName = jsonResponse.getString(SERVER_CLASSIFIER_NAME_KEY);
 
-                                Log.v(TAG, "classifier_id = " + classifierId);
-                                Log.v(TAG, "classifier_name = " + classifierName);
+                                Log.v(TAG, SERVER_CLASSIFIER_ID_KEY + " = " + classifierId);
+                                Log.v(TAG, SERVER_CLASSIFIER_NAME_KEY + " = " + classifierName);
 
-                                settingsIntent.putExtra("classifierId", classifierId);
+                                settingsIntent.putExtra(CLIENT_CLASSIFIER_ID_KEY, classifierId);
 
                                 startActivity(settingsIntent);
                             }
@@ -146,25 +160,25 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
 
-                            if (jsonResponse.getBoolean("success")) {
-                                String name = jsonResponse.getString("name");
-                                String username = jsonResponse.getString("username");
-                                String email = jsonResponse.getString("email");
-                                Boolean avatar = jsonResponse.getBoolean("avatar");
+                            if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
+                                String name = jsonResponse.getString(SERVER_NAME_KEY);
+                                String username = jsonResponse.getString(SERVER_USERNAME_KEY);
+                                String email = jsonResponse.getString(SERVER_EMAIL_KEY);
+                                Boolean avatar = jsonResponse.getBoolean(SERVER_AVATAR_KEY);
 
-                                Log.v(TAG, "name = " + name);
-                                Log.v(TAG, "username = " + username);
-                                Log.v(TAG, "email = " + email);
-                                Log.v(TAG, "avatar = " + avatar.toString());
+                                Log.v(TAG, SERVER_NAME_KEY + " = " + name);
+                                Log.v(TAG, SERVER_USERNAME_KEY + " = " + username);
+                                Log.v(TAG, SERVER_EMAIL_KEY + " = " + email);
+                                Log.v(TAG, SERVER_AVATAR_KEY + " = " + avatar.toString());
 
-                                profileIntent.putExtra("name", name);
-                                profileIntent.putExtra("username", username);
-                                profileIntent.putExtra("email", email);
+                                profileIntent.putExtra(CLIENT_NAME_KEY, name);
+                                profileIntent.putExtra(CLIENT_USERNAME_KEY, username);
+                                profileIntent.putExtra(CLIENT_EMAIL_KEY, email);
 
                                 if (avatar) {
-                                    String filename = jsonResponse.getString("filename");
+                                    String filename = jsonResponse.getString(SERVER_FILENAME_KEY);
 
-                                    Log.v(TAG, "filename = " + filename);
+                                    Log.v(TAG, SERVER_FILENAME_KEY + " = " + filename);
 
                                     Response.Listener<Bitmap> avatarListener = new Response.Listener<Bitmap>() {
                                         @Override
@@ -208,8 +222,8 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
 
-                                if (jsonResponse.getBoolean("success")) {
-                                    String message = jsonResponse.getString("message");
+                                if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
+                                    String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
 
                                     Log.v(TAG, message);
 

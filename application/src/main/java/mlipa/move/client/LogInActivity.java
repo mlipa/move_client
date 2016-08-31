@@ -21,6 +21,9 @@ import org.json.JSONObject;
 public class LogInActivity extends AppCompatActivity {
     private static final String TAG = LogInActivity.class.toString();
 
+    private static final String SERVER_SUCCESS_KEY = "success";
+    private static final String SERVER_MESSAGE_KEY = "message";
+
     private Context context;
     private RequestQueue queue;
 
@@ -63,10 +66,10 @@ public class LogInActivity extends AppCompatActivity {
                         public void onResponse(String response) {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
-                                String message = jsonResponse.getString("message");
+                                String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
                                 Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
 
-                                if (jsonResponse.getBoolean("success")) {
+                                if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
                                     etUsername.setText("");
                                     etUsername.clearFocus();
                                     etPassword.setText("");
@@ -76,7 +79,7 @@ public class LogInActivity extends AppCompatActivity {
                                     startActivity(dashboardIntent);
                                 }
 
-                                Log.v(TAG, "message = " + message);
+                                Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
 
                                 toast.show();
                             } catch (JSONException e) {

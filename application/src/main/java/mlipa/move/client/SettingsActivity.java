@@ -13,6 +13,8 @@ import com.android.volley.RequestQueue;
 import com.android.volley.toolbox.Volley;
 
 public class SettingsActivity extends AppCompatActivity {
+    private static final String CLIENT_CLASSIFIER_ID_KEY = "classifierId";
+
     private Intent intent;
     public static RequestQueue queue;
 
@@ -36,7 +38,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         args = new Bundle();
 
-        args.putString("classifierId", intent.getStringExtra("classifierId"));
+        args.putString(CLIENT_CLASSIFIER_ID_KEY, intent.getStringExtra(CLIENT_CLASSIFIER_ID_KEY));
 
         settingsFragment.setArguments(args);
 
