@@ -53,7 +53,7 @@ public class SettingsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProgressDialog dialog = new ProgressDialog(context);
+                ProgressDialog dialog = new ProgressDialog(SettingsActivity.this);
 
                 dialog.setTitle(getString(R.string.learning));
                 dialog.setMessage(getString(R.string.learning_message));

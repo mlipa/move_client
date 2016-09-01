@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
-import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -53,9 +52,6 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     private Context context;
     private RequestQueue queue;
 
-    private DatabaseHandler databaseHandler;
-    private SQLiteDatabase database;
-
     private Intent addIntent;
     private Intent settingsIntent;
     private Intent profileIntent;
@@ -83,9 +79,6 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
 
         context = getApplicationContext();
         queue = Volley.newRequestQueue(context);
-
-        databaseHandler = new DatabaseHandler(context);
-        database = databaseHandler.getReadableDatabase();
 
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -216,7 +209,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(context);
+            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
 
             builder.setTitle(R.string.log_out);
             builder.setMessage(R.string.log_out_message);
@@ -232,7 +225,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
                                 if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
                                     String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
 
-                                    Log.v(TAG, message);
+                                    Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
 
                                     Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
 

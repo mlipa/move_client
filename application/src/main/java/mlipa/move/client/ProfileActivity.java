@@ -69,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
         bLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
 
                 builder.setTitle(R.string.log_out);
                 builder.setMessage(R.string.log_out_message);

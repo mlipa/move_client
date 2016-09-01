@@ -1,7 +1,10 @@
 package mlipa.move.client;
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
@@ -23,9 +26,14 @@ public class LogInActivity extends AppCompatActivity {
 
     private static final String SERVER_SUCCESS_KEY = "success";
     private static final String SERVER_MESSAGE_KEY = "message";
+    private static final String SERVER_USER_ID_KEY = "user_id";
+    private static final String SERVER_USER_USERNAME_KEY = "user_username";
 
     private Context context;
     private RequestQueue queue;
+
+    public static DatabaseHandler databaseHandler;
+    private SQLiteDatabase database;
 
     private Intent dashboardIntent;
 
@@ -41,6 +49,9 @@ public class LogInActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         queue = Volley.newRequestQueue(context);
+
+        databaseHandler = new DatabaseHandler(context);
+        database = databaseHandler.getWritableDatabase();
 
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -74,6 +85,48 @@ public class LogInActivity extends AppCompatActivity {
                                     etUsername.clearFocus();
                                     etPassword.setText("");
                                     etPassword.clearFocus();
+
+                                    String[] projection = {
+                                            UsersContract.Users._ID,
+                                            UsersContract.Users.COLUMN_NAME_USERNAME
+                                    };
+                                    String selection = UsersContract.Users._ID + " = ?";
+                                    String[] selectionArgs = {jsonResponse.getString(SERVER_USER_ID_KEY)};
+
+                                    Cursor cursor = database.query(
+                                            UsersContract.Users.TABLE_NAME,
+                                            projection,
+                                            selection,
+                                            selectionArgs,
+                                            null, null, null
+                                    );
+
+                                    if (cursor.getCount() == 0) {
+                                        ContentValues values = new ContentValues();
+
+                                        values.put(UsersContract.Users._ID, jsonResponse.getString(SERVER_USER_ID_KEY));
+                                        values.put(UsersContract.Users.COLUMN_NAME_USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
+
+                                        long id = database.insert(UsersContract.Users.TABLE_NAME, null, values);
+
+                                        Log.v(TAG, "Row (id " + String.valueOf(id) + ") created successfully!");
+                                    } else if (cursor.getCount() == 1) {
+                                        cursor.moveToFirst();
+
+                                        if (!cursor.getString(cursor.getColumnIndex(UsersContract.Users.COLUMN_NAME_USERNAME)).equals(jsonResponse.getString(SERVER_USER_USERNAME_KEY))) {
+                                            ContentValues values = new ContentValues();
+
+                                            values.put(UsersContract.Users.COLUMN_NAME_USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
+
+                                            int count = database.update(
+                                                    UsersContract.Users.TABLE_NAME,
+                                                    values,
+                                                    selection,
+                                                    selectionArgs);
+
+                                            Log.v(TAG, String.valueOf(count) + " row(s) updated successfully!");
+                                        }
+                                    }
 
                                     dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(dashboardIntent);
