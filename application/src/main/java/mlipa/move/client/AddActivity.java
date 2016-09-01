@@ -41,6 +41,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
     private Sensor accelerometer;
     private boolean accelerometerActive;
 
+    private CountDownTimer delay;
     private CountDownTimer chronometer;
 
     private ImageView ivActivity;
@@ -94,8 +95,36 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 sensorManager.unregisterListener(AddActivity.this, accelerometer);
                 accelerometerActive = false;
 
-                Log.v(TAG, "[onFinish()] Accelerometer unregistered successfully!");
+                Log.v(TAG, "[chronometer.onFinish()] Accelerometer unregistered successfully!");
                 Log.v(TAG, String.valueOf(count) + " row(s) inserted successfully!");
+
+                count = 0;
+            }
+        };
+
+        delay = new CountDownTimer(5000, 1000) {
+            @Override
+            public void onTick(long millisUntilFinished) {
+                long minutes = (millisUntilFinished / 1000) / 60;
+                long seconds = (millisUntilFinished / 1000) % 60;
+
+                tvChronometer.setTextColor(getColor(R.color.bootstrap_red));
+                tvChronometer.setText(String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
+            }
+
+            @Override
+            public void onFinish() {
+                tvChronometer.setTextColor(getColor(R.color.black));
+                tvChronometer.setText(getString(R.string.chronometer_origin));
+
+                player.start();
+
+                chronometer.start();
+
+                sensorManager.registerListener(AddActivity.this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
+                accelerometerActive = true;
+
+                Log.v(TAG, "[delay.onFinish()] Accelerometer registered successfully!");
             }
         };
 
@@ -112,7 +141,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
             @Override
             public void onClick(View v) {
                 if (bStartStop.getText().equals(getString(R.string.start))) {
-                    chronometer.start();
+                    delay.start();
 
                     for (int i = 0; i < rgActivity.getChildCount(); i++) {
                         rgActivity.getChildAt(i).setEnabled(false);
@@ -120,18 +149,15 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
 
                     bStartStop.setText(getString(R.string.stop));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_red));
-
-                    sensorManager.registerListener(AddActivity.this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
-                    accelerometerActive = true;
-
-                    Log.v(TAG, "[onClick('Start')] Accelerometer registered successfully!");
                 } else {
+                    delay.cancel();
                     chronometer.cancel();
 
                     for (int i = 0; i < rgActivity.getChildCount(); i++) {
                         rgActivity.getChildAt(i).setEnabled(true);
                     }
 
+                    tvChronometer.setTextColor(getColor(R.color.black));
                     tvChronometer.setText(getString(R.string.chronometer_origin));
 
                     bStartStop.setText(getString(R.string.start));
@@ -140,8 +166,10 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                     sensorManager.unregisterListener(AddActivity.this, accelerometer);
                     accelerometerActive = false;
 
-                    Log.v(TAG, "[onClick('Stop')] Accelerometer unregistered successfully!");
+                    Log.v(TAG, "[bStartStop.onClick('Stop')] Accelerometer unregistered successfully!");
                     Log.v(TAG, String.valueOf(count) + " row(s) inserted successfully!");
+
+                    count = 0;
                 }
             }
         });
