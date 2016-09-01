@@ -10,8 +10,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LogOutRequest extends StringRequest {
-    // TODO: CHANGE TO PRODUCTION SERVER
-    private static final String LOG_OUT_URL = "http://192.168.1.5:5000/m_log_out"; // "http://move-d.herokuapp.com/m_log_out";
+    private static final String LOG_OUT_URL = "http://move-p.herokuapp.com/m_log_out";
 
     public LogOutRequest(Response.Listener<String> listener) {
         super(Method.GET, LOG_OUT_URL, listener, null);
