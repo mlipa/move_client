@@ -82,17 +82,17 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         setContentView(R.layout.activity_dashboard);
 
         context = getApplicationContext();
-        queue = Volley.newRequestQueue(DashboardActivity.this);
+        queue = Volley.newRequestQueue(context);
 
-        databaseHandler = new DatabaseHandler(DashboardActivity.this);
+        databaseHandler = new DatabaseHandler(context);
         database = databaseHandler.getReadableDatabase();
 
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(DashboardActivity.this);
+        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        addIntent = new Intent(DashboardActivity.this, AddActivity.class);
-        settingsIntent = new Intent(DashboardActivity.this, SettingsActivity.class);
-        profileIntent = new Intent(DashboardActivity.this, ProfileActivity.class);
-        logInIntent = new Intent(DashboardActivity.this, LogInActivity.class);
+        addIntent = new Intent(context, AddActivity.class);
+        settingsIntent = new Intent(context, SettingsActivity.class);
+        profileIntent = new Intent(context, ProfileActivity.class);
+        logInIntent = new Intent(context, LogInActivity.class);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
@@ -216,7 +216,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
-            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+            AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
             builder.setTitle(R.string.log_out);
             builder.setMessage(R.string.log_out_message);

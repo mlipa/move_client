@@ -40,11 +40,11 @@ public class LogInActivity extends AppCompatActivity {
         setContentView(R.layout.activity_log_in);
 
         context = getApplicationContext();
-        queue = Volley.newRequestQueue(LogInActivity.this);
+        queue = Volley.newRequestQueue(context);
 
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(LogInActivity.this);
+        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        dashboardIntent = new Intent(LogInActivity.this, DashboardActivity.class);
+        dashboardIntent = new Intent(context, DashboardActivity.class);
 
         etUsername = (EditText) findViewById(R.id.et_username);
         etPassword = (EditText) findViewById(R.id.et_password);

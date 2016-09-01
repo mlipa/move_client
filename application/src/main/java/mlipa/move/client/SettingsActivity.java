@@ -1,6 +1,7 @@
 package mlipa.move.client;
 
 import android.app.ProgressDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import com.android.volley.toolbox.Volley;
 public class SettingsActivity extends AppCompatActivity {
     private static final String CLIENT_CLASSIFIER_ID_KEY = "classifierId";
 
+    private Context context;
     private Intent intent;
     public static RequestQueue queue;
 
@@ -29,10 +31,11 @@ public class SettingsActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_settings);
 
+        context = getApplicationContext();
         intent = getIntent();
-        queue = Volley.newRequestQueue(SettingsActivity.this);
+        queue = Volley.newRequestQueue(context);
 
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(SettingsActivity.this);
+        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         settingsFragment = new SettingsFragment();
 
@@ -50,7 +53,7 @@ public class SettingsActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProgressDialog dialog = new ProgressDialog(SettingsActivity.this);
+                ProgressDialog dialog = new ProgressDialog(context);
 
                 dialog.setTitle(getString(R.string.learning));
                 dialog.setMessage(getString(R.string.learning_message));

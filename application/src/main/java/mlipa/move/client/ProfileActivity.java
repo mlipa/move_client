@@ -50,11 +50,11 @@ public class ProfileActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         intent = getIntent();
-        queue = Volley.newRequestQueue(ProfileActivity.this);
+        queue = Volley.newRequestQueue(context);
 
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(ProfileActivity.this);
+        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
-        logInIntent = new Intent(ProfileActivity.this, LogInActivity.class);
+        logInIntent = new Intent(context, LogInActivity.class);
 
         civAvatar = (CircularImageView) findViewById(R.id.civ_avatar);
         tvName = (TextView) findViewById(R.id.tv_name);
@@ -69,7 +69,7 @@ public class ProfileActivity extends AppCompatActivity {
         bLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
+                AlertDialog.Builder builder = new AlertDialog.Builder(context);
 
                 builder.setTitle(R.string.log_out);
                 builder.setMessage(R.string.log_out_message);
