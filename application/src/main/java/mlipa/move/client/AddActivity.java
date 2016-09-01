@@ -1,10 +1,15 @@
 package mlipa.move.client;
 
 import android.content.Context;
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -12,9 +17,15 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
-public class AddActivity extends AppCompatActivity {
+public class AddActivity extends AppCompatActivity implements SensorEventListener {
+    private static final String TAG = AddActivity.class.toString();
+
     private Context context;
     private MediaPlayer player;
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
+    private boolean accelerometerActive;
 
     private CountDownTimer chronometer;
 
@@ -32,6 +43,10 @@ public class AddActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         player = MediaPlayer.create(context, R.raw.notify);
+
+        sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
+        accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
+        accelerometerActive = false;
 
         chronometer = new CountDownTimer(120000, 1000) {
             @Override
@@ -55,7 +70,10 @@ public class AddActivity extends AppCompatActivity {
 
                 player.start();
 
-                // TODO: STOP RECORD ACTIVITY
+                sensorManager.unregisterListener(AddActivity.this, accelerometer);
+                accelerometerActive = false;
+
+                Log.v(TAG, "[onFinish()] Accelerometer unregistered successfully!");
             }
         };
 
@@ -81,7 +99,10 @@ public class AddActivity extends AppCompatActivity {
                     bStartStop.setText(getString(R.string.stop));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_red));
 
-                    // TODO: START RECORD ACTIVITY
+                    sensorManager.registerListener(AddActivity.this, accelerometer, SensorManager.SENSOR_DELAY_FASTEST);
+                    accelerometerActive = true;
+
+                    Log.v(TAG, "[onClick('Start')] Accelerometer registered successfully!");
                 } else {
                     chronometer.cancel();
 
@@ -94,7 +115,10 @@ public class AddActivity extends AppCompatActivity {
                     bStartStop.setText(getString(R.string.start));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
 
-                    // TODO: STOP RECORD ACTIVITY
+                    sensorManager.unregisterListener(AddActivity.this, accelerometer);
+                    accelerometerActive = false;
+
+                    Log.v(TAG, "[onClick('Stop')] Accelerometer unregistered successfully!");
                 }
             }
         });
@@ -131,5 +155,56 @@ public class AddActivity extends AppCompatActivity {
             default:
                 break;
         }
+    }
+
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+    }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+
+        if (accelerometerActive) {
+            sensorManager.unregisterListener(AddActivity.this, accelerometer);
+            accelerometerActive = false;
+
+            Log.v(TAG, "[onPause()] Accelerometer unregistered successfully!");
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        if (accelerometerActive) {
+            sensorManager.unregisterListener(AddActivity.this, accelerometer);
+            accelerometerActive = false;
+
+            Log.v(TAG, "[onStop()] Accelerometer unregistered successfully!");
+        }
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        final double alpha = 0.8;
+
+        double[] gravity = new double[3];
+        double[] linearAcceleration = new double[3];
+
+        gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
+        gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
+        gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+
+        linearAcceleration[0] = event.values[0] - gravity[0];
+        linearAcceleration[1] = event.values[1] - gravity[1];
+        linearAcceleration[2] = event.values[2] - gravity[2];
+
+        // TODO: WRITE DATA TO DATABASE
     }
 }

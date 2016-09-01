@@ -91,6 +91,8 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(DashboardActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
+        Log.v(TAG, "[onCreate()] Accelerometer registered successfully!");
+
         ivCurrentActivity = (ImageView) findViewById(R.id.iv_current_activity);
         ivFirstActivity = (ImageView) findViewById(R.id.iv_first_activity);
         ivSecondActivity = (ImageView) findViewById(R.id.iv_second_activity);
@@ -258,7 +260,9 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     protected void onPause() {
         super.onPause();
 
-        sensorManager.unregisterListener(DashboardActivity.this);
+        sensorManager.unregisterListener(DashboardActivity.this, accelerometer);
+
+        Log.v(TAG, "[onPause()] Accelerometer unregistered successfully!");
     }
 
     @Override
@@ -266,6 +270,17 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         super.onResume();
 
         sensorManager.registerListener(DashboardActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
+
+        Log.v(TAG, "[onResume()] Accelerometer registered successfully!");
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        sensorManager.unregisterListener(DashboardActivity.this, accelerometer);
+
+        Log.v(TAG, "[onStop()] Accelerometer unregistered successfully!");
     }
 
     @Override
