@@ -91,7 +91,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "('Lie'), " +
                 "('Sit'), " +
                 "('Stand'), " +
-                "('Walk');";
+                "('Walk'), " +
+                "('Not detected');";
 
         String insertClassifiers = "INSERT INTO " + ClassifiersContract.Classifiers.TABLE_NAME + "(" +
                 ClassifiersContract.Classifiers.COLUMN_NAME_NAME + ") VALUES " +

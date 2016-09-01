@@ -3,6 +3,7 @@ package mlipa.move.client;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -28,6 +29,7 @@ public class LogInActivity extends AppCompatActivity {
     private static final String SERVER_MESSAGE_KEY = "message";
     private static final String SERVER_USER_ID_KEY = "user_id";
     private static final String SERVER_USER_USERNAME_KEY = "user_username";
+    private static final String CLIENT_USER_ID_KEY = "userId";
 
     private Context context;
     private RequestQueue queue;
@@ -127,6 +129,11 @@ public class LogInActivity extends AppCompatActivity {
                                             Log.v(TAG, String.valueOf(count) + " row(s) updated successfully!");
                                         }
                                     }
+
+                                    SharedPreferences.Editor editor = Cookie.preferences.edit();
+
+                                    editor.putInt(CLIENT_USER_ID_KEY, Integer.parseInt(jsonResponse.getString(SERVER_USER_ID_KEY)));
+                                    editor.commit();
 
                                     dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(dashboardIntent);
