@@ -121,7 +121,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                     bStartStop.setText(getString(R.string.stop));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_red));
 
-                    sensorManager.registerListener(AddActivity.this, accelerometer, SensorManager.SENSOR_DELAY_UI);
+                    sensorManager.registerListener(AddActivity.this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
                     accelerometerActive = true;
 
                     Log.v(TAG, "[onClick('Start')] Accelerometer registered successfully!");
