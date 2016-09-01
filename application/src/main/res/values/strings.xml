@@ -20,6 +20,7 @@
     <string name="x">x: </string>
     <string name="y">y: </string>
     <string name="z">z: </string>
+    <string name="acceleration_unit">[m/s&#178;]</string>
     <string name="log_out">Log out</string>
     <string name="log_out_message">Do you really want to leave?</string>
     <string name="yes">Yes</string>
