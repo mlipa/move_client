@@ -294,8 +294,8 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         tvYAccelerometer.setText("");
         tvZAccelerometer.setText("");
 
-        tvXAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[0]) + " " + getString(R.string.acceleration_unit));
-        tvYAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[1]) + " " + getString(R.string.acceleration_unit));
-        tvZAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[2]) + " " + getString(R.string.acceleration_unit));
+        tvXAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[0]) + " ");
+        tvYAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[1]) + " ");
+        tvZAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[2]) + " ");
     }
 }
