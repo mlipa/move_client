@@ -87,12 +87,10 @@ public class ProfileActivity extends AppCompatActivity {
 
                                         Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
 
-                                        Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-
                                         logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(logInIntent);
 
-                                        toast.show();
+                                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                                     }
                                 } catch (JSONException e) {
                                     e.printStackTrace();

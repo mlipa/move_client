@@ -32,15 +32,15 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
     private MediaPlayer player;
 
     private SQLiteDatabase database;
-    private int count;
+    private Integer rowsCount;
 
     private SimpleDateFormat dateFormat;
-    private int activityId;
-    private int userId;
+    private Integer activityId;
+    private Integer userId;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
-    private boolean accelerometerActive;
+    private Boolean accelerometerActive;
 
     private CountDownTimer delay;
     private CountDownTimer chronometer;
@@ -61,7 +61,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         player = MediaPlayer.create(context, R.raw.notify);
 
         database = LogInActivity.databaseHandler.getWritableDatabase();
-        count = 0;
+        rowsCount = 0;
 
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
         activityId = 5;
@@ -74,8 +74,8 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         chronometer = new CountDownTimer(120000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                long minutes = (millisUntilFinished / 1000) / 60;
-                long seconds = (millisUntilFinished / 1000) % 60;
+                Long minutes = (millisUntilFinished / 1000) / 60;
+                Long seconds = (millisUntilFinished / 1000) % 60;
 
                 tvChronometer.setText(String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
             }
@@ -97,17 +97,17 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 accelerometerActive = false;
 
                 Log.v(TAG, "[chronometer.onFinish()] Accelerometer unregistered successfully!");
-                Log.v(TAG, String.valueOf(count) + " row(s) inserted successfully!");
+                Log.v(TAG, String.valueOf(rowsCount) + " row(s) inserted successfully!");
 
-                count = 0;
+                rowsCount = 0;
             }
         };
 
         delay = new CountDownTimer(5000, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
-                long minutes = (millisUntilFinished / 1000) / 60;
-                long seconds = (millisUntilFinished / 1000) % 60;
+                Long minutes = (millisUntilFinished / 1000) / 60;
+                Long seconds = (millisUntilFinished / 1000) % 60;
 
                 tvChronometer.setTextColor(getColor(R.color.bootstrap_red));
                 tvChronometer.setText(String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
@@ -168,16 +168,16 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                     accelerometerActive = false;
 
                     Log.v(TAG, "[bStartStop.onClick('Stop')] Accelerometer unregistered successfully!");
-                    Log.v(TAG, String.valueOf(count) + " row(s) inserted successfully!");
+                    Log.v(TAG, String.valueOf(rowsCount) + " row(s) inserted successfully!");
 
-                    count = 0;
+                    rowsCount = 0;
                 }
             }
         });
     }
 
     public void onRadioButtonClicked(View view) {
-        boolean checked = ((RadioButton) view).isChecked();
+        Boolean checked = ((RadioButton) view).isChecked();
 
         switch (view.getId()) {
             case R.id.rb_activity_lie:
@@ -247,13 +247,13 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
             accelerometerActive = false;
 
             Log.v(TAG, "[onStop()] Accelerometer unregistered successfully!");
-            Log.v(TAG, String.valueOf(count) + " row(s) inserted successfully!");
+            Log.v(TAG, String.valueOf(rowsCount) + " row(s) inserted successfully!");
         }
     }
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        final double alpha = 0.8;
+        final Double alpha = 0.8;
 
         ArrayList<Double> gravity = new ArrayList<>(3);
         ArrayList<Double> acceleration = new ArrayList<>(3);
@@ -267,9 +267,8 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         }
 
         ContentValues values = new ContentValues();
-        Date date = new Date();
 
-        values.put(RawContract.Raws.COLUMN_NAME_TIMESTAMP, dateFormat.format(date));
+        values.put(RawContract.Raws.COLUMN_NAME_TIMESTAMP, dateFormat.format(new Date()));
         values.put(RawContract.Raws.COLUMN_NAME_ACTIVITY_ID, activityId);
         values.put(RawContract.Raws.COLUMN_NAME_USER_ID, userId);
         values.put(RawContract.Raws.COLUMN_NAME_X, acceleration.get(0));
@@ -278,6 +277,6 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
 
         database.insert(RawContract.Raws.TABLE_NAME, null, values);
 
-        count++;
+        rowsCount++;
     }
 }

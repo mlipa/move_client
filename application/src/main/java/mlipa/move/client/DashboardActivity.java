@@ -231,12 +231,10 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
 
                                     Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
 
-                                    Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-
                                     logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                     startActivity(logInIntent);
 
-                                    toast.show();
+                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                                 }
                             } catch (JSONException e) {
                                 e.printStackTrace();
@@ -287,7 +285,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
 
     @Override
     public void onSensorChanged(SensorEvent event) {
-        final double alpha = 0.8;
+        final Double alpha = 0.8;
 
         ArrayList<Double> gravity = new ArrayList<>(3);
         ArrayList<Double> acceleration = new ArrayList<>(3);

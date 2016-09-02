@@ -9,7 +9,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
     private static final String TAG = DatabaseHandler.class.toString();
 
     public static final String DATABASE_NAME = "m_move.db";
-    public static final int DATABASE_VERSION = 2;
+    public static final Integer DATABASE_VERSION = 2;
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);

@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class WeightsContract {
     public static class Weights implements BaseColumns {
         // TODO: CHANGE WEIGHTS NUMBER TO EQUAL QUALITIES NUMBER
-        public static int WEIGHTS_NUMBER = 100;
+        public static Integer WEIGHTS_NUMBER = 100;
         public static final String TABLE_NAME = "weights";
         public static final String COLUMN_NAME_CLASSIFIER_ID = "classifier_id";
         public static final ArrayList<String> COLUMN_NAME_WEIGHT = new ArrayList<>(WEIGHTS_NUMBER);

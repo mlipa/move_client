@@ -80,7 +80,6 @@ public class LogInActivity extends AppCompatActivity {
                             try {
                                 JSONObject jsonResponse = new JSONObject(response);
                                 String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
-                                Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
 
                                 if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
                                     etUsername.setText("");
@@ -88,43 +87,43 @@ public class LogInActivity extends AppCompatActivity {
                                     etPassword.setText("");
                                     etPassword.clearFocus();
 
-                                    String[] projection = {
+                                    String[] iuProjection = {
                                             UsersContract.Users._ID,
                                             UsersContract.Users.COLUMN_NAME_USERNAME
                                     };
-                                    String selection = UsersContract.Users._ID + " = ?";
-                                    String[] selectionArgs = {jsonResponse.getString(SERVER_USER_ID_KEY)};
+                                    String iuSelection = UsersContract.Users._ID + " = ?";
+                                    String[] iuSelectionArgs = {jsonResponse.getString(SERVER_USER_ID_KEY)};
 
-                                    Cursor cursor = database.query(
+                                    Cursor iuCursor = database.query(
                                             UsersContract.Users.TABLE_NAME,
-                                            projection,
-                                            selection,
-                                            selectionArgs,
+                                            iuProjection,
+                                            iuSelection,
+                                            iuSelectionArgs,
                                             null, null, null
                                     );
 
-                                    if (cursor.getCount() == 0) {
+                                    if (iuCursor.getCount() == 0) {
                                         ContentValues values = new ContentValues();
 
                                         values.put(UsersContract.Users._ID, jsonResponse.getString(SERVER_USER_ID_KEY));
                                         values.put(UsersContract.Users.COLUMN_NAME_USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
 
-                                        long id = database.insert(UsersContract.Users.TABLE_NAME, null, values);
+                                        Long id = database.insert(UsersContract.Users.TABLE_NAME, null, values);
 
                                         Log.v(TAG, "Row (id " + String.valueOf(id) + ") created successfully!");
-                                    } else if (cursor.getCount() == 1) {
-                                        cursor.moveToFirst();
+                                    } else if (iuCursor.getCount() == 1) {
+                                        iuCursor.moveToFirst();
 
-                                        if (!cursor.getString(cursor.getColumnIndex(UsersContract.Users.COLUMN_NAME_USERNAME)).equals(jsonResponse.getString(SERVER_USER_USERNAME_KEY))) {
+                                        if (!iuCursor.getString(iuCursor.getColumnIndex(UsersContract.Users.COLUMN_NAME_USERNAME)).equals(jsonResponse.getString(SERVER_USER_USERNAME_KEY))) {
                                             ContentValues values = new ContentValues();
 
                                             values.put(UsersContract.Users.COLUMN_NAME_USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
 
-                                            int count = database.update(
+                                            Integer count = database.update(
                                                     UsersContract.Users.TABLE_NAME,
                                                     values,
-                                                    selection,
-                                                    selectionArgs);
+                                                    iuSelection,
+                                                    iuSelectionArgs);
 
                                             Log.v(TAG, String.valueOf(count) + " row(s) updated successfully!");
                                         }
@@ -141,7 +140,7 @@ public class LogInActivity extends AppCompatActivity {
 
                                 Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
 
-                                toast.show();
+                                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                             } catch (JSONException e) {
                                 e.printStackTrace();
                             }

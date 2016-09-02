@@ -16,7 +16,7 @@ public class SettingsRequest extends StringRequest {
 
     private Map<String, String> params;
 
-    public SettingsRequest(int method, String classifierId, Response.Listener<String> listener) {
+    public SettingsRequest(Integer method, String classifierId, Response.Listener<String> listener) {
         super(method, SETTINGS_URL, listener, null);
 
         if (method == Method.POST) {

@@ -3,15 +3,15 @@ package mlipa.move.client;
 import java.util.ArrayList;
 
 public class NeuralNetwork {
-    private int layersNumber;
+    private Integer layersNumber;
 
     private ArrayList<ArrayList<Neuron>> layers = new ArrayList<ArrayList<Neuron>>();
 
     public static ArrayList<NeuronConnection> connections = new ArrayList<NeuronConnection>();
 
-    public static final double eta = 0.5;
+    public static final Double eta = 0.5;
 
-    public NeuralNetwork(int inputNeurons, int hiddenLayers, int hiddenNeurons, int outputNeurons) {
+    public NeuralNetwork(Integer inputNeurons, Integer hiddenLayers, Integer hiddenNeurons, Integer outputNeurons) {
         layersNumber = hiddenLayers + 2;
 
         for (int i = 0; i < layersNumber; i++) {
@@ -53,7 +53,7 @@ public class NeuralNetwork {
     }
 
     public void trainNetwork(ArrayList<Double> input, ArrayList<Double> target) {
-        int inputLayer = 0;
+        Integer inputLayer = 0;
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
             layers.get(inputLayer).get(i).output = input.get(i) / 1000;
@@ -65,7 +65,7 @@ public class NeuralNetwork {
             }
         }
 
-        int outputLayer = layers.size() - 1;
+        Integer outputLayer = layers.size() - 1;
 
         for (int i = 0; i < layers.get(outputLayer).size(); i++) {
             layers.get(outputLayer).get(i).updateDelta(layers.get(outputLayer).get(i).output - target.get(i));
@@ -73,7 +73,7 @@ public class NeuralNetwork {
 
         for (int i = layers.size() - 2; i > inputLayer; i--) {
             for (int j = 0; j < layers.get(i).size(); j++) {
-                double error = 0.0;
+                Double error = 0.0;
 
                 for (int k = 0; k < layers.get(i).get(j).next.size(); k++) {
                     error += (layers.get(i).get(j).next.get(k).destination.delta * layers.get(i).get(j).next.get(k).weight);
@@ -91,8 +91,8 @@ public class NeuralNetwork {
     }
 
     public ArrayList<Double> runNetwork(ArrayList<Double> input) {
-        int inputLayer = 0;
-        int outputLayer = layers.size() - 1;
+        Integer inputLayer = 0;
+        Integer outputLayer = layers.size() - 1;
 
         ArrayList<Double> output = new ArrayList<>(layers.get(outputLayer).size());
 

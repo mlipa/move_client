@@ -4,9 +4,9 @@ import java.util.ArrayList;
 import java.util.Random;
 
 public class Neuron {
-    private double bias;
-    public double delta;
-    public double output;
+    private Double bias;
+    public Double delta;
+    public Double output;
 
     public ArrayList<NeuronConnection> previous = new ArrayList<NeuronConnection>();
     public ArrayList<NeuronConnection> next = new ArrayList<NeuronConnection>();
@@ -18,7 +18,7 @@ public class Neuron {
     }
 
     public void calculateOutput() {
-        double sum = bias;
+        Double sum = bias;
 
         for (int i = 0; i < previous.size(); i++) {
             sum += previous.get(i).source.output * previous.get(i).weight;
@@ -27,7 +27,7 @@ public class Neuron {
         output = 1 / (1 + Math.exp(-1 * sum));
     }
 
-    public void updateDelta(double error) {
+    public void updateDelta(Double error) {
         delta = error * output * (1 - output);
     }
 

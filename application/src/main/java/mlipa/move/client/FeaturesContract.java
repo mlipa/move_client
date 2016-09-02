@@ -7,7 +7,7 @@ import java.util.ArrayList;
 public class FeaturesContract {
     public static class Features implements BaseColumns {
         // TODO: CHANGE FEATURES NUMBER TO EQUAL WEIGHTS NUMBER
-        public static final int FEATURES_NUMBER = 100;
+        public static final Integer FEATURES_NUMBER = 100;
         public static final String TABLE_NAME = "features";
         public static final String COLUMN_NAME_TIMESTAMP_START = "timestamp_start";
         public static final String COLUMN_NAME_TIMESTAMP_STOP = "timestamp_stop";
