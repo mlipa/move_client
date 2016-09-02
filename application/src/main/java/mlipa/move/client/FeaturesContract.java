@@ -12,7 +12,6 @@ public class FeaturesContract {
         public static final String COLUMN_NAME_TIMESTAMP_START = "timestamp_start";
         public static final String COLUMN_NAME_TIMESTAMP_STOP = "timestamp_stop";
         public static final String COLUMN_NAME_ACTIVITY_ID = "activity_id";
-        public static final String COLUMN_NAME_USER_ID = "user_id";
         public static final ArrayList<String> COLUMN_NAME_FEATURES = new ArrayList<>(FEATURES_NUMBER);
 
         public Features() {

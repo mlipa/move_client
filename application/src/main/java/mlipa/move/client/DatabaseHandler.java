@@ -40,21 +40,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "FOREIGN KEY (" + RawContract.Raws.COLUMN_NAME_ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "), " +
                 "FOREIGN KEY (" + RawContract.Raws.COLUMN_NAME_USER_ID + ") REFERENCES " + UsersContract.Users.TABLE_NAME + "(" + UsersContract.Users._ID + "));";
 
-        new FeaturesContract.Features();
+        // TODO: CREATE FEATURES COLUMNS
+        // new FeaturesContract.Features();
 
         String createFeaturesTable = "CREATE TABLE " + FeaturesContract.Features.TABLE_NAME + " (" +
                 FeaturesContract.Features._ID + "  INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
                 FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_START + " DATETIME NOT NULL, " +
                 FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_STOP + " DATETIME NOT NULL, " +
-                FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + " INTEGER NOT NULL, " +
-                FeaturesContract.Features.COLUMN_NAME_USER_ID + " INTEGER NOT NULL, ";
+                FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + " INTEGER NOT NULL, ";
 
-        for (int i = 0; i <= FeaturesContract.Features.FEATURES_NUMBER - 1; i++) {
-            createFeaturesTable += FeaturesContract.Features.COLUMN_NAME_FEATURES.get(i) + " DOUBLE NOT NULL, ";
-        }
+        // TODO: CREATE FEATURES COLUMNS
+        // for (int i = 0; i <= FeaturesContract.Features.FEATURES_NUMBER - 1; i++) {
+        //     createFeaturesTable += FeaturesContract.Features.COLUMN_NAME_FEATURES.get(i) + " DOUBLE NOT NULL, ";
+        // }
 
-        createFeaturesTable += "FOREIGN KEY (" + FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "), " +
-                "FOREIGN KEY (" + FeaturesContract.Features.COLUMN_NAME_USER_ID + ") REFERENCES " + UsersContract.Users.TABLE_NAME + "(" + UsersContract.Users._ID + "));";
+        createFeaturesTable += "FOREIGN KEY (" + FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "));";
 
         new WeightsContract.Weights();
 
