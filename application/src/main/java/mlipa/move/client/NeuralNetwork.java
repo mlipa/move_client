@@ -52,11 +52,11 @@ public class NeuralNetwork {
         }
     }
 
-    public void trainNetwork(double[] input, double[] target) {
+    public void trainNetwork(ArrayList<Double> input, ArrayList<Double> target) {
         int inputLayer = 0;
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
-            layers.get(inputLayer).get(i).output = input[i] / 1000;
+            layers.get(inputLayer).get(i).output = input.get(i) / 1000;
         }
 
         for (int i = 1; i < layers.size(); i++) {
@@ -68,7 +68,7 @@ public class NeuralNetwork {
         int outputLayer = layers.size() - 1;
 
         for (int i = 0; i < layers.get(outputLayer).size(); i++) {
-            layers.get(outputLayer).get(i).updateDelta(layers.get(outputLayer).get(i).output - target[i]);
+            layers.get(outputLayer).get(i).updateDelta(layers.get(outputLayer).get(i).output - target.get(i));
         }
 
         for (int i = layers.size() - 2; i > inputLayer; i--) {
@@ -90,14 +90,14 @@ public class NeuralNetwork {
         }
     }
 
-    public double[] runNetwork(double[] input) {
+    public ArrayList<Double> runNetwork(ArrayList<Double> input) {
         int inputLayer = 0;
         int outputLayer = layers.size() - 1;
 
-        double[] output = new double[layers.get(outputLayer).size()];
+        ArrayList<Double> output = new ArrayList<>(layers.get(outputLayer).size());
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
-            layers.get(inputLayer).get(i).output = input[i] / 1000;
+            layers.get(inputLayer).get(i).output = input.get(i) / 1000;
         }
 
         for (int i = 1; i < layers.size(); i++) {
@@ -107,7 +107,7 @@ public class NeuralNetwork {
         }
 
         for (int i = 0; i < layers.get(outputLayer).size(); i++) {
-            output[i] = layers.get(outputLayer).get(i).output;
+            output.add(layers.get(outputLayer).get(i).output);
         }
 
         return output;

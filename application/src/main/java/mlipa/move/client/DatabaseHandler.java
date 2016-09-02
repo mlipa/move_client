@@ -40,21 +40,21 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "FOREIGN KEY (" + RawContract.Raws.COLUMN_NAME_ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "), " +
                 "FOREIGN KEY (" + RawContract.Raws.COLUMN_NAME_USER_ID + ") REFERENCES " + UsersContract.Users.TABLE_NAME + "(" + UsersContract.Users._ID + "));";
 
-        new QualitiesContract.Qualities();
+        new FeaturesContract.Features();
 
-        String createQualitiesTable = "CREATE TABLE " + QualitiesContract.Qualities.TABLE_NAME + " (" +
-                QualitiesContract.Qualities._ID + "  INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
-                QualitiesContract.Qualities.COLUMN_NAME_TIMESTAMP_START + " DATETIME NOT NULL, " +
-                QualitiesContract.Qualities.COLUMN_NAME_TIMESTAMP_STOP + " DATETIME NOT NULL, " +
-                QualitiesContract.Qualities.COLUMN_NAME_ACTIVITY_ID + " INTEGER NOT NULL, " +
-                QualitiesContract.Qualities.COLUMN_NAME_USER_ID + " INTEGER NOT NULL, ";
+        String createFeaturesTable = "CREATE TABLE " + FeaturesContract.Features.TABLE_NAME + " (" +
+                FeaturesContract.Features._ID + "  INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_START + " DATETIME NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_STOP + " DATETIME NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + " INTEGER NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_USER_ID + " INTEGER NOT NULL, ";
 
-        for (int i = 0; i <= QualitiesContract.Qualities.QUALITIES_NUMBER - 1; i++) {
-            createQualitiesTable += QualitiesContract.Qualities.COLUMN_NAME_QUALITIES[i] + " DOUBLE NOT NULL, ";
+        for (int i = 0; i <= FeaturesContract.Features.FEATURES_NUMBER - 1; i++) {
+            createFeaturesTable += FeaturesContract.Features.COLUMN_NAME_FEATURES.get(i) + " DOUBLE NOT NULL, ";
         }
 
-        createQualitiesTable += "FOREIGN KEY (" + QualitiesContract.Qualities.COLUMN_NAME_ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "), " +
-                "FOREIGN KEY (" + QualitiesContract.Qualities.COLUMN_NAME_USER_ID + ") REFERENCES " + UsersContract.Users.TABLE_NAME + "(" + UsersContract.Users._ID + "));";
+        createFeaturesTable += "FOREIGN KEY (" + FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "), " +
+                "FOREIGN KEY (" + FeaturesContract.Features.COLUMN_NAME_USER_ID + ") REFERENCES " + UsersContract.Users.TABLE_NAME + "(" + UsersContract.Users._ID + "));";
 
         new WeightsContract.Weights();
 
@@ -63,7 +63,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 WeightsContract.Weights.COLUMN_NAME_CLASSIFIER_ID + " INTEGER NOT NULL, ";
 
         for (int i = 0; i <= WeightsContract.Weights.WEIGHTS_NUMBER - 1; i++) {
-            createWeightsTable += WeightsContract.Weights.COLUMN_NAME_WEIGHT[i] + " DOUBLE NOT NULL, ";
+            createWeightsTable += WeightsContract.Weights.COLUMN_NAME_WEIGHT.get(i) + " DOUBLE NOT NULL, ";
         }
 
         createWeightsTable += "FOREIGN KEY (" + WeightsContract.Weights.COLUMN_NAME_CLASSIFIER_ID + ") REFERENCES " + ClassifiersContract.Classifiers.TABLE_NAME + "(" + ClassifiersContract.Classifiers._ID + "));";
@@ -82,7 +82,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         database.execSQL(createClassifiersTable);
         database.execSQL(createUsersTable);
         database.execSQL(createRawsTable);
-        database.execSQL(createQualitiesTable);
+        database.execSQL(createFeaturesTable);
         database.execSQL(createWeightsTable);
         database.execSQL(createPredictionsTable);
 
@@ -111,13 +111,13 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             String dropClassifiersTable = "DROP TABLE IF EXISTS " + ClassifiersContract.Classifiers.TABLE_NAME + ";";
             String dropUsersTable = "DROP TABLE IF EXISTS " + UsersContract.Users.TABLE_NAME + ";";
             String dropRawsTable = "DROP TABLE IF EXISTS " + RawContract.Raws.TABLE_NAME + ";";
-            String dropQualitiesTable = "DROP TABLE IF EXISTS " + QualitiesContract.Qualities.TABLE_NAME + ";";
+            String dropFeaturesTable = "DROP TABLE IF EXISTS " + FeaturesContract.Features.TABLE_NAME + ";";
             String dropWeightsTable = "DROP TABLE IF EXISTS " + WeightsContract.Weights.TABLE_NAME + ";";
             String dropPredictionsTable = "DROP TABLE IF EXISTS " + PredictionsContract.Predictions.TABLE_NAME + ";";
 
             database.execSQL(dropPredictionsTable);
             database.execSQL(dropWeightsTable);
-            database.execSQL(dropQualitiesTable);
+            database.execSQL(dropFeaturesTable);
             database.execSQL(dropRawsTable);
             database.execSQL(dropUsersTable);
             database.execSQL(dropClassifiersTable);

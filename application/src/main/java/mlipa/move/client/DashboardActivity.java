@@ -32,6 +32,8 @@ import com.android.volley.toolbox.Volley;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
+
 public class DashboardActivity extends AppCompatActivity implements SensorEventListener {
     private static final String TAG = DashboardActivity.class.toString();
 
@@ -287,23 +289,23 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     public void onSensorChanged(SensorEvent event) {
         final double alpha = 0.8;
 
-        double[] gravity = new double[3];
-        double[] linearAcceleration = new double[3];
+        ArrayList<Double> gravity = new ArrayList<>(3);
+        ArrayList<Double> acceleration = new ArrayList<>(3);
 
-        gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-        gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-        gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+        for (int i = 0; i < 3; i++) {
+            gravity.add(0.0);
+            acceleration.add(0.0);
 
-        linearAcceleration[0] = event.values[0] - gravity[0];
-        linearAcceleration[1] = event.values[1] - gravity[1];
-        linearAcceleration[2] = event.values[2] - gravity[2];
+            gravity.set(i, alpha * gravity.get(i) + (1 - alpha) * event.values[i]);
+            acceleration.set(i, event.values[i] - gravity.get(i));
+        }
 
         tvXAccelerometer.setText("");
         tvYAccelerometer.setText("");
         tvZAccelerometer.setText("");
 
-        tvXAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[0]) + " ");
-        tvYAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[1]) + " ");
-        tvZAccelerometer.setText(" " + String.format("%.8f", linearAcceleration[2]) + " ");
+        tvXAccelerometer.setText(" " + String.format("%.8f", acceleration.get(0)) + " ");
+        tvYAccelerometer.setText(" " + String.format("%.8f", acceleration.get(1)) + " ");
+        tvZAccelerometer.setText(" " + String.format("%.8f", acceleration.get(2)) + " ");
     }
 }

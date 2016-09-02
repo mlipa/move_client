@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 
 public class AddActivity extends AppCompatActivity implements SensorEventListener {
@@ -254,16 +255,16 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
     public void onSensorChanged(SensorEvent event) {
         final double alpha = 0.8;
 
-        double[] gravity = new double[3];
-        double[] linearAcceleration = new double[3];
+        ArrayList<Double> gravity = new ArrayList<>(3);
+        ArrayList<Double> acceleration = new ArrayList<>(3);
 
-        gravity[0] = alpha * gravity[0] + (1 - alpha) * event.values[0];
-        gravity[1] = alpha * gravity[1] + (1 - alpha) * event.values[1];
-        gravity[2] = alpha * gravity[2] + (1 - alpha) * event.values[2];
+        for (int i = 0; i < 3; i++) {
+            gravity.add(0.0);
+            acceleration.add(0.0);
 
-        linearAcceleration[0] = event.values[0] - gravity[0];
-        linearAcceleration[1] = event.values[1] - gravity[1];
-        linearAcceleration[2] = event.values[2] - gravity[2];
+            gravity.set(i, alpha * gravity.get(i) + (1 - alpha) * event.values[i]);
+            acceleration.set(i, event.values[i] - gravity.get(i));
+        }
 
         ContentValues values = new ContentValues();
         Date date = new Date();
@@ -271,9 +272,9 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         values.put(RawContract.Raws.COLUMN_NAME_TIMESTAMP, dateFormat.format(date));
         values.put(RawContract.Raws.COLUMN_NAME_ACTIVITY_ID, activityId);
         values.put(RawContract.Raws.COLUMN_NAME_USER_ID, userId);
-        values.put(RawContract.Raws.COLUMN_NAME_X, linearAcceleration[0]);
-        values.put(RawContract.Raws.COLUMN_NAME_Y, linearAcceleration[1]);
-        values.put(RawContract.Raws.COLUMN_NAME_Z, linearAcceleration[2]);
+        values.put(RawContract.Raws.COLUMN_NAME_X, acceleration.get(0));
+        values.put(RawContract.Raws.COLUMN_NAME_Y, acceleration.get(1));
+        values.put(RawContract.Raws.COLUMN_NAME_Z, acceleration.get(2));
 
         database.insert(RawContract.Raws.TABLE_NAME, null, values);
 
