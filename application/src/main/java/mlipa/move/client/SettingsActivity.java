@@ -1,6 +1,7 @@
 package mlipa.move.client;
 
 import android.app.ProgressDialog;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -43,6 +44,7 @@ public class SettingsActivity extends AppCompatActivity {
     private ArrayList<Date> timestampStopArray;
     private ArrayList<ArrayList<Integer>> activitiesIdArray;
     private Integer activitiesIdArrayCounter;
+    private ArrayList<Integer> activitiesId;
 
     private SettingsFragment settingsFragment;
     private Bundle args;
@@ -69,6 +71,7 @@ public class SettingsActivity extends AppCompatActivity {
         timestampStopArray = new ArrayList<>();
         activitiesIdArray = new ArrayList<>();
         activitiesIdArrayCounter = 0;
+        activitiesId = new ArrayList<>();
 
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -100,6 +103,10 @@ public class SettingsActivity extends AppCompatActivity {
                     @Override
                     public void run() {
                         try {
+                            String deleteFeaturesRows = "DELETE FROM " + FeaturesContract.Features.TABLE_NAME + ";";
+
+                            database.execSQL(deleteFeaturesRows);
+
                             timestampStartArray.clear();
                             timestampStopArray.clear();
                             activitiesIdArray.clear();
@@ -124,6 +131,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                             timestampStartArray.add(timestampStart);
                             timestampStopArray.add(timestampStop);
+                            activitiesIdArrayCounter = 0;
                             activitiesIdArray.add(new ArrayList<Integer>());
                             activitiesIdArray.get(activitiesIdArrayCounter).add(taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.COLUMN_NAME_ACTIVITY_ID)));
 
@@ -131,7 +139,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                             for (int i = 1; i < taCursor.getCount(); i++) {
                                 Date timestamp = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.COLUMN_NAME_TIMESTAMP)));
-                                Integer activity = taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.COLUMN_NAME_ACTIVITY_ID));
+                                Integer activityId = taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.COLUMN_NAME_ACTIVITY_ID));
 
                                 if (timestamp.compareTo(timestampStop) == 1) {
                                     timestampStart = timestamp;
@@ -144,11 +152,11 @@ public class SettingsActivity extends AppCompatActivity {
 
                                     activitiesIdArray.add(new ArrayList<Integer>());
                                     activitiesIdArrayCounter++;
-                                    activitiesIdArray.get(activitiesIdArrayCounter).add(activity);
+                                    activitiesIdArray.get(activitiesIdArrayCounter).add(activityId);
                                 }
 
-                                if (!activitiesIdArray.get(activitiesIdArrayCounter).contains(activity)) {
-                                    activitiesIdArray.get(activitiesIdArrayCounter).add(activity);
+                                if (!activitiesIdArray.get(activitiesIdArrayCounter).contains(activityId)) {
+                                    activitiesIdArray.get(activitiesIdArrayCounter).add(activityId);
                                 }
 
                                 taCursor.moveToNext();
@@ -159,7 +167,63 @@ public class SettingsActivity extends AppCompatActivity {
 
                         Log.v(TAG, String.valueOf(timestampStartArray.size()) + " time frame(s) created successfully!");
 
-                        // TODO: CALCULATE FEATURES AND ADD TO DATABASE
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.setMessage(getString(R.string.calculate_features_message));
+                            }
+                        });
+
+                        String[] xyzProjection = {
+                                RawContract.Raws.COLUMN_NAME_X,
+                                RawContract.Raws.COLUMN_NAME_Y,
+                                RawContract.Raws.COLUMN_NAME_Z
+                        };
+                        String xyzSelection = RawContract.Raws.COLUMN_NAME_TIMESTAMP + " >= ? AND " + RawContract.Raws.COLUMN_NAME_TIMESTAMP + " <= ? AND " + RawContract.Raws.COLUMN_NAME_ACTIVITY_ID + " = ?";
+
+                        while (timestampStartArray.size() > 0) {
+                            timestampStart = timestampStartArray.get(0);
+                            timestampStartArray.remove(0);
+
+                            timestampStop = timestampStopArray.get(0);
+                            timestampStopArray.remove(0);
+
+                            activitiesId = activitiesIdArray.get(0);
+                            activitiesIdArray.remove(0);
+
+                            while (activitiesId.size() > 0) {
+                                Integer activityId = activitiesId.get(0);
+                                activitiesId.remove(0);
+
+                                String[] xyzSelectionArgs = {
+                                        dateFormat.format(timestampStart),
+                                        dateFormat.format(timestampStop),
+                                        String.valueOf(activityId)
+                                };
+
+                                Cursor xyzCursor = database.query(
+                                        RawContract.Raws.TABLE_NAME,
+                                        xyzProjection,
+                                        xyzSelection,
+                                        xyzSelectionArgs,
+                                        null, null, null
+                                );
+
+                                // TODO: CALCULATE FEATURES
+
+                                ContentValues values = new ContentValues();
+
+                                values.put(FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_START, dateFormat.format(timestampStart));
+                                values.put(FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_STOP, dateFormat.format(timestampStop));
+                                values.put(FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID, String.valueOf(activityId));
+
+                                // TODO: ADD FEATURES TO DATABASE
+
+                                database.insert(FeaturesContract.Features.TABLE_NAME, null, values);
+                            }
+                        }
+
+                        // TODO: CALCULATE WEIGHTS AND ADD TO DATABASE
 
                         dialog.dismiss();
                     }
