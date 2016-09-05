@@ -89,7 +89,7 @@ public class LogInActivity extends AppCompatActivity {
 
                                     String[] iuProjection = {
                                             UsersContract.Users._ID,
-                                            UsersContract.Users.COLUMN_NAME_USERNAME
+                                            UsersContract.Users.USERNAME
                                     };
                                     String iuSelection = UsersContract.Users._ID + " = ?";
                                     String[] iuSelectionArgs = {jsonResponse.getString(SERVER_USER_ID_KEY)};
@@ -106,7 +106,7 @@ public class LogInActivity extends AppCompatActivity {
                                         ContentValues values = new ContentValues();
 
                                         values.put(UsersContract.Users._ID, jsonResponse.getString(SERVER_USER_ID_KEY));
-                                        values.put(UsersContract.Users.COLUMN_NAME_USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
+                                        values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
 
                                         Long id = database.insert(UsersContract.Users.TABLE_NAME, null, values);
 
@@ -114,10 +114,10 @@ public class LogInActivity extends AppCompatActivity {
                                     } else if (iuCursor.getCount() == 1) {
                                         iuCursor.moveToFirst();
 
-                                        if (!iuCursor.getString(iuCursor.getColumnIndex(UsersContract.Users.COLUMN_NAME_USERNAME)).equals(jsonResponse.getString(SERVER_USER_USERNAME_KEY))) {
+                                        if (!iuCursor.getString(iuCursor.getColumnIndex(UsersContract.Users.USERNAME)).equals(jsonResponse.getString(SERVER_USER_USERNAME_KEY))) {
                                             ContentValues values = new ContentValues();
 
-                                            values.put(UsersContract.Users.COLUMN_NAME_USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
+                                            values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
 
                                             Integer count = database.update(
                                                     UsersContract.Users.TABLE_NAME,

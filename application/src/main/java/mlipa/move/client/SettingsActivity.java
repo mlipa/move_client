@@ -114,8 +114,8 @@ public class SettingsActivity extends AppCompatActivity {
                             activitiesIdArray.clear();
 
                             String[] taProjection = {
-                                    RawContract.Raws.COLUMN_NAME_TIMESTAMP,
-                                    RawContract.Raws.COLUMN_NAME_ACTIVITY_ID
+                                    RawContract.Raws.TIMESTAMP,
+                                    RawContract.Raws.ACTIVITY_ID
                             };
 
                             Cursor taCursor = database.query(
@@ -126,7 +126,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                             taCursor.moveToFirst();
 
-                            timestampStart = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.COLUMN_NAME_TIMESTAMP)));
+                            timestampStart = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.TIMESTAMP)));
                             calendar.setTime(timestampStart);
                             calendar.add(Calendar.MILLISECOND, TIME_WINDOW);
                             timestampStop = calendar.getTime();
@@ -135,13 +135,13 @@ public class SettingsActivity extends AppCompatActivity {
                             timestampStopArray.add(timestampStop);
                             activitiesIdArrayCounter = 0;
                             activitiesIdArray.add(new ArrayList<Integer>());
-                            activitiesIdArray.get(activitiesIdArrayCounter).add(taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.COLUMN_NAME_ACTIVITY_ID)));
+                            activitiesIdArray.get(activitiesIdArrayCounter).add(taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.ACTIVITY_ID)));
 
                             taCursor.moveToNext();
 
                             for (int i = 1; i < taCursor.getCount(); i++) {
-                                Date timestamp = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.COLUMN_NAME_TIMESTAMP)));
-                                Integer activityId = taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.COLUMN_NAME_ACTIVITY_ID));
+                                Date timestamp = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.TIMESTAMP)));
+                                Integer activityId = taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.ACTIVITY_ID));
 
                                 if (timestamp.compareTo(timestampStop) == 1) {
                                     timestampStart = timestamp;
@@ -177,14 +177,14 @@ public class SettingsActivity extends AppCompatActivity {
                         });
 
                         String[] xyzProjection = {
-                                RawContract.Raws.COLUMN_GRAVITY_X,
-                                RawContract.Raws.COLUMN_GRAVITY_Y,
-                                RawContract.Raws.COLUMN_GRAVITY_Z,
-                                RawContract.Raws.COLUMN_ACCELERATION_X,
-                                RawContract.Raws.COLUMN_ACCELERATION_Y,
-                                RawContract.Raws.COLUMN_ACCELERATION_Z
+                                RawContract.Raws.GRAVITY_X,
+                                RawContract.Raws.GRAVITY_Y,
+                                RawContract.Raws.GRAVITY_Z,
+                                RawContract.Raws.ACCELERATION_X,
+                                RawContract.Raws.ACCELERATION_Y,
+                                RawContract.Raws.ACCELERATION_Z
                         };
-                        String xyzSelection = RawContract.Raws.COLUMN_NAME_TIMESTAMP + " >= ? AND " + RawContract.Raws.COLUMN_NAME_TIMESTAMP + " <= ? AND " + RawContract.Raws.COLUMN_NAME_ACTIVITY_ID + " = ?";
+                        String xyzSelection = RawContract.Raws.TIMESTAMP + " >= ? AND " + RawContract.Raws.TIMESTAMP + " <= ? AND " + RawContract.Raws.ACTIVITY_ID + " = ?";
 
                         while (timestampStartArray.size() > 0) {
                             timestampStart = timestampStartArray.get(0);
@@ -238,12 +238,12 @@ public class SettingsActivity extends AppCompatActivity {
                                 }
 
                                 for (int i = 0; i < count; i++) {
-                                    Double gravityX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_GRAVITY_X));
-                                    Double gravityY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_GRAVITY_Y));
-                                    Double gravityZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_GRAVITY_Z));
-                                    Double accelerationX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_ACCELERATION_X));
-                                    Double accelerationY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_ACCELERATION_Y));
-                                    Double accelerationZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_ACCELERATION_Z));
+                                    Double gravityX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_X));
+                                    Double gravityY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_Y));
+                                    Double gravityZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_Z));
+                                    Double accelerationX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_X));
+                                    Double accelerationY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_Y));
+                                    Double accelerationZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_Z));
 
                                     if (gravityX < min.get(0)) {
                                         min.set(0, gravityX);
@@ -368,12 +368,12 @@ public class SettingsActivity extends AppCompatActivity {
                                 }
 
                                 for (int i = 0; i < count; i++) {
-                                    Double gravityX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_GRAVITY_X));
-                                    Double gravityY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_GRAVITY_Y));
-                                    Double gravityZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_GRAVITY_Z));
-                                    Double accelerationX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_ACCELERATION_X));
-                                    Double accelerationY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_ACCELERATION_Y));
-                                    Double accelerationZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.COLUMN_ACCELERATION_Z));
+                                    Double gravityX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_X));
+                                    Double gravityY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_Y));
+                                    Double gravityZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_Z));
+                                    Double accelerationX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_X));
+                                    Double accelerationY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_Y));
+                                    Double accelerationZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_Z));
 
                                     ArrayList<Double> deviation = new ArrayList<>(6);
 
@@ -443,45 +443,45 @@ public class SettingsActivity extends AppCompatActivity {
 
                                 ContentValues values = new ContentValues();
 
-                                values.put(FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_START, dateFormat.format(timestampStart));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_STOP, dateFormat.format(timestampStop));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID, String.valueOf(activityId));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_MIN, min.get(0));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_MIN, min.get(1));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_MIN, min.get(2));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_MIN, min.get(3));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_MIN, min.get(4));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_MIN, min.get(5));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_MAX, max.get(0));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_MAX, max.get(1));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_MAX, max.get(2));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_MAX, max.get(3));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_MAX, max.get(4));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_MAX, max.get(5));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_MEAN, mean.get(0));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_MEAN, mean.get(1));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_MEAN, mean.get(2));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_MEAN, mean.get(3));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_MEAN, mean.get(4));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_MEAN, mean.get(5));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_STANDARD_DEVIATION, standardDeviation.get(0));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_STANDARD_DEVIATION, standardDeviation.get(1));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_STANDARD_DEVIATION, standardDeviation.get(2));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_STANDARD_DEVIATION, standardDeviation.get(3));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_STANDARD_DEVIATION, standardDeviation.get(4));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_STANDARD_DEVIATION, standardDeviation.get(5));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_ABSOLUTE_MEDIAN, absoluteMedianGravityX);
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_ABSOLUTE_MEDIAN, absoluteMedianGravityY);
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_ABSOLUTE_MEDIAN, absoluteMedianGravityZ);
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_ABSOLUTE_MEDIAN, absoluteMedianAccelerationX);
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_ABSOLUTE_MEDIAN, absoluteMedianAccelerationY);
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_ABSOLUTE_MEDIAN, absoluteMedianAccelerationZ);
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_ENERGY, energy.get(0));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_ENERGY, energy.get(1));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_ENERGY, energy.get(2));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_ENERGY, energy.get(3));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_ENERGY, energy.get(4));
-                                values.put(FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_ENERGY, energy.get(5));
+                                values.put(FeaturesContract.Features.TIMESTAMP_START, dateFormat.format(timestampStart));
+                                values.put(FeaturesContract.Features.TIMESTAMP_STOP, dateFormat.format(timestampStop));
+                                values.put(FeaturesContract.Features.ACTIVITY_ID, String.valueOf(activityId));
+                                values.put(FeaturesContract.Features.GRAVITY_X_MIN, min.get(0));
+                                values.put(FeaturesContract.Features.GRAVITY_Y_MIN, min.get(1));
+                                values.put(FeaturesContract.Features.GRAVITY_Z_MIN, min.get(2));
+                                values.put(FeaturesContract.Features.ACCELERATION_X_MIN, min.get(3));
+                                values.put(FeaturesContract.Features.ACCELERATION_Y_MIN, min.get(4));
+                                values.put(FeaturesContract.Features.ACCELERATION_Z_MIN, min.get(5));
+                                values.put(FeaturesContract.Features.GRAVITY_X_MAX, max.get(0));
+                                values.put(FeaturesContract.Features.GRAVITY_Y_MAX, max.get(1));
+                                values.put(FeaturesContract.Features.GRAVITY_Z_MAX, max.get(2));
+                                values.put(FeaturesContract.Features.ACCELERATION_X_MAX, max.get(3));
+                                values.put(FeaturesContract.Features.ACCELERATION_Y_MAX, max.get(4));
+                                values.put(FeaturesContract.Features.ACCELERATION_Z_MAX, max.get(5));
+                                values.put(FeaturesContract.Features.GRAVITY_X_MEAN, mean.get(0));
+                                values.put(FeaturesContract.Features.GRAVITY_Y_MEAN, mean.get(1));
+                                values.put(FeaturesContract.Features.GRAVITY_Z_MEAN, mean.get(2));
+                                values.put(FeaturesContract.Features.ACCELERATION_X_MEAN, mean.get(3));
+                                values.put(FeaturesContract.Features.ACCELERATION_Y_MEAN, mean.get(4));
+                                values.put(FeaturesContract.Features.ACCELERATION_Z_MEAN, mean.get(5));
+                                values.put(FeaturesContract.Features.GRAVITY_X_STANDARD_DEVIATION, standardDeviation.get(0));
+                                values.put(FeaturesContract.Features.GRAVITY_Y_STANDARD_DEVIATION, standardDeviation.get(1));
+                                values.put(FeaturesContract.Features.GRAVITY_Z_STANDARD_DEVIATION, standardDeviation.get(2));
+                                values.put(FeaturesContract.Features.ACCELERATION_X_STANDARD_DEVIATION, standardDeviation.get(3));
+                                values.put(FeaturesContract.Features.ACCELERATION_Y_STANDARD_DEVIATION, standardDeviation.get(4));
+                                values.put(FeaturesContract.Features.ACCELERATION_Z_STANDARD_DEVIATION, standardDeviation.get(5));
+                                values.put(FeaturesContract.Features.GRAVITY_X_ABSOLUTE_MEDIAN, absoluteMedianGravityX);
+                                values.put(FeaturesContract.Features.GRAVITY_Y_ABSOLUTE_MEDIAN, absoluteMedianGravityY);
+                                values.put(FeaturesContract.Features.GRAVITY_Z_ABSOLUTE_MEDIAN, absoluteMedianGravityZ);
+                                values.put(FeaturesContract.Features.ACCELERATION_X_ABSOLUTE_MEDIAN, absoluteMedianAccelerationX);
+                                values.put(FeaturesContract.Features.ACCELERATION_Y_ABSOLUTE_MEDIAN, absoluteMedianAccelerationY);
+                                values.put(FeaturesContract.Features.ACCELERATION_Z_ABSOLUTE_MEDIAN, absoluteMedianAccelerationZ);
+                                values.put(FeaturesContract.Features.GRAVITY_X_ENERGY, energy.get(0));
+                                values.put(FeaturesContract.Features.GRAVITY_Y_ENERGY, energy.get(1));
+                                values.put(FeaturesContract.Features.GRAVITY_Z_ENERGY, energy.get(2));
+                                values.put(FeaturesContract.Features.ACCELERATION_X_ENERGY, energy.get(3));
+                                values.put(FeaturesContract.Features.ACCELERATION_Y_ENERGY, energy.get(4));
+                                values.put(FeaturesContract.Features.ACCELERATION_Z_ENERGY, energy.get(5));
 
                                 database.insert(FeaturesContract.Features.TABLE_NAME, null, values);
                             }

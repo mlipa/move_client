@@ -268,15 +268,15 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
 
         ContentValues values = new ContentValues();
 
-        values.put(RawContract.Raws.COLUMN_NAME_TIMESTAMP, dateFormat.format(new Date()));
-        values.put(RawContract.Raws.COLUMN_NAME_ACTIVITY_ID, activityId);
-        values.put(RawContract.Raws.COLUMN_NAME_USER_ID, userId);
-        values.put(RawContract.Raws.COLUMN_GRAVITY_X, gravity.get(0));
-        values.put(RawContract.Raws.COLUMN_GRAVITY_Y, gravity.get(1));
-        values.put(RawContract.Raws.COLUMN_GRAVITY_Z, gravity.get(2));
-        values.put(RawContract.Raws.COLUMN_ACCELERATION_X, acceleration.get(0));
-        values.put(RawContract.Raws.COLUMN_ACCELERATION_Y, acceleration.get(1));
-        values.put(RawContract.Raws.COLUMN_ACCELERATION_Z, acceleration.get(2));
+        values.put(RawContract.Raws.TIMESTAMP, dateFormat.format(new Date()));
+        values.put(RawContract.Raws.ACTIVITY_ID, activityId);
+        values.put(RawContract.Raws.USER_ID, userId);
+        values.put(RawContract.Raws.GRAVITY_X, gravity.get(0));
+        values.put(RawContract.Raws.GRAVITY_Y, gravity.get(1));
+        values.put(RawContract.Raws.GRAVITY_Z, gravity.get(2));
+        values.put(RawContract.Raws.ACCELERATION_X, acceleration.get(0));
+        values.put(RawContract.Raws.ACCELERATION_Y, acceleration.get(1));
+        values.put(RawContract.Raws.ACCELERATION_Z, acceleration.get(2));
 
         database.insert(RawContract.Raws.TABLE_NAME, null, values);
 
