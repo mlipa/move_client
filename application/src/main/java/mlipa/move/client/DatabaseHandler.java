@@ -87,15 +87,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
 
         createFeaturesTable += "FOREIGN KEY (" + FeaturesContract.Features.ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "));";
 
-        String createWeightsTable = "CREATE TABLE " + WeightsContract.Weights.TABLE_NAME + " (" +
-                WeightsContract.Weights._ID + "  INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
-                WeightsContract.Weights.CLASSIFIER_ID + " INTEGER NOT NULL, " +
-                WeightsContract.Weights.NEURON_CONNECTION_ID + " VARCHAR(16) NOT NULL, " +
-                WeightsContract.Weights.SOURCE_NEURON_ID + " VARCHAR(16) NOT NULL, " +
-                WeightsContract.Weights.DESTINATION_NEURON_ID + " VARCHAR(16) NOT NULL, " +
-                WeightsContract.Weights.WEIGHT + " DOUBLE NOT NULL, ";
-
-        createWeightsTable += "FOREIGN KEY (" + WeightsContract.Weights.CLASSIFIER_ID + ") REFERENCES " + ClassifiersContract.Classifiers.TABLE_NAME + "(" + ClassifiersContract.Classifiers._ID + "));";
+        String createNeuronConnectionsTable = "CREATE TABLE " + NeuronConnectionsContract.NeuronConnections.TABLE_NAME + " (" +
+                NeuronConnectionsContract.NeuronConnections._ID + "  INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
+                NeuronConnectionsContract.NeuronConnections.NEURON_CONNECTION_ID + " VARCHAR(16) NOT NULL, " +
+                NeuronConnectionsContract.NeuronConnections.SOURCE_NEURON_ID + " VARCHAR(16) NOT NULL, " +
+                NeuronConnectionsContract.NeuronConnections.DESTINATION_NEURON_ID + " VARCHAR(16) NOT NULL, " +
+                NeuronConnectionsContract.NeuronConnections.WEIGHT + " DOUBLE NOT NULL);";
 
         String createPredictionsTable = "CREATE TABLE " + PredictionsContract.Predictions.TABLE_NAME + " (" +
                 PredictionsContract.Predictions._ID + "  INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
@@ -112,7 +109,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         database.execSQL(createUsersTable);
         database.execSQL(createRawsTable);
         database.execSQL(createFeaturesTable);
-        database.execSQL(createWeightsTable);
+        database.execSQL(createNeuronConnectionsTable);
         database.execSQL(createPredictionsTable);
 
         String insertActivities = "INSERT INTO " + ActivitiesContract.Activities.TABLE_NAME + " (" +
@@ -141,11 +138,11 @@ public class DatabaseHandler extends SQLiteOpenHelper {
             String dropUsersTable = "DROP TABLE IF EXISTS " + UsersContract.Users.TABLE_NAME + ";";
             String dropRawsTable = "DROP TABLE IF EXISTS " + RawContract.Raws.TABLE_NAME + ";";
             String dropFeaturesTable = "DROP TABLE IF EXISTS " + FeaturesContract.Features.TABLE_NAME + ";";
-            String dropWeightsTable = "DROP TABLE IF EXISTS " + WeightsContract.Weights.TABLE_NAME + ";";
+            String dropNeuronConnectionsTable = "DROP TABLE IF EXISTS " + NeuronConnectionsContract.NeuronConnections.TABLE_NAME + ";";
             String dropPredictionsTable = "DROP TABLE IF EXISTS " + PredictionsContract.Predictions.TABLE_NAME + ";";
 
             database.execSQL(dropPredictionsTable);
-            database.execSQL(dropWeightsTable);
+            database.execSQL(dropNeuronConnectionsTable);
             database.execSQL(dropFeaturesTable);
             database.execSQL(dropRawsTable);
             database.execSQL(dropUsersTable);
