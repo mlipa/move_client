@@ -57,4 +57,5 @@
     <string name="time_windows_message">Creating time windows to calculate features&#8230;</string>
     <string name="calculate_features_message">Calculating features to learn&#8230;</string>
     <string name="learning_message">Learning to give you better results&#8230;</string>
+    <string name="learning_toast">Done! Learning completed successfully!</string>
 </resources>

@@ -34,25 +34,56 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 RawContract.Raws.COLUMN_NAME_TIMESTAMP + " DATETIME NOT NULL, " +
                 RawContract.Raws.COLUMN_NAME_ACTIVITY_ID + " INTEGER NOT NULL, " +
                 RawContract.Raws.COLUMN_NAME_USER_ID + " INTEGER NOT NULL, " +
-                RawContract.Raws.COLUMN_NAME_X + " DOUBLE NOT NULL, " +
-                RawContract.Raws.COLUMN_NAME_Y + " DOUBLE NOT NULL, " +
-                RawContract.Raws.COLUMN_NAME_Z + " DOUBLE NOT NULL, " +
+                RawContract.Raws.COLUMN_GRAVITY_X + " DOUBLE NOT NULL, " +
+                RawContract.Raws.COLUMN_GRAVITY_Y + " DOUBLE NOT NULL, " +
+                RawContract.Raws.COLUMN_GRAVITY_Z + " DOUBLE NOT NULL, " +
+                RawContract.Raws.COLUMN_ACCELERATION_X + " DOUBLE NOT NULL, " +
+                RawContract.Raws.COLUMN_ACCELERATION_Y + " DOUBLE NOT NULL, " +
+                RawContract.Raws.COLUMN_ACCELERATION_Z + " DOUBLE NOT NULL, " +
                 "FOREIGN KEY (" + RawContract.Raws.COLUMN_NAME_ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "), " +
                 "FOREIGN KEY (" + RawContract.Raws.COLUMN_NAME_USER_ID + ") REFERENCES " + UsersContract.Users.TABLE_NAME + "(" + UsersContract.Users._ID + "));";
-
-        // TODO: CREATE FEATURES COLUMNS
-        // new FeaturesContract.Features();
 
         String createFeaturesTable = "CREATE TABLE " + FeaturesContract.Features.TABLE_NAME + " (" +
                 FeaturesContract.Features._ID + "  INTEGER PRIMARY KEY UNIQUE NOT NULL, " +
                 FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_START + " DATETIME NOT NULL, " +
                 FeaturesContract.Features.COLUMN_NAME_TIMESTAMP_STOP + " DATETIME NOT NULL, " +
-                FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + " INTEGER NOT NULL, ";
-
-        // TODO: CREATE FEATURES COLUMNS
-        // for (int i = 0; i <= FeaturesContract.Features.FEATURES_NUMBER - 1; i++) {
-        //     createFeaturesTable += FeaturesContract.Features.COLUMN_NAME_FEATURES.get(i) + " DOUBLE NOT NULL, ";
-        // }
+                FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + " INTEGER NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_MIN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_MIN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_MIN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_MIN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_MIN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_MIN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_MAX + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_MAX + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_MAX + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_MAX + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_MAX + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_MAX + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_MEAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_MEAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_MEAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_MEAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_MEAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_MEAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_STANDARD_DEVIATION + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_STANDARD_DEVIATION + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_STANDARD_DEVIATION + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_STANDARD_DEVIATION + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_STANDARD_DEVIATION + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_STANDARD_DEVIATION + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_X_ENERGY + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Y_ENERGY + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_GRAVITY_Z_ENERGY + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_X_ENERGY + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Y_ENERGY + " DOUBLE NOT NULL, " +
+                FeaturesContract.Features.COLUMN_NAME_ACCELERATION_Z_ENERGY + " DOUBLE NOT NULL, ";
 
         createFeaturesTable += "FOREIGN KEY (" + FeaturesContract.Features.COLUMN_NAME_ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.Activities.TABLE_NAME + "(" + ActivitiesContract.Activities._ID + "));";
 
