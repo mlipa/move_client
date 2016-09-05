@@ -315,12 +315,12 @@ public class SettingsActivity extends AppCompatActivity {
                                     energy.add(squareSum.get(i) / count);
                                 }
 
-                                Double[] sortGravityX = (Double[]) gravityXArray.toArray();
-                                Double[] sortGravityY = (Double[]) gravityYArray.toArray();
-                                Double[] sortGravityZ = (Double[]) gravityZArray.toArray();
-                                Double[] sortAccelerationX = (Double[]) accelerationXArray.toArray();
-                                Double[] sortAccelerationY = (Double[]) accelerationYArray.toArray();
-                                Double[] sortAccelerationZ = (Double[]) accelerationZArray.toArray();
+                                Double[] sortGravityX = gravityXArray.toArray(new Double[gravityXArray.size()]);
+                                Double[] sortGravityY = gravityYArray.toArray(new Double[gravityYArray.size()]);
+                                Double[] sortGravityZ = gravityZArray.toArray(new Double[gravityZArray.size()]);
+                                Double[] sortAccelerationX = accelerationXArray.toArray(new Double[accelerationXArray.size()]);
+                                Double[] sortAccelerationY = accelerationYArray.toArray(new Double[accelerationYArray.size()]);
+                                Double[] sortAccelerationZ = accelerationZArray.toArray(new Double[accelerationZArray.size()]);
 
                                 Arrays.sort(sortGravityX);
                                 Arrays.sort(sortGravityY);
@@ -404,12 +404,12 @@ public class SettingsActivity extends AppCompatActivity {
                                     standardDeviation.add(Math.sqrt(deviationSum.get(i) / count));
                                 }
 
-                                Double[] sortAbsoluteMedianGravityX = (Double[]) absoluteMedianGravityXArray.toArray();
-                                Double[] sortAbsoluteMedianGravityY = (Double[]) absoluteMedianGravityYArray.toArray();
-                                Double[] sortAbsoluteMedianGravityZ = (Double[]) absoluteMedianGravityZArray.toArray();
-                                Double[] sortAbsoluteMedianAccelerationX = (Double[]) absoluteMedianAccelerationXArray.toArray();
-                                Double[] sortAbsoluteMedianAccelerationY = (Double[]) absoluteMedianAccelerationYArray.toArray();
-                                Double[] sortAbsoluteMedianAccelerationZ = (Double[]) absoluteMedianAccelerationZArray.toArray();
+                                Double[] sortAbsoluteMedianGravityX = absoluteMedianGravityXArray.toArray(new Double[absoluteMedianGravityXArray.size()]);
+                                Double[] sortAbsoluteMedianGravityY = absoluteMedianGravityYArray.toArray(new Double[absoluteMedianGravityYArray.size()]);
+                                Double[] sortAbsoluteMedianGravityZ = absoluteMedianGravityZArray.toArray(new Double[absoluteMedianGravityZArray.size()]);
+                                Double[] sortAbsoluteMedianAccelerationX = absoluteMedianAccelerationXArray.toArray(new Double[absoluteMedianAccelerationXArray.size()]);
+                                Double[] sortAbsoluteMedianAccelerationY = absoluteMedianAccelerationYArray.toArray(new Double[absoluteMedianAccelerationYArray.size()]);
+                                Double[] sortAbsoluteMedianAccelerationZ = absoluteMedianAccelerationZArray.toArray(new Double[absoluteMedianAccelerationZArray.size()]);
 
                                 Arrays.sort(sortAbsoluteMedianGravityX);
                                 Arrays.sort(sortAbsoluteMedianGravityY);
