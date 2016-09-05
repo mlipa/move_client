@@ -16,11 +16,12 @@
     <!-- Dashboard -->
     <string name="current_activity">Current activity</string>
     <string name="last_activities">Last activities</string>
-    <string name="accelerometer">Accelerometer</string>
+    <string name="gravity">Gravity</string>
     <string name="x">x: </string>
     <string name="y">y: </string>
     <string name="z">z: </string>
-    <string name="acceleration_unit">[m/s&#178;]</string>
+    <string name="accelerometer">Accelerometer</string>
+    <string name="unit">[m/s&#178;]</string>
     <string name="log_out">Log out</string>
     <string name="log_out_message">Do you really want to leave?</string>
     <string name="yes">Yes</string>
@@ -33,8 +34,8 @@
     <string name="stand">Stand</string>
     <string name="walk">Walk</string>
     <string name="chronometer">Chronometer</string>
-    <string name="chronometer_origin">02:00</string>
-    <string name="hold_origin">00:05</string>
+    <string name="chronometer_base_time">02:00</string>
+    <string name="hold_base_time">00:05</string>
     <string name="start">Start</string>
     <string name="stop">Stop</string>
 
@@ -44,6 +45,7 @@
     <string name="nothing">&#8230;</string>
 
     <!-- Settings. -->
+    <string name="artificial_neural_network">Artificial neural network</string>
     <string name="classifier">Classifier</string>
     <string name="classifier_key">classifier</string>
     <string-array name="classifier_entries">
@@ -55,7 +57,7 @@
     <string name="cancel">Cancel</string>
     <string name="learning">Learning</string>
     <string name="time_windows_message">Creating time windows to calculate features&#8230;</string>
-    <string name="calculate_features_message">Calculating features to learn&#8230;</string>
+    <string name="features_message">Calculating features to learn&#8230;</string>
     <string name="learning_message">Learning to give you better results&#8230;</string>
     <string name="learning_toast">Done! Learning completed successfully!</string>
 </resources>

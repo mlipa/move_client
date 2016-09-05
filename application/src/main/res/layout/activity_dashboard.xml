@@ -29,7 +29,7 @@
             android:src="@drawable/activity_not_detected" />
 
         <TextView
-            android:id="@+id/tv_last_five_activities_label"
+            android:id="@+id/tv_last_activities_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/activity_vertical_margin"
@@ -37,7 +37,7 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout
-            android:id="@+id/ll_last_five_activities"
+            android:id="@+id/ll_last_activities"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
@@ -79,6 +79,107 @@
         </LinearLayout>
 
         <TextView
+            android:id="@+id/tv_gravity_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/activity_vertical_margin"
+            android:text="@string/gravity"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <LinearLayout
+            android:id="@+id/ll_gravity_x"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_gravity_label_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/x"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/tv_gravity_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nothing"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_gravity_unit_x"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/unit"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_gravity_y"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_gravity_label_y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/y"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/tv_gravity_y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nothing"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_gravity_unit_y"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/unit"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/ll_gravity_z"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/tv_gravity_label_z"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/z"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+
+            <TextView
+                android:id="@+id/tv_gravity_z"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/nothing"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
+
+            <TextView
+                android:id="@+id/tv_gravity_unit_z"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:text="@string/unit"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
+        </LinearLayout>
+
+        <TextView
             android:id="@+id/tv_accelerometer_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -87,13 +188,13 @@
             android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout
-            android:id="@+id/ll_x_accelerometer"
+            android:id="@+id/ll_accelerometer_x"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_x_accelerometer_label"
+                android:id="@+id/tv_accelerometer_label_x"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -101,29 +202,30 @@
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
-                android:id="@+id/tv_x_accelerometer"
+                android:id="@+id/tv_accelerometer_x"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_x_accelerometer_unit"
+                android:id="@+id/tv_accelerometer_unit_x"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/acceleration_unit"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:text="@string/unit"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_y_accelerometer"
+            android:id="@+id/ll_accelerometer_y"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_y_accelerometer_label"
+                android:id="@+id/tv_accelerometer_label_y"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -131,29 +233,30 @@
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
-                android:id="@+id/tv_y_accelerometer"
+                android:id="@+id/tv_accelerometer_y"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_y_accelerometer_unit"
+                android:id="@+id/tv_accelerometer_unit_y"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/acceleration_unit"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:text="@string/unit"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/ll_z_accelerometer"
+            android:id="@+id/ll_accelerometer_z"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_z_accelerometer_label"
+                android:id="@+id/tv_accelerometer_label_z"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -161,19 +264,20 @@
                 android:textAppearance="?android:attr/textAppearanceSmall" />
 
             <TextView
-                android:id="@+id/tv_z_accelerometer"
+                android:id="@+id/tv_accelerometer_z"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/nothing"
-                android:textAppearance="?android:attr/textAppearanceLarge" />
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_z_accelerometer_unit"
+                android:id="@+id/tv_accelerometer_unit_z"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/acceleration_unit"
-                android:textAppearance="?android:attr/textAppearanceMedium" />
+                android:text="@string/unit"
+                android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
     </LinearLayout>
 

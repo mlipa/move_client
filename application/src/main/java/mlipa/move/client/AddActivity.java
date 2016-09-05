@@ -32,7 +32,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
     private MediaPlayer player;
 
     private SQLiteDatabase database;
-    private Integer rowsCount;
+    private Integer insertedRows;
 
     private SimpleDateFormat dateFormat;
     private Integer activityId;
@@ -61,7 +61,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         player = MediaPlayer.create(context, R.raw.notify);
 
         database = LogInActivity.databaseHandler.getWritableDatabase();
-        rowsCount = 0;
+        insertedRows = 0;
 
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
         activityId = 5;
@@ -86,7 +86,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                     rgActivity.getChildAt(i).setEnabled(true);
                 }
 
-                tvChronometer.setText(getString(R.string.chronometer_origin));
+                tvChronometer.setText(getString(R.string.chronometer_base_time));
 
                 bStartStop.setText(getString(R.string.start));
                 bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
@@ -97,9 +97,9 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 accelerometerActive = false;
 
                 Log.v(TAG, "[chronometer.onFinish()] Accelerometer unregistered successfully!");
-                Log.v(TAG, String.valueOf(rowsCount) + " row(s) inserted successfully!");
+                Log.v(TAG, String.valueOf(insertedRows) + " row(s) inserted successfully!");
 
-                rowsCount = 0;
+                insertedRows = 0;
             }
         };
 
@@ -116,7 +116,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
             @Override
             public void onFinish() {
                 tvChronometer.setTextColor(getColor(R.color.black));
-                tvChronometer.setText(getString(R.string.chronometer_origin));
+                tvChronometer.setText(getString(R.string.chronometer_base_time));
 
                 player.start();
 
@@ -159,7 +159,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                     }
 
                     tvChronometer.setTextColor(getColor(R.color.black));
-                    tvChronometer.setText(getString(R.string.chronometer_origin));
+                    tvChronometer.setText(getString(R.string.chronometer_base_time));
 
                     bStartStop.setText(getString(R.string.start));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
@@ -168,9 +168,9 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                     accelerometerActive = false;
 
                     Log.v(TAG, "[bStartStop.onClick('Stop')] Accelerometer unregistered successfully!");
-                    Log.v(TAG, String.valueOf(rowsCount) + " row(s) inserted successfully!");
+                    Log.v(TAG, String.valueOf(insertedRows) + " row(s) inserted successfully!");
 
-                    rowsCount = 0;
+                    insertedRows = 0;
                 }
             }
         });
@@ -247,7 +247,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
             accelerometerActive = false;
 
             Log.v(TAG, "[onStop()] Accelerometer unregistered successfully!");
-            Log.v(TAG, String.valueOf(rowsCount) + " row(s) inserted successfully!");
+            Log.v(TAG, String.valueOf(insertedRows) + " row(s) inserted successfully!");
         }
     }
 
@@ -280,6 +280,6 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
 
         database.insert(RawContract.Raws.TABLE_NAME, null, values);
 
-        rowsCount++;
+        insertedRows++;
     }
 }

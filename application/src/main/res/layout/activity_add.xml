@@ -76,7 +76,7 @@
         android:id="@+id/tv_chronometer"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/chronometer_origin"
+        android:text="@string/chronometer_base_time"
         android:textAppearance="?android:attr/textAppearanceLarge" />
 
     <Button

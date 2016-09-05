@@ -24,7 +24,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.toolbox.Volley;
@@ -38,15 +37,12 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     private static final String TAG = DashboardActivity.class.toString();
 
     private static final String SERVER_SUCCESS_KEY = "success";
-    private static final String SERVER_CLASSIFIER_ID_KEY = "classifier_id";
-    private static final String SERVER_CLASSIFIER_NAME_KEY = "classifier_name";
     private static final String SERVER_NAME_KEY = "name";
     private static final String SERVER_USERNAME_KEY = "username";
     private static final String SERVER_EMAIL_KEY = "email";
     private static final String SERVER_AVATAR_KEY = "avatar";
     private static final String SERVER_FILENAME_KEY = "filename";
     private static final String SERVER_MESSAGE_KEY = "message";
-    private static final String CLIENT_CLASSIFIER_ID_KEY = "classifierId";
     private static final String CLIENT_NAME_KEY = "name";
     private static final String CLIENT_USERNAME_KEY = "username";
     private static final String CLIENT_EMAIL_KEY = "email";
@@ -68,9 +64,12 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     private ImageView ivThirdActivity;
     private ImageView ivFourthActivity;
     private ImageView ivFifthActivity;
-    private TextView tvXAccelerometer;
-    private TextView tvYAccelerometer;
-    private TextView tvZAccelerometer;
+    private TextView tvGravityX;
+    private TextView tvGravityY;
+    private TextView tvGravityZ;
+    private TextView tvAccelerometerX;
+    private TextView tvAccelerometerY;
+    private TextView tvAccelerometerZ;
     private FloatingActionButton fab;
 
     @Override
@@ -101,9 +100,12 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         ivThirdActivity = (ImageView) findViewById(R.id.iv_third_activity);
         ivFourthActivity = (ImageView) findViewById(R.id.iv_fourth_activity);
         ivFifthActivity = (ImageView) findViewById(R.id.iv_fifth_activity);
-        tvXAccelerometer = (TextView) findViewById(R.id.tv_x_accelerometer);
-        tvYAccelerometer = (TextView) findViewById(R.id.tv_y_accelerometer);
-        tvZAccelerometer = (TextView) findViewById(R.id.tv_z_accelerometer);
+        tvGravityX = (TextView) findViewById(R.id.tv_gravity_x);
+        tvGravityY = (TextView) findViewById(R.id.tv_gravity_y);
+        tvGravityZ = (TextView) findViewById(R.id.tv_gravity_z);
+        tvAccelerometerX = (TextView) findViewById(R.id.tv_accelerometer_x);
+        tvAccelerometerY = (TextView) findViewById(R.id.tv_accelerometer_y);
+        tvAccelerometerZ = (TextView) findViewById(R.id.tv_accelerometer_z);
         fab = (FloatingActionButton) findViewById(R.id.fab);
 
         // TODO: CALCULATE CURRENT ACTIVITY FROM ALGORITHM
@@ -131,30 +133,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.settings:
-                Response.Listener<String> settingsListener = new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        try {
-                            JSONObject jsonResponse = new JSONObject(response);
-
-                            if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
-                                String classifierId = jsonResponse.getString(SERVER_CLASSIFIER_ID_KEY);
-                                String classifierName = jsonResponse.getString(SERVER_CLASSIFIER_NAME_KEY);
-
-                                Log.v(TAG, SERVER_CLASSIFIER_ID_KEY + " = " + classifierId);
-                                Log.v(TAG, SERVER_CLASSIFIER_NAME_KEY + " = " + classifierName);
-
-                                settingsIntent.putExtra(CLIENT_CLASSIFIER_ID_KEY, classifierId);
-
-                                startActivity(settingsIntent);
-                            }
-                        } catch (JSONException e) {
-                            e.printStackTrace();
-                        }
-                    }
-                };
-
-                queue.add(new SettingsRequest(Request.Method.GET, null, settingsListener));
+                startActivity(settingsIntent);
 
                 return true;
             case R.id.profile:
@@ -298,12 +277,18 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
             acceleration.set(i, event.values[i] - gravity.get(i));
         }
 
-        tvXAccelerometer.setText("");
-        tvYAccelerometer.setText("");
-        tvZAccelerometer.setText("");
+        tvGravityX.setText("");
+        tvGravityY.setText("");
+        tvGravityZ.setText("");
+        tvAccelerometerX.setText("");
+        tvAccelerometerY.setText("");
+        tvAccelerometerZ.setText("");
 
-        tvXAccelerometer.setText(" " + String.format("%.8f", acceleration.get(0)) + " ");
-        tvYAccelerometer.setText(" " + String.format("%.8f", acceleration.get(1)) + " ");
-        tvZAccelerometer.setText(" " + String.format("%.8f", acceleration.get(2)) + " ");
+        tvGravityX.setText(" " + String.format("%.8f", gravity.get(0)) + " ");
+        tvGravityY.setText(" " + String.format("%.8f", gravity.get(1)) + " ");
+        tvGravityZ.setText(" " + String.format("%.8f", gravity.get(2)) + " ");
+        tvAccelerometerX.setText(" " + String.format("%.8f", acceleration.get(0)) + " ");
+        tvAccelerometerY.setText(" " + String.format("%.8f", acceleration.get(1)) + " ");
+        tvAccelerometerZ.setText(" " + String.format("%.8f", acceleration.get(2)) + " ");
     }
 }

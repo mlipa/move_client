@@ -3,7 +3,6 @@ package mlipa.move.client;
 import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
-import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,9 +13,6 @@ import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.Volley;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -33,8 +29,6 @@ public class SettingsActivity extends AppCompatActivity {
     private static final Integer TIME_WINDOW = 2560;
 
     private Context context;
-    private Intent intent;
-    public static RequestQueue queue;
 
     private SQLiteDatabase database;
 
@@ -60,8 +54,6 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         context = getApplicationContext();
-        intent = getIntent();
-        queue = Volley.newRequestQueue(context);
 
         database = LogInActivity.databaseHandler.getWritableDatabase();
 
@@ -81,7 +73,7 @@ public class SettingsActivity extends AppCompatActivity {
 
         args = new Bundle();
 
-        args.putString(CLIENT_CLASSIFIER_ID_KEY, intent.getStringExtra(CLIENT_CLASSIFIER_ID_KEY));
+        args.putString(CLIENT_CLASSIFIER_ID_KEY, "1");
 
         settingsFragment.setArguments(args);
 
@@ -172,7 +164,7 @@ public class SettingsActivity extends AppCompatActivity {
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                dialog.setMessage(getString(R.string.calculate_features_message));
+                                dialog.setMessage(getString(R.string.features_message));
                             }
                         });
 
