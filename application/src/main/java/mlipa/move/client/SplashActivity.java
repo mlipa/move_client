@@ -666,14 +666,14 @@ public class SplashActivity extends AppCompatActivity {
             builder.append("| ");
 
             for (int k = 0; k < OUTPUT_NEURON; k++) {
-                Integer count = predictedActivitiesTable.get(j).get(k);
+                Integer result = predictedActivitiesTable.get(j).get(k);
 
-                if (count / 100 > 0) {
-                    builder.append(count + " | ");
-                } else if (count / 10 > 0) {
-                    builder.append(" " + count + " | ");
+                if (result / 100 > 0) {
+                    builder.append(result + " | ");
+                } else if (result / 10 > 0) {
+                    builder.append(" " + result + " | ");
                 } else {
-                    builder.append("  " + count + " | ");
+                    builder.append("  " + result + " | ");
                 }
             }
 

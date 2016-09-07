@@ -117,13 +117,13 @@ public class LogInActivity extends AppCompatActivity {
 
                                             values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
 
-                                            Integer count = database.update(
+                                            Integer updatedRows = database.update(
                                                     UsersContract.Users.TABLE_NAME,
                                                     values,
                                                     iuSelection,
                                                     iuSelectionArgs);
 
-                                            Log.v(TAG, String.valueOf(count) + " row(s) updated successfully!");
+                                            Log.v(TAG, String.valueOf(updatedRows) + " row(s) updated successfully!");
                                         }
                                     }
 
