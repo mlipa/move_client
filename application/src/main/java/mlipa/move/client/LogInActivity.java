@@ -37,6 +37,8 @@ public class LogInActivity extends AppCompatActivity {
     public static DatabaseHandler databaseHandler;
     private SQLiteDatabase database;
 
+    public static NeuralNetwork neuralNetwork;
+
     private Intent dashboardIntent;
 
     private EditText etUsername;

@@ -32,10 +32,10 @@ public class Neuron {
     }
 
     public void updateBiasAndWeights() {
-        bias -= NeuralNetwork.eta * delta;
+        bias -= NeuralNetwork.ETA * delta;
 
         for (int i = 0; i < previous.size(); i++) {
-            previous.get(i).weight -= NeuralNetwork.eta * delta * previous.get(i).source.output;
+            previous.get(i).weight -= NeuralNetwork.ETA * delta * previous.get(i).source.output;
         }
     }
 }

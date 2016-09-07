@@ -20,13 +20,21 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 public class SettingsActivity extends AppCompatActivity {
     private static final String TAG = SettingsActivity.class.toString();
 
     private static final String CLIENT_CLASSIFIER_ID_KEY = "classifierId";
 
-    private static final Integer TIME_WINDOW = 2560;
+    private static final Integer INPUT_NEURONS = 3;
+    private static final Integer HIDDEN_LAYERS = 1;
+    private static final Integer HIDDEN_NEURONS = 3;
+    private static final Integer OUTPUT_NEURON = 4;
+    private static final Double DESIRED_ACTIVITY_WEIGHT = 0.65;
+    private static final Double UNDESIRED_ACTIVITY_WEIGHT = 0.0;
+    private static final Integer TIME_WINDOW_LENGTH = 2560;
+    private static final Integer LEARNING_ITERATIONS = 10000;
 
     private Context context;
 
@@ -41,6 +49,8 @@ public class SettingsActivity extends AppCompatActivity {
     private ArrayList<ArrayList<Integer>> activitiesIdArray;
     private Integer activitiesIdArrayCounter;
     private ArrayList<Integer> activitiesId;
+
+    private Random random;
 
     private SettingsFragment settingsFragment;
     private Bundle args;
@@ -57,6 +67,8 @@ public class SettingsActivity extends AppCompatActivity {
 
         database = LogInActivity.databaseHandler.getWritableDatabase();
 
+        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+
         calendar = Calendar.getInstance();
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
         timestampStart = new Date();
@@ -67,7 +79,7 @@ public class SettingsActivity extends AppCompatActivity {
         activitiesIdArrayCounter = 0;
         activitiesId = new ArrayList<>();
 
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
+        random = new Random();
 
         settingsFragment = new SettingsFragment();
 
@@ -120,7 +132,7 @@ public class SettingsActivity extends AppCompatActivity {
 
                             timestampStart = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.TIMESTAMP)));
                             calendar.setTime(timestampStart);
-                            calendar.add(Calendar.MILLISECOND, TIME_WINDOW);
+                            calendar.add(Calendar.MILLISECOND, TIME_WINDOW_LENGTH);
                             timestampStop = calendar.getTime();
 
                             timestampStartArray.add(timestampStart);
@@ -131,14 +143,16 @@ public class SettingsActivity extends AppCompatActivity {
 
                             taCursor.moveToNext();
 
-                            for (int i = 1; i < taCursor.getCount(); i++) {
+                            Integer count = taCursor.getCount();
+
+                            for (int i = 1; i < count; i++) {
                                 Date timestamp = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.TIMESTAMP)));
                                 Integer activityId = taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.ACTIVITY_ID));
 
                                 if (timestamp.compareTo(timestampStop) == 1) {
                                     timestampStart = timestamp;
                                     calendar.setTime(timestampStart);
-                                    calendar.add(Calendar.MILLISECOND, TIME_WINDOW);
+                                    calendar.add(Calendar.MILLISECOND, TIME_WINDOW_LENGTH);
                                     timestampStop = calendar.getTime();
 
                                     timestampStartArray.add(timestampStart);
@@ -479,7 +493,93 @@ public class SettingsActivity extends AppCompatActivity {
                             }
                         }
 
-                        // TODO: CALCULATE WEIGHTS AND ADD TO DATABASE
+                        runOnUiThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                dialog.setMessage(getString(R.string.learning_message));
+                            }
+                        });
+
+                        String[] fProjection = {
+                                FeaturesContract.Features.ACTIVITY_ID,
+                                FeaturesContract.Features.GRAVITY_X_MIN,
+                                FeaturesContract.Features.GRAVITY_Y_MIN,
+                                FeaturesContract.Features.GRAVITY_Z_MIN,
+                                FeaturesContract.Features.ACCELERATION_X_MIN,
+                                FeaturesContract.Features.ACCELERATION_Y_MIN,
+                                FeaturesContract.Features.ACCELERATION_Z_MIN,
+                                FeaturesContract.Features.GRAVITY_X_MAX,
+                                FeaturesContract.Features.GRAVITY_Y_MAX,
+                                FeaturesContract.Features.GRAVITY_Z_MAX,
+                                FeaturesContract.Features.ACCELERATION_X_MAX,
+                                FeaturesContract.Features.ACCELERATION_Y_MAX,
+                                FeaturesContract.Features.ACCELERATION_Z_MAX,
+                                FeaturesContract.Features.GRAVITY_X_MEAN,
+                                FeaturesContract.Features.GRAVITY_Y_MEAN,
+                                FeaturesContract.Features.GRAVITY_Z_MEAN,
+                                FeaturesContract.Features.ACCELERATION_X_MEAN,
+                                FeaturesContract.Features.ACCELERATION_Y_MEAN,
+                                FeaturesContract.Features.ACCELERATION_Z_MEAN,
+                                FeaturesContract.Features.GRAVITY_X_STANDARD_DEVIATION,
+                                FeaturesContract.Features.GRAVITY_Y_STANDARD_DEVIATION,
+                                FeaturesContract.Features.GRAVITY_Z_STANDARD_DEVIATION,
+                                FeaturesContract.Features.ACCELERATION_X_STANDARD_DEVIATION,
+                                FeaturesContract.Features.ACCELERATION_Y_STANDARD_DEVIATION,
+                                FeaturesContract.Features.ACCELERATION_Z_STANDARD_DEVIATION,
+                                FeaturesContract.Features.GRAVITY_X_ABSOLUTE_MEDIAN,
+                                FeaturesContract.Features.GRAVITY_Y_ABSOLUTE_MEDIAN,
+                                FeaturesContract.Features.GRAVITY_Z_ABSOLUTE_MEDIAN,
+                                FeaturesContract.Features.ACCELERATION_X_ABSOLUTE_MEDIAN,
+                                FeaturesContract.Features.ACCELERATION_Y_ABSOLUTE_MEDIAN,
+                                FeaturesContract.Features.ACCELERATION_Z_ABSOLUTE_MEDIAN,
+                                FeaturesContract.Features.GRAVITY_X_ENERGY,
+                                FeaturesContract.Features.GRAVITY_Y_ENERGY,
+                                FeaturesContract.Features.GRAVITY_Z_ENERGY,
+                                FeaturesContract.Features.ACCELERATION_X_ENERGY,
+                                FeaturesContract.Features.ACCELERATION_Y_ENERGY,
+                                FeaturesContract.Features.ACCELERATION_Z_ENERGY
+                        };
+
+                        Cursor fCursor = database.query(
+                                FeaturesContract.Features.TABLE_NAME,
+                                fProjection,
+                                null, null, null, null, null
+                        );
+
+                        fCursor.moveToFirst();
+
+                        Integer count = fCursor.getCount();
+
+                        LogInActivity.neuralNetwork = new NeuralNetwork(INPUT_NEURONS, HIDDEN_LAYERS, HIDDEN_NEURONS, OUTPUT_NEURON);
+
+                        ArrayList<ArrayList<Double>> activities = new ArrayList<>(count);
+                        ArrayList<ArrayList<Double>> features = new ArrayList<>(count);
+
+                        for (int i = 0; i < count; i++) {
+                            activities.add(new ArrayList<Double>());
+
+                            for (int j = 1; j <= OUTPUT_NEURON; j++) {
+                                if (j == fCursor.getDouble(fCursor.getColumnIndex(FeaturesContract.Features.ACTIVITY_ID))) {
+                                    activities.get(i).add(DESIRED_ACTIVITY_WEIGHT);
+                                } else {
+                                    activities.get(i).add(UNDESIRED_ACTIVITY_WEIGHT);
+                                }
+                            }
+
+                            features.add(new ArrayList<Double>());
+
+                            for (int j = 1; j <= INPUT_NEURONS; j++) {
+                                features.get(i).add(fCursor.getDouble(j));
+                            }
+
+                            fCursor.moveToNext();
+                        }
+
+                        for (int i = 0; i < LEARNING_ITERATIONS; i++) {
+                            Integer r = random.nextInt(count);
+
+                            LogInActivity.neuralNetwork.trainNetwork(features.get(r), activities.get(r));
+                        }
 
                         dialog.dismiss();
 

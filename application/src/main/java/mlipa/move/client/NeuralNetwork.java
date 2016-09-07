@@ -5,11 +5,12 @@ import java.util.ArrayList;
 public class NeuralNetwork {
     private Integer layersNumber;
 
-    private ArrayList<ArrayList<Neuron>> layers = new ArrayList<ArrayList<Neuron>>();
+    private ArrayList<ArrayList<Neuron>> layers = new ArrayList<>();
 
-    public static ArrayList<NeuronConnection> connections = new ArrayList<NeuronConnection>();
+    public static ArrayList<NeuronConnection> connections = new ArrayList<>();
 
-    public static final Double eta = 0.5;
+    private final Integer NORMALIZATION = 10;
+    public static final Double ETA = 0.6;
 
     public NeuralNetwork(Integer inputNeurons, Integer hiddenLayers, Integer hiddenNeurons, Integer outputNeurons) {
         layersNumber = hiddenLayers + 2;
@@ -56,7 +57,7 @@ public class NeuralNetwork {
         Integer inputLayer = 0;
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
-            layers.get(inputLayer).get(i).output = input.get(i) / 1000;
+            layers.get(inputLayer).get(i).output = input.get(i) / NORMALIZATION;
         }
 
         for (int i = 1; i < layers.size(); i++) {
@@ -97,7 +98,7 @@ public class NeuralNetwork {
         ArrayList<Double> output = new ArrayList<>(layers.get(outputLayer).size());
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
-            layers.get(inputLayer).get(i).output = input.get(i) / 1000;
+            layers.get(inputLayer).get(i).output = input.get(i) / NORMALIZATION;
         }
 
         for (int i = 1; i < layers.size(); i++) {
