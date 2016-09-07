@@ -60,7 +60,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         context = getApplicationContext();
         player = MediaPlayer.create(context, R.raw.notify);
 
-        database = LogInActivity.databaseHandler.getWritableDatabase();
+        database = SplashActivity.databaseHandler.getWritableDatabase();
         insertedRows = 0;
 
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");

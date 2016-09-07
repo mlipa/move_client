@@ -7,6 +7,12 @@
     <string name="settings">Settings</string>
     <string name="profile">Profile</string>
 
+    <!-- Splash. -->
+    <string name="database_message">Creating database to store your results&#8230;</string>
+    <string name="time_windows_message">Creating time windows to calculate features&#8230;</string>
+    <string name="features_message">Calculating features to learn&#8230;</string>
+    <string name="learning_message">Learning to give you better results&#8230;</string>
+
     <!-- Log in. -->
     <string name="username">Username</string>
     <string name="password">Password</string>
@@ -56,8 +62,5 @@
     </string-array>
     <string name="cancel">Cancel</string>
     <string name="learning">Learning</string>
-    <string name="time_windows_message">Creating time windows to calculate features&#8230;</string>
-    <string name="features_message">Calculating features to learn&#8230;</string>
-    <string name="learning_message">Learning to give you better results&#8230;</string>
     <string name="learning_toast">Done! Learning completed successfully!</string>
 </resources>

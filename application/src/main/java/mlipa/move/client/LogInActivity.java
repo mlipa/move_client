@@ -34,10 +34,7 @@ public class LogInActivity extends AppCompatActivity {
     private Context context;
     private RequestQueue queue;
 
-    public static DatabaseHandler databaseHandler;
     private SQLiteDatabase database;
-
-    public static NeuralNetwork neuralNetwork;
 
     private Intent dashboardIntent;
 
@@ -54,8 +51,7 @@ public class LogInActivity extends AppCompatActivity {
         context = getApplicationContext();
         queue = Volley.newRequestQueue(context);
 
-        databaseHandler = new DatabaseHandler(context);
-        database = databaseHandler.getWritableDatabase();
+        database = SplashActivity.databaseHandler.getWritableDatabase();
 
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
