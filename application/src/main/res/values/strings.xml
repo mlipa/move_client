@@ -8,10 +8,10 @@
     <string name="profile">Profile</string>
 
     <!-- Splash. -->
-    <string name="database_message">Creating database to store your results&#8230;</string>
-    <string name="time_windows_message">Creating time windows to calculate features&#8230;</string>
-    <string name="features_message">Calculating features to learn&#8230;</string>
-    <string name="learning_message">Learning to give you better results&#8230;</string>
+    <string name="database_message">Creating database to store your results…</string>
+    <string name="time_windows_message">Creating time windows to calculate features…</string>
+    <string name="features_message">Calculating features to learn…</string>
+    <string name="learning_message">Learning to give you better results…</string>
 
     <!-- Log in. -->
     <string name="username">Username</string>
@@ -28,7 +28,12 @@
     <string name="y">y: </string>
     <string name="z">z: </string>
     <string name="accelerometer">Accelerometer</string>
-    <string name="unit">[m/s&#178;]</string>
+    <string name="unit">[m/s²]</string>
+    <string name="first_things">First things first</string>
+    <string name="first_things_message">Please give us some results to start with! Otherwise we can\'t do anything more.</string>
+    <string name="last_step">One last step</string>
+    <string name="last_step_message">The last thing to take full advantage of the Move is to learn an algorithm how to predict your activities!</string>
+    <string name="ok">Ok</string>
     <string name="log_out">Log out</string>
     <string name="log_out_message">Do you really want to leave?</string>
     <string name="yes">Yes</string>
@@ -49,7 +54,7 @@
     <!-- Profile. -->
     <string name="name">Name</string>
     <string name="email">E-mail</string>
-    <string name="nothing">&#8230;</string>
+    <string name="nothing">…</string>
 
     <!-- Settings. -->
     <string name="artificial_neural_network">Artificial neural network</string>

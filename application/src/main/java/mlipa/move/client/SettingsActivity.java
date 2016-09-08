@@ -89,5 +89,9 @@ public class SettingsActivity extends AppCompatActivity {
                 }).start();
             }
         });
+
+        if (!SplashActivity.neuralNetworkActive) {
+            fab.callOnClick();
+        }
     }
 }

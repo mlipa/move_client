@@ -580,6 +580,7 @@ public class SplashActivity extends AppCompatActivity {
         );
 
         neuralNetwork = new NeuralNetwork(INPUT_NEURONS, HIDDEN_LAYERS, HIDDEN_NEURONS, OUTPUT_NEURON);
+        neuralNetworkActive = true;
 
         Integer fCount = fCursor.getCount();
 

@@ -4,6 +4,8 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.ColorStateList;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -50,6 +52,8 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     private Context context;
     private RequestQueue queue;
 
+    private SQLiteDatabase database;
+
     private Intent addIntent;
     private Intent settingsIntent;
     private Intent profileIntent;
@@ -72,6 +76,28 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     private TextView tvAccelerometerZ;
     private FloatingActionButton fab;
 
+    private Response.Listener<String> logOutListener = new Response.Listener<String>() {
+        @Override
+        public void onResponse(String response) {
+            try {
+                JSONObject jsonResponse = new JSONObject(response);
+
+                if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
+                    String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
+
+                    Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
+
+                    logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                    startActivity(logInIntent);
+
+                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,6 +106,8 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
 
         context = getApplicationContext();
         queue = Volley.newRequestQueue(context);
+
+        database = SplashActivity.databaseHandler.getWritableDatabase();
 
         Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
@@ -190,6 +218,61 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
     }
 
     @Override
+    protected void onStart() {
+        super.onStart();
+
+        String[] iProjection = {
+                RawContract.Raws._ID
+        };
+
+        Cursor iCursor = database.query(
+                RawContract.Raws.TABLE_NAME,
+                iProjection,
+                null, null, null, null, null
+        );
+
+        if (iCursor.getCount() <= 0) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+
+            builder.setTitle(R.string.first_things);
+            builder.setMessage(R.string.first_things_message);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startActivity(addIntent);
+                }
+            });
+            builder.setNegativeButton(R.string.log_out, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    queue.add(new LogOutRequest(logOutListener));
+                }
+            });
+            builder.setCancelable(false);
+            builder.create().show();
+        } else if (!SplashActivity.neuralNetworkActive) {
+            AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
+
+            builder.setTitle(R.string.last_step);
+            builder.setMessage(R.string.last_step_message);
+            builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    startActivity(settingsIntent);
+                }
+            });
+            builder.setNegativeButton(R.string.log_out, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    queue.add(new LogOutRequest(logOutListener));
+                }
+            });
+            builder.setCancelable(false);
+            builder.create().show();
+        }
+    }
+
+    @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK) {
             AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
@@ -199,28 +282,6 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    Response.Listener<String> logOutListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonResponse = new JSONObject(response);
-
-                                if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
-                                    String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
-
-                                    Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
-
-                                    logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(logInIntent);
-
-                                    Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                                }
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
-                        }
-                    };
-
                     queue.add(new LogOutRequest(logOutListener));
                 }
             });

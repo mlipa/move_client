@@ -10,6 +10,7 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
+import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -62,6 +63,8 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
 
         database = SplashActivity.databaseHandler.getWritableDatabase();
         insertedRows = 0;
+
+        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
         activityId = 5;
