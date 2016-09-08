@@ -65,25 +65,25 @@ public class LogInActivity extends AppCompatActivity {
         bLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final ProgressDialog dialog = new ProgressDialog(LogInActivity.this);
+                final String username = etUsername.getText().toString();
+                final String password = etPassword.getText().toString();
 
-                dialog.setTitle(getString(R.string.log_in));
-                dialog.setMessage(getString(R.string.log_in_message));
-                dialog.setProgress(ProgressDialog.STYLE_SPINNER);
-                dialog.setCancelable(false);
-                dialog.show();
+                if (username.trim().length() == 0) {
+                    etUsername.setError(getString(R.string.required_field_message));
+                } else if (password.trim().length() == 0) {
+                    etPassword.setError(getString(R.string.required_field_message));
+                } else {
+                    final ProgressDialog dialog = new ProgressDialog(LogInActivity.this);
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        String username = etUsername.getText().toString();
-                        String password = etPassword.getText().toString();
+                    dialog.setTitle(getString(R.string.log_in));
+                    dialog.setMessage(getString(R.string.log_in_message));
+                    dialog.setProgress(ProgressDialog.STYLE_SPINNER);
+                    dialog.setCancelable(false);
+                    dialog.show();
 
-                        if (username.trim().length() == 0) {
-                            etUsername.setError(getString(R.string.required_field_message));
-                        } else if (password.trim().length() == 0) {
-                            etPassword.setError(getString(R.string.required_field_message));
-                        } else {
+                    new Thread(new Runnable() {
+                        @Override
+                        public void run() {
                             Response.Listener<String> logInListener = new Response.Listener<String>() {
                                 @Override
                                 public void onResponse(String response) {
@@ -146,9 +146,9 @@ public class LogInActivity extends AppCompatActivity {
 
                                             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(dashboardIntent);
-
-                                            dialog.dismiss();
                                         }
+
+                                        dialog.dismiss();
 
                                         Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
 
@@ -161,8 +161,8 @@ public class LogInActivity extends AppCompatActivity {
 
                             queue.add(new LogInRequest(username, password, logInListener));
                         }
-                    }
-                }).start();
+                    }).start();
+                }
             }
         });
     }

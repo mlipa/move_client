@@ -657,7 +657,7 @@ public class SplashActivity extends AppCompatActivity {
         Log.v(TAG, "Activities: a - lie, b - sit, c - stand, d - walk");
         Log.v(TAG, "-------------------------");
         Log.v(TAG, "|  a  |  b  |  c  |  d  |");
-        Log.v(TAG, "|-----+-----+-----+-----| classify as:");
+        Log.v(TAG, "|-----+-----+-----+-----| classified as:");
 
         for (int j = 0; j < OUTPUT_NEURON; j++) {
             String activityLabels = "abcd";
