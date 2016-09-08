@@ -1,5 +1,6 @@
 package mlipa.move.client;
 
+import android.app.ProgressDialog;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
@@ -64,89 +65,104 @@ public class LogInActivity extends AppCompatActivity {
         bLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String username = etUsername.getText().toString();
-                String password = etPassword.getText().toString();
+                final ProgressDialog dialog = new ProgressDialog(LogInActivity.this);
 
-                if (username.trim().length() == 0) {
-                    etUsername.setError(getString(R.string.required_field_message));
-                } else if (password.trim().length() == 0) {
-                    etPassword.setError(getString(R.string.required_field_message));
-                } else {
-                    Response.Listener<String> logInListener = new Response.Listener<String>() {
-                        @Override
-                        public void onResponse(String response) {
-                            try {
-                                JSONObject jsonResponse = new JSONObject(response);
-                                String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
+                dialog.setTitle(getString(R.string.log_in));
+                dialog.setMessage(getString(R.string.log_in_message));
+                dialog.setProgress(ProgressDialog.STYLE_SPINNER);
+                dialog.setCancelable(false);
+                dialog.show();
 
-                                if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
-                                    etUsername.setText("");
-                                    etUsername.clearFocus();
-                                    etPassword.setText("");
-                                    etPassword.clearFocus();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        String username = etUsername.getText().toString();
+                        String password = etPassword.getText().toString();
 
-                                    String[] iuProjection = {
-                                            UsersContract.Users._ID,
-                                            UsersContract.Users.USERNAME
-                                    };
-                                    String iuSelection = UsersContract.Users._ID + " = ?";
-                                    String[] iuSelectionArgs = {jsonResponse.getString(SERVER_USER_ID_KEY)};
+                        if (username.trim().length() == 0) {
+                            etUsername.setError(getString(R.string.required_field_message));
+                        } else if (password.trim().length() == 0) {
+                            etPassword.setError(getString(R.string.required_field_message));
+                        } else {
+                            Response.Listener<String> logInListener = new Response.Listener<String>() {
+                                @Override
+                                public void onResponse(String response) {
+                                    try {
+                                        JSONObject jsonResponse = new JSONObject(response);
+                                        String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
 
-                                    Cursor iuCursor = database.query(
-                                            UsersContract.Users.TABLE_NAME,
-                                            iuProjection,
-                                            iuSelection,
-                                            iuSelectionArgs,
-                                            null, null, null
-                                    );
+                                        if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
+                                            etUsername.setText("");
+                                            etUsername.clearFocus();
+                                            etPassword.setText("");
+                                            etPassword.clearFocus();
 
-                                    if (iuCursor.getCount() == 0) {
-                                        ContentValues values = new ContentValues();
+                                            String[] iuProjection = {
+                                                    UsersContract.Users._ID,
+                                                    UsersContract.Users.USERNAME
+                                            };
+                                            String iuSelection = UsersContract.Users._ID + " = ?";
+                                            String[] iuSelectionArgs = {jsonResponse.getString(SERVER_USER_ID_KEY)};
 
-                                        values.put(UsersContract.Users._ID, jsonResponse.getString(SERVER_USER_ID_KEY));
-                                        values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
-
-                                        Long id = database.insert(UsersContract.Users.TABLE_NAME, null, values);
-
-                                        Log.v(TAG, "Row (id " + String.valueOf(id) + ") created successfully!");
-                                    } else if (iuCursor.getCount() == 1) {
-                                        iuCursor.moveToFirst();
-
-                                        if (!iuCursor.getString(iuCursor.getColumnIndex(UsersContract.Users.USERNAME)).equals(jsonResponse.getString(SERVER_USER_USERNAME_KEY))) {
-                                            ContentValues values = new ContentValues();
-
-                                            values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
-
-                                            Integer updatedRows = database.update(
+                                            Cursor iuCursor = database.query(
                                                     UsersContract.Users.TABLE_NAME,
-                                                    values,
+                                                    iuProjection,
                                                     iuSelection,
-                                                    iuSelectionArgs);
+                                                    iuSelectionArgs,
+                                                    null, null, null
+                                            );
 
-                                            Log.v(TAG, String.valueOf(updatedRows) + " row(s) updated successfully!");
+                                            if (iuCursor.getCount() == 0) {
+                                                ContentValues values = new ContentValues();
+
+                                                values.put(UsersContract.Users._ID, jsonResponse.getString(SERVER_USER_ID_KEY));
+                                                values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
+
+                                                Long id = database.insert(UsersContract.Users.TABLE_NAME, null, values);
+
+                                                Log.v(TAG, "Row (id " + String.valueOf(id) + ") created successfully!");
+                                            } else if (iuCursor.getCount() == 1) {
+                                                iuCursor.moveToFirst();
+
+                                                if (!iuCursor.getString(iuCursor.getColumnIndex(UsersContract.Users.USERNAME)).equals(jsonResponse.getString(SERVER_USER_USERNAME_KEY))) {
+                                                    ContentValues values = new ContentValues();
+
+                                                    values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
+
+                                                    Integer updatedRows = database.update(
+                                                            UsersContract.Users.TABLE_NAME,
+                                                            values,
+                                                            iuSelection,
+                                                            iuSelectionArgs);
+
+                                                    Log.v(TAG, String.valueOf(updatedRows) + " row(s) updated successfully!");
+                                                }
+                                            }
+
+                                            SharedPreferences.Editor editor = Cookie.preferences.edit();
+
+                                            editor.putInt(CLIENT_USER_ID_KEY, Integer.parseInt(jsonResponse.getString(SERVER_USER_ID_KEY)));
+                                            editor.commit();
+
+                                            dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                            startActivity(dashboardIntent);
+
+                                            dialog.dismiss();
                                         }
+
+                                        Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
+
+                                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                    } catch (JSONException e) {
+                                        e.printStackTrace();
                                     }
-
-                                    SharedPreferences.Editor editor = Cookie.preferences.edit();
-
-                                    editor.putInt(CLIENT_USER_ID_KEY, Integer.parseInt(jsonResponse.getString(SERVER_USER_ID_KEY)));
-                                    editor.commit();
-
-                                    dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                    startActivity(dashboardIntent);
                                 }
+                            };
 
-                                Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
-
-                                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
-                            } catch (JSONException e) {
-                                e.printStackTrace();
-                            }
+                            queue.add(new LogInRequest(username, password, logInListener));
                         }
-                    };
-
-                    queue.add(new LogInRequest(username, password, logInListener));
-                }
+                    }
+                }).start();
             }
         });
     }
