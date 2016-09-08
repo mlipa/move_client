@@ -18,6 +18,7 @@
     <string name="password">Password</string>
     <string name="log_in">Log in</string>
     <string name="required_field_message">Please fill out this field.</string>
+    <string name="log_in_message">Do you belong to the Move community?</string>
 
     <!-- Dashboard -->
     <string name="current_activity">Current activity</string>
