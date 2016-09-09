@@ -96,7 +96,7 @@
     <string name="undesired_activity_weight">Undesired activity weight</string>
     <string name="time_window_length">Time window length</string>
     <string name="range">Range:</string>
-    <string name="time_unit">Unit: ms</string>
+    <string name="time_unit">milliseconds</string>
     <string name="re_learn">Re-learn</string>
     <string name="re_learn_message">Settings have changed, Move must re-learn to give better results!</string>
     <string name="learning">Learning</string>
@@ -119,4 +119,27 @@
     <string name="desired_activity_weight_key">desiredActivityWeight</string>
     <string name="undesired_activity_weight_key">undesiredActivityWeight</string>
     <string name="time_window_length_key">timeWindowLength</string>
+
+    <!-- Integers. -->
+    <integer name="divisor">10</integer>
+    <integer name="chronometer_time">120000</integer>
+    <integer name="chronometer_step">1000</integer>
+    <integer name="delay_time">5000</integer>
+    <integer name="delay_step">1000</integer>
+    <integer name="activity_id_lie">1</integer>
+    <integer name="activity_id_sit">2</integer>
+    <integer name="activity_id_stand">3</integer>
+    <integer name="activity_id_walk">4</integer>
+    <integer name="activity_id_not_detected">5</integer>
+    <integer name="user_id_error">-1</integer>
+    <integer name="input_neurons_min">1</integer>
+    <integer name="input_neurons_max">36</integer>
+    <integer name="hidden_layers_min">1</integer>
+    <integer name="hidden_layers_max">5</integer>
+    <integer name="hidden_neurons_min">1</integer>
+    <integer name="hidden_neurons_max">36</integer>
+    <integer name="learning_iterations_min">100</integer>
+    <integer name="learning_iterations_max">1000000</integer>
+    <integer name="time_window_length_min">2500</integer>
+    <integer name="time_window_length_max">5000</integer>
 </resources>

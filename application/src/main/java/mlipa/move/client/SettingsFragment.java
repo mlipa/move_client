@@ -12,20 +12,10 @@ import android.support.v7.app.AlertDialog;
 import android.widget.Toast;
 
 public class SettingsFragment extends PreferenceFragment {
-    private final Integer INPUT_NEURONS_MIN = 1;
-    private final Integer INPUT_NEURONS_MAX = 36;
-    private final Integer HIDDEN_LAYERS_MIN = 1;
-    private final Integer HIDDEN_LAYER_MAX = 5;
-    private final Integer HIDDEN_NEURONS_MIN = 1;
-    private final Integer HIDDEN_NEURONS_MAX = 36;
-    private final Integer LEARNING_ITERATIONS_MIN = 100;
-    private final Integer LEARNING_ITERATIONS_MAX = 1000000;
     private final Double DESIRED_ACTIVITY_WEIGHT_MIN = 0.0;
     private final Double DESIRED_ACTIVITY_WEIGHT_MAX = 1.0;
     private final Double UNDESIRED_ACTIVITY_WEIGHT_MIN = 0.0;
     private final Double UNDESIRED_ACTIVITY_WEIGHT_MAX = 1.0;
-    private final Integer TIME_WINDOW_LENGTH_MIN = 2500;
-    private final Integer TIME_WINDOW_LENGTH_MAX = 5000;
 
     private Context context;
     private SharedPreferences sharedPreferences;
@@ -69,31 +59,31 @@ public class SettingsFragment extends PreferenceFragment {
             SharedPreferences.Editor editor = sharedPreferences.edit();
 
             if (editTextPreference.getKey().equals(getString(R.string.input_neurons_key))) {
-                if (newValueInteger >= INPUT_NEURONS_MIN && newValueInteger <= INPUT_NEURONS_MAX) {
+                if (newValueInteger >= R.integer.input_neurons_min && newValueInteger <= R.integer.input_neurons_max) {
                     editor.putInt(getString(R.string.input_neurons_shared_preferences_key), newValueInteger);
                 } else {
                     message = getString(R.string.requested_range_message);
                 }
             } else if (editTextPreference.getKey().equals(getString(R.string.hidden_layers_key))) {
-                if (newValueInteger >= HIDDEN_LAYERS_MIN && newValueInteger <= HIDDEN_LAYER_MAX) {
+                if (newValueInteger >= R.integer.hidden_layers_min && newValueInteger <= R.integer.hidden_layers_max) {
                     editor.putInt(getString(R.string.hidden_layers_shared_preferences_key), newValueInteger);
                 } else {
                     message = getString(R.string.requested_range_message);
                 }
             } else if (editTextPreference.getKey().equals(getString(R.string.hidden_neurons_key))) {
-                if (newValueInteger >= HIDDEN_NEURONS_MIN && newValueInteger <= HIDDEN_NEURONS_MAX) {
+                if (newValueInteger >= R.integer.hidden_neurons_min && newValueInteger <= R.integer.hidden_neurons_max) {
                     editor.putInt(getString(R.string.hidden_neurons_shared_preferences_key), newValueInteger);
                 } else {
                     message = getString(R.string.requested_range_message);
                 }
             } else if (editTextPreference.getKey().equals(getString(R.string.learning_iterations_key))) {
-                if (newValueInteger >= LEARNING_ITERATIONS_MIN && newValueInteger <= LEARNING_ITERATIONS_MAX) {
+                if (newValueInteger >= R.integer.learning_iterations_min && newValueInteger <= R.integer.learning_iterations_max) {
                     editor.putInt(getString(R.string.learning_iterations_shared_preferences_key), newValueInteger);
                 } else {
                     message = getString(R.string.requested_range_message);
                 }
             } else if (editTextPreference.getKey().equals(getString(R.string.time_window_length_key))) {
-                if (newValueInteger >= TIME_WINDOW_LENGTH_MIN && newValueInteger <= TIME_WINDOW_LENGTH_MAX) {
+                if (newValueInteger >= R.integer.time_window_length_min && newValueInteger <= R.integer.time_window_length_max) {
                     editor.putInt(getString(R.string.time_window_length_shared_preferences_key), newValueInteger);
                 } else {
                     message = getString(R.string.requested_range_message);
@@ -171,19 +161,19 @@ public class SettingsFragment extends PreferenceFragment {
 
         inputNeurons.setText(String.valueOf(sharedPreferences.getInt(getString(R.string.input_neurons_shared_preferences_key), SplashActivity.INPUT_NEURONS)));
         inputNeurons.setSummary(inputNeurons.getText());
-        inputNeurons.setDialogMessage(getString(R.string.range) + " " + String.valueOf(INPUT_NEURONS_MIN) + " - " + String.valueOf(INPUT_NEURONS_MAX));
+        inputNeurons.setDialogMessage(getString(R.string.range) + String.valueOf(R.integer.input_neurons_min) + " - " + String.valueOf(R.integer.input_neurons_max));
 
         hiddenLayers.setText(String.valueOf(sharedPreferences.getInt(getString(R.string.hidden_layers_shared_preferences_key), SplashActivity.HIDDEN_LAYERS)));
         hiddenLayers.setSummary(hiddenLayers.getText());
-        hiddenLayers.setDialogMessage(getString(R.string.range) + " " + String.valueOf(HIDDEN_LAYERS_MIN) + " - " + String.valueOf(HIDDEN_LAYER_MAX));
+        hiddenLayers.setDialogMessage(getString(R.string.range) + String.valueOf(R.integer.hidden_layers_min) + " - " + String.valueOf(R.integer.hidden_layers_max));
 
         hiddenNeurons.setText(String.valueOf(sharedPreferences.getInt(getString(R.string.hidden_neurons_shared_preferences_key), SplashActivity.HIDDEN_NEURONS)));
         hiddenNeurons.setSummary(hiddenNeurons.getText());
-        hiddenNeurons.setDialogMessage(getString(R.string.range) + " " + String.valueOf(HIDDEN_NEURONS_MIN) + " - " + String.valueOf(HIDDEN_NEURONS_MAX));
+        hiddenNeurons.setDialogMessage(getString(R.string.range) + String.valueOf(R.integer.hidden_neurons_min) + " - " + String.valueOf(R.integer.hidden_neurons_max));
 
         learningIterations.setText(String.valueOf(sharedPreferences.getInt(getString(R.string.learning_iterations_shared_preferences_key), SplashActivity.LEARNING_ITERATIONS)));
         learningIterations.setSummary(learningIterations.getText());
-        learningIterations.setDialogMessage(getString(R.string.range) + " " + String.valueOf(LEARNING_ITERATIONS_MIN) + " - " + String.valueOf(LEARNING_ITERATIONS_MAX));
+        learningIterations.setDialogMessage(getString(R.string.range) + String.valueOf(R.integer.learning_iterations_min) + " - " + String.valueOf(R.integer.learning_iterations_max));
 
         desiredActivityWeight.setText(String.valueOf(Double.longBitsToDouble(sharedPreferences.getLong(getString(R.string.desired_activity_weight_shared_preferences_key), Double.doubleToRawLongBits(SplashActivity.DESIRED_ACTIVITY_WEIGHT)))));
         desiredActivityWeight.setSummary(desiredActivityWeight.getText());
@@ -195,7 +185,7 @@ public class SettingsFragment extends PreferenceFragment {
 
         timeWindowLength.setText(String.valueOf(sharedPreferences.getInt(getString(R.string.time_window_length_shared_preferences_key), SplashActivity.TIME_WINDOW_LENGTH)));
         timeWindowLength.setSummary(timeWindowLength.getText());
-        timeWindowLength.setDialogMessage(getString(R.string.range) + " " + String.valueOf(TIME_WINDOW_LENGTH_MIN) + " - " + String.valueOf(TIME_WINDOW_LENGTH_MAX) + ", " + getString(R.string.time_unit));
+        timeWindowLength.setDialogMessage(getString(R.string.range) + " " + String.valueOf(R.integer.time_window_length_min) + " - " + String.valueOf(R.integer.time_window_length_max) + " " + getString(R.string.time_unit));
 
         classifier.setOnPreferenceChangeListener(listPreferenceChangeListener);
         inputNeurons.setOnPreferenceChangeListener(numberEditTextPreferenceChangeListener);

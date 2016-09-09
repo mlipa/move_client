@@ -27,18 +27,6 @@ import java.util.Date;
 public class AddActivity extends AppCompatActivity implements SensorEventListener {
     private final String TAG = AddActivity.class.toString();
 
-    private final Integer CHRONOMETER_TIME = 120000;
-    private final Integer CHRONOMETER_STEP = 1000;
-    private final Integer DELAY_TIME = 5000;
-    private final Integer DELAY_STEP = 1000;
-
-    private final Integer ACTIVITY_ID_LIE = 1;
-    private final Integer ACTIVITY_ID_SIT = 2;
-    private final Integer ACTIVITY_ID_STAND = 3;
-    private final Integer ACTIVITY_ID_WALK = 4;
-    private final Integer ACTIVITY_ID_NOT_DETECTED = 5;
-    private final Integer USER_ID_ERROR = -1;
-
     private Context context;
     private SharedPreferences sharedPreferences;
     private SQLiteDatabase database;
@@ -78,7 +66,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
 
         player = MediaPlayer.create(context, R.raw.notify);
 
-        chronometer = new CountDownTimer(CHRONOMETER_TIME, CHRONOMETER_STEP) {
+        chronometer = new CountDownTimer(R.integer.chronometer_time, R.integer.chronometer_step) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Long minutes = (millisUntilFinished / 1000) / 60;
@@ -109,7 +97,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
             }
         };
 
-        delay = new CountDownTimer(DELAY_TIME, DELAY_STEP) {
+        delay = new CountDownTimer(R.integer.delay_time, R.integer.chronometer_step) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Long minutes = (millisUntilFinished / 1000) / 60;
@@ -134,8 +122,8 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         };
 
         dateFormat = new SimpleDateFormat(getString(R.string.date_format));
-        activityId = ACTIVITY_ID_NOT_DETECTED;
-        userId = sharedPreferences.getInt(getString(R.string.client_user_id_key), USER_ID_ERROR);
+        activityId = R.integer.activity_id_not_detected;
+        userId = sharedPreferences.getInt(getString(R.string.client_user_id_key), R.integer.user_id_error);
         insertedRows = 0;
 
         ivActivity = (ImageView) findViewById(R.id.iv_activity);
@@ -190,7 +178,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         switch (view.getId()) {
             case R.id.rb_activity_lie:
                 if (checked) {
-                    activityId = ACTIVITY_ID_LIE;
+                    activityId = R.integer.activity_id_lie;
 
                     ivActivity.setImageResource(R.drawable.activity_lie);
                 }
@@ -198,7 +186,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 break;
             case R.id.rb_activity_sit:
                 if (checked) {
-                    activityId = ACTIVITY_ID_SIT;
+                    activityId = R.integer.activity_id_sit;
 
                     ivActivity.setImageResource(R.drawable.activity_sit);
                 }
@@ -206,7 +194,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 break;
             case R.id.rb_activity_stand:
                 if (checked) {
-                    activityId = ACTIVITY_ID_STAND;
+                    activityId = R.integer.activity_id_stand;
 
                     ivActivity.setImageResource(R.drawable.activity_stand);
                 }
@@ -214,7 +202,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 break;
             case R.id.rb_activity_walk:
                 if (checked) {
-                    activityId = ACTIVITY_ID_WALK;
+                    activityId = R.integer.activity_id_walk;
 
                     ivActivity.setImageResource(R.drawable.activity_walk);
                 }

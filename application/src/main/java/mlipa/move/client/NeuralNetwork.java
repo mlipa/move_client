@@ -3,7 +3,6 @@ package mlipa.move.client;
 import java.util.ArrayList;
 
 public class NeuralNetwork {
-    private final Integer DIVISOR = 10;
     public static final Double ETA = 0.6;
 
     private Integer layersNumber;
@@ -53,7 +52,7 @@ public class NeuralNetwork {
         Integer inputLayer = 0;
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
-            layers.get(inputLayer).get(i).output = input.get(i) / DIVISOR;
+            layers.get(inputLayer).get(i).output = input.get(i) / R.integer.divisor;
         }
 
         for (int i = 1; i < layers.size(); i++) {
@@ -94,7 +93,7 @@ public class NeuralNetwork {
         ArrayList<Double> output = new ArrayList<>(layers.get(outputLayer).size());
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
-            layers.get(inputLayer).get(i).output = input.get(i) / DIVISOR;
+            layers.get(inputLayer).get(i).output = input.get(i) / R.integer.divisor;
         }
 
         for (int i = 1; i < layers.size(); i++) {
