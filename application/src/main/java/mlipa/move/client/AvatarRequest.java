@@ -1,5 +1,6 @@
 package mlipa.move.client;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 
 import com.android.volley.AuthFailureError;
@@ -14,13 +15,17 @@ import java.util.Map;
 public class AvatarRequest extends ImageRequest {
     private static final String AVATAR_URL = "http://move-p.herokuapp.com/m_avatar/";
 
-    public AvatarRequest(String filename, Response.Listener<Bitmap> listener) {
+    private Context context;
+
+    public AvatarRequest(Context context, String filename, Response.Listener<Bitmap> listener) {
         super(AVATAR_URL + filename, listener, 0, 0, null, null);
+
+        this.context = context;
     }
 
     @Override
     protected Response<Bitmap> parseNetworkResponse(NetworkResponse response) {
-        Cookie.checkSessionCookie(response.headers);
+        Cookie.checkSessionCookie(context, response.headers);
 
         return super.parseNetworkResponse(response);
     }
@@ -33,7 +38,7 @@ public class AvatarRequest extends ImageRequest {
             headers = new HashMap<>();
         }
 
-        Cookie.addSessionCookie(headers);
+        Cookie.addSessionCookie(context, headers);
 
         return headers;
     }

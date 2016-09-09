@@ -93,7 +93,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_gravity_label_x"
+                android:id="@+id/tv_gravity_x_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -109,11 +109,11 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_gravity_unit_x"
+                android:id="@+id/tv_gravity_x_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/unit"
+                android:text="@string/raws_unit"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -124,7 +124,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_gravity_label_y"
+                android:id="@+id/tv_gravity_y_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -140,11 +140,11 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_gravity_unit_y"
+                android:id="@+id/tv_gravity_y_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/unit"
+                android:text="@string/raws_unit"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -155,7 +155,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_gravity_label_z"
+                android:id="@+id/tv_gravity_z_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -171,11 +171,11 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_gravity_unit_z"
+                android:id="@+id/tv_gravity_z_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/unit"
+                android:text="@string/raws_unit"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -194,7 +194,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_accelerometer_label_x"
+                android:id="@+id/tv_accelerometer_x_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -210,11 +210,11 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_accelerometer_unit_x"
+                android:id="@+id/tv_accelerometer_x_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/unit"
+                android:text="@string/raws_unit"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -225,7 +225,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_accelerometer_label_y"
+                android:id="@+id/tv_accelerometer_y_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -241,11 +241,11 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_accelerometer_unit_y"
+                android:id="@+id/tv_accelerometer_y_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/unit"
+                android:text="@string/raws_unit"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
 
@@ -256,7 +256,7 @@
             android:orientation="horizontal">
 
             <TextView
-                android:id="@+id/tv_accelerometer_label_z"
+                android:id="@+id/tv_accelerometer_z_label"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
@@ -272,11 +272,11 @@
                 android:textColor="@color/black" />
 
             <TextView
-                android:id="@+id/tv_accelerometer_unit_z"
+                android:id="@+id/tv_accelerometer_z_unit"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical"
-                android:text="@string/unit"
+                android:text="@string/raws_unit"
                 android:textAppearance="?android:attr/textAppearanceSmall" />
         </LinearLayout>
     </LinearLayout>

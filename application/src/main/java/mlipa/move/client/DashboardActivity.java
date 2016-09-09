@@ -12,7 +12,6 @@ import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -36,31 +35,19 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 
 public class DashboardActivity extends AppCompatActivity implements SensorEventListener {
-    private static final String TAG = DashboardActivity.class.toString();
-
-    private static final String SERVER_SUCCESS_KEY = "success";
-    private static final String SERVER_NAME_KEY = "name";
-    private static final String SERVER_USERNAME_KEY = "username";
-    private static final String SERVER_EMAIL_KEY = "email";
-    private static final String SERVER_AVATAR_KEY = "avatar";
-    private static final String SERVER_FILENAME_KEY = "filename";
-    private static final String SERVER_MESSAGE_KEY = "message";
-    private static final String CLIENT_NAME_KEY = "name";
-    private static final String CLIENT_USERNAME_KEY = "username";
-    private static final String CLIENT_EMAIL_KEY = "email";
+    private final String TAG = DashboardActivity.class.toString();
 
     private Context context;
     private RequestQueue queue;
-
     private SQLiteDatabase database;
+
+    private SensorManager sensorManager;
+    private Sensor accelerometer;
 
     private Intent addIntent;
     private Intent settingsIntent;
     private Intent profileIntent;
     private Intent logInIntent;
-
-    private SensorManager sensorManager;
-    private Sensor accelerometer;
 
     private ImageView ivCurrentActivity;
     private ImageView ivFirstActivity;
@@ -82,10 +69,10 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
             try {
                 JSONObject jsonResponse = new JSONObject(response);
 
-                if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
-                    String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
+                if (jsonResponse.getBoolean(getString(R.string.server_success_key))) {
+                    String message = jsonResponse.getString(getString(R.string.server_message_key));
 
-                    Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
+                    Log.v(TAG, "[logOutListener.onResponse()] " + getString(R.string.server_message_key) + " = " + message);
 
                     logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                     startActivity(logInIntent);
@@ -106,21 +93,16 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
 
         context = getApplicationContext();
         queue = Volley.newRequestQueue(context);
-
         database = SplashActivity.databaseHandler.getWritableDatabase();
-
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        addIntent = new Intent(context, AddActivity.class);
-        settingsIntent = new Intent(context, SettingsActivity.class);
-        profileIntent = new Intent(context, ProfileActivity.class);
-        logInIntent = new Intent(context, LogInActivity.class);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         sensorManager.registerListener(DashboardActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
 
-        Log.v(TAG, "[onCreate()] Accelerometer registered successfully!");
+        addIntent = new Intent(context, AddActivity.class);
+        settingsIntent = new Intent(context, SettingsActivity.class);
+        profileIntent = new Intent(context, ProfileActivity.class);
+        logInIntent = new Intent(context, LogInActivity.class);
 
         ivCurrentActivity = (ImageView) findViewById(R.id.iv_current_activity);
         ivFirstActivity = (ImageView) findViewById(R.id.iv_first_activity);
@@ -171,25 +153,25 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
                         try {
                             JSONObject jsonResponse = new JSONObject(response);
 
-                            if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
-                                String name = jsonResponse.getString(SERVER_NAME_KEY);
-                                String username = jsonResponse.getString(SERVER_USERNAME_KEY);
-                                String email = jsonResponse.getString(SERVER_EMAIL_KEY);
-                                Boolean avatar = jsonResponse.getBoolean(SERVER_AVATAR_KEY);
+                            if (jsonResponse.getBoolean(getString(R.string.server_success_key))) {
+                                String name = jsonResponse.getString(getString(R.string.server_name_key));
+                                String username = jsonResponse.getString(getString(R.string.server_username_key));
+                                String email = jsonResponse.getString(getString(R.string.server_email_key));
+                                Boolean avatar = jsonResponse.getBoolean(getString(R.string.server_avatar_key));
 
-                                Log.v(TAG, SERVER_NAME_KEY + " = " + name);
-                                Log.v(TAG, SERVER_USERNAME_KEY + " = " + username);
-                                Log.v(TAG, SERVER_EMAIL_KEY + " = " + email);
-                                Log.v(TAG, SERVER_AVATAR_KEY + " = " + avatar.toString());
+                                Log.v(TAG, "[profileListener.onResponse()] " + getString(R.string.server_name_key) + " = " + name);
+                                Log.v(TAG, "[profileListener.onResponse()] " + getString(R.string.server_username_key) + " = " + username);
+                                Log.v(TAG, "[profileListener.onResponse()] " + getString(R.string.server_email_key) + " = " + email);
+                                Log.v(TAG, "[profileListener.onResponse()] " + getString(R.string.server_avatar_key) + " = " + avatar.toString());
 
-                                profileIntent.putExtra(CLIENT_NAME_KEY, name);
-                                profileIntent.putExtra(CLIENT_USERNAME_KEY, username);
-                                profileIntent.putExtra(CLIENT_EMAIL_KEY, email);
+                                profileIntent.putExtra(getString(R.string.client_name_key), name);
+                                profileIntent.putExtra(getString(R.string.client_username_key), username);
+                                profileIntent.putExtra(getString(R.string.client_email_key), email);
 
                                 if (avatar) {
-                                    String filename = jsonResponse.getString(SERVER_FILENAME_KEY);
+                                    String filename = jsonResponse.getString(getString(R.string.server_filename_key));
 
-                                    Log.v(TAG, SERVER_FILENAME_KEY + " = " + filename);
+                                    Log.v(TAG, "[profileListener.onResponse()] " + getString(R.string.server_filename_key) + " = " + filename);
 
                                     Response.Listener<Bitmap> avatarListener = new Response.Listener<Bitmap>() {
                                         @Override
@@ -198,7 +180,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
                                         }
                                     };
 
-                                    queue.add(new AvatarRequest(filename, avatarListener));
+                                    queue.add(new AvatarRequest(context, filename, avatarListener));
                                 }
 
                                 startActivity(profileIntent);
@@ -209,7 +191,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
                     }
                 };
 
-                queue.add(new ProfileRequest(profileListener));
+                queue.add(new ProfileRequest(context, profileListener));
 
                 return true;
             default:
@@ -222,11 +204,11 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         super.onStart();
 
         String[] iProjection = {
-                RawContract.Raws._ID
+                RawsContract._ID
         };
 
         Cursor iCursor = database.query(
-                RawContract.Raws.TABLE_NAME,
+                RawsContract.TABLE_NAME,
                 iProjection,
                 null, null, null, null, null
         );
@@ -234,8 +216,8 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         if (iCursor.getCount() <= 0) {
             AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
 
-            builder.setTitle(R.string.first_things);
-            builder.setMessage(R.string.first_things_message);
+            builder.setTitle(R.string.first_things_first);
+            builder.setMessage(R.string.first_things_first_message);
             builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
@@ -245,7 +227,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
             builder.setNegativeButton(R.string.log_out, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    queue.add(new LogOutRequest(logOutListener));
+                    queue.add(new LogOutRequest(context, logOutListener));
                 }
             });
             builder.setCancelable(false);
@@ -253,18 +235,18 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         } else if (!SplashActivity.neuralNetworkActive) {
             AlertDialog.Builder builder = new AlertDialog.Builder(DashboardActivity.this);
 
-            builder.setTitle(R.string.last_step);
-            builder.setMessage(R.string.last_step_message);
+            builder.setTitle(R.string.one_last_step);
+            builder.setMessage(R.string.one_last_step_message);
             builder.setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    startActivity(settingsIntent);
+                    SettingsActivity.fab.callOnClick();
                 }
             });
             builder.setNegativeButton(R.string.log_out, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    queue.add(new LogOutRequest(logOutListener));
+                    queue.add(new LogOutRequest(context, logOutListener));
                 }
             });
             builder.setCancelable(false);
@@ -282,7 +264,7 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
             builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                 @Override
                 public void onClick(DialogInterface dialog, int which) {
-                    queue.add(new LogOutRequest(logOutListener));
+                    queue.add(new LogOutRequest(context, logOutListener));
                 }
             });
             builder.setNegativeButton(R.string.no, null);
@@ -301,8 +283,6 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         super.onPause();
 
         sensorManager.unregisterListener(DashboardActivity.this, accelerometer);
-
-        Log.v(TAG, "[onPause()] Accelerometer unregistered successfully!");
     }
 
     @Override
@@ -310,8 +290,6 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         super.onResume();
 
         sensorManager.registerListener(DashboardActivity.this, accelerometer, SensorManager.SENSOR_DELAY_NORMAL);
-
-        Log.v(TAG, "[onResume()] Accelerometer registered successfully!");
     }
 
     @Override
@@ -319,8 +297,6 @@ public class DashboardActivity extends AppCompatActivity implements SensorEventL
         super.onStop();
 
         sensorManager.unregisterListener(DashboardActivity.this, accelerometer);
-
-        Log.v(TAG, "[onStop()] Accelerometer unregistered successfully!");
     }
 
     @Override

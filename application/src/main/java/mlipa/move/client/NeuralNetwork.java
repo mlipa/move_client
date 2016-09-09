@@ -3,20 +3,18 @@ package mlipa.move.client;
 import java.util.ArrayList;
 
 public class NeuralNetwork {
+    private final Integer DIVISOR = 10;
+    public static final Double ETA = 0.6;
+
     private Integer layersNumber;
 
     private ArrayList<ArrayList<Neuron>> layers = new ArrayList<>();
-
-    public static ArrayList<NeuronConnection> connections = new ArrayList<>();
-
-    private final Integer NORMALIZATION = 10;
-    public static final Double ETA = 0.6;
 
     public NeuralNetwork(Integer inputNeurons, Integer hiddenLayers, Integer hiddenNeurons, Integer outputNeurons) {
         layersNumber = hiddenLayers + 2;
 
         for (int i = 0; i < layersNumber; i++) {
-            ArrayList<Neuron> layer = new ArrayList<Neuron>();
+            ArrayList<Neuron> layer = new ArrayList<>();
 
             if (i == 0) {
                 for (int j = 0; j < inputNeurons; j++) {
@@ -44,8 +42,6 @@ public class NeuralNetwork {
                 for (int k = 0; k < layers.get(i + 1).size(); k++) {
                     NeuronConnection connection = new NeuronConnection(layers.get(i).get(j), layers.get(i + 1).get(k));
 
-                    connections.add(connection);
-
                     layers.get(i).get(j).next.add(connection);
                     layers.get(i + 1).get(k).previous.add(connection);
                 }
@@ -57,7 +53,7 @@ public class NeuralNetwork {
         Integer inputLayer = 0;
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
-            layers.get(inputLayer).get(i).output = input.get(i) / NORMALIZATION;
+            layers.get(inputLayer).get(i).output = input.get(i) / DIVISOR;
         }
 
         for (int i = 1; i < layers.size(); i++) {
@@ -98,7 +94,7 @@ public class NeuralNetwork {
         ArrayList<Double> output = new ArrayList<>(layers.get(outputLayer).size());
 
         for (int i = 0; i < layers.get(inputLayer).size(); i++) {
-            layers.get(inputLayer).get(i).output = input.get(i) / NORMALIZATION;
+            layers.get(inputLayer).get(i).output = input.get(i) / DIVISOR;
         }
 
         for (int i = 1; i < layers.size(); i++) {

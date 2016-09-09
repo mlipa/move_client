@@ -5,6 +5,40 @@
         android:entries="@array/classifier_entries"
         android:entryValues="@array/classifier_entry_values"
         android:key="@string/classifier_key"
-        android:negativeButtonText="@string/cancel"
         android:title="@string/classifier" />
+
+    <EditTextPreference
+        android:inputType="number"
+        android:key="@string/input_neurons_key"
+        android:title="@string/input_neurons" />
+
+    <EditTextPreference
+        android:inputType="number"
+        android:key="@string/hidden_layers_key"
+        android:title="@string/hidden_layers" />
+
+    <EditTextPreference
+        android:inputType="number"
+        android:key="@string/hidden_neurons_key"
+        android:title="@string/hidden_neurons" />
+
+    <EditTextPreference
+        android:inputType="number"
+        android:key="@string/learning_iterations_key"
+        android:title="@string/learning_iterations" />
+
+    <EditTextPreference
+        android:inputType="numberDecimal"
+        android:key="@string/desired_activity_weight_key"
+        android:title="@string/desired_activity_weight" />
+
+    <EditTextPreference
+        android:inputType="numberDecimal"
+        android:key="@string/undesired_activity_weight_key"
+        android:title="@string/undesired_activity_weight" />
+
+    <EditTextPreference
+        android:inputType="number"
+        android:key="@string/time_window_length_key"
+        android:title="@string/time_window_length" />
 </PreferenceScreen>

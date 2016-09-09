@@ -2,6 +2,7 @@ package mlipa.move.client;
 
 import android.content.ContentValues;
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.database.sqlite.SQLiteDatabase;
 import android.hardware.Sensor;
 import android.hardware.SensorEvent;
@@ -10,7 +11,6 @@ import android.hardware.SensorManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.os.CountDownTimer;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -25,26 +25,36 @@ import java.util.ArrayList;
 import java.util.Date;
 
 public class AddActivity extends AppCompatActivity implements SensorEventListener {
-    private static final String TAG = AddActivity.class.toString();
+    private final String TAG = AddActivity.class.toString();
 
-    private static final String CLIENT_USER_ID_KEY = "userId";
+    private final Integer CHRONOMETER_TIME = 120000;
+    private final Integer CHRONOMETER_STEP = 1000;
+    private final Integer DELAY_TIME = 5000;
+    private final Integer DELAY_STEP = 1000;
+
+    private final Integer ACTIVITY_ID_LIE = 1;
+    private final Integer ACTIVITY_ID_SIT = 2;
+    private final Integer ACTIVITY_ID_STAND = 3;
+    private final Integer ACTIVITY_ID_WALK = 4;
+    private final Integer ACTIVITY_ID_NOT_DETECTED = 5;
+    private final Integer USER_ID_ERROR = -1;
 
     private Context context;
-    private MediaPlayer player;
-
+    private SharedPreferences sharedPreferences;
     private SQLiteDatabase database;
-    private Integer insertedRows;
-
-    private SimpleDateFormat dateFormat;
-    private Integer activityId;
-    private Integer userId;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Boolean accelerometerActive;
 
-    private CountDownTimer delay;
+    private MediaPlayer player;
     private CountDownTimer chronometer;
+    private CountDownTimer delay;
+
+    private SimpleDateFormat dateFormat;
+    private Integer activityId;
+    private Integer userId;
+    private Integer insertedRows;
 
     private ImageView ivActivity;
     private RadioGroup rgActivity;
@@ -59,22 +69,16 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         setContentView(R.layout.activity_add);
 
         context = getApplicationContext();
-        player = MediaPlayer.create(context, R.raw.notify);
-
+        sharedPreferences = getSharedPreferences(getString(R.string.cookie_shared_preferences_key), Context.MODE_PRIVATE);
         database = SplashActivity.databaseHandler.getWritableDatabase();
-        insertedRows = 0;
-
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
-        activityId = 5;
-        userId = Cookie.preferences.getInt(CLIENT_USER_ID_KEY, -1);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         accelerometerActive = false;
 
-        chronometer = new CountDownTimer(120000, 1000) {
+        player = MediaPlayer.create(context, R.raw.notify);
+
+        chronometer = new CountDownTimer(CHRONOMETER_TIME, CHRONOMETER_STEP) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Long minutes = (millisUntilFinished / 1000) / 60;
@@ -89,24 +93,23 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                     rgActivity.getChildAt(i).setEnabled(true);
                 }
 
-                tvChronometer.setText(getString(R.string.chronometer_base_time));
+                tvChronometer.setText(getString(R.string.chronometer_time));
 
-                bStartStop.setText(getString(R.string.start));
                 bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
+                bStartStop.setText(getString(R.string.start));
 
                 player.start();
 
                 sensorManager.unregisterListener(AddActivity.this, accelerometer);
                 accelerometerActive = false;
 
-                Log.v(TAG, "[chronometer.onFinish()] Accelerometer unregistered successfully!");
-                Log.v(TAG, String.valueOf(insertedRows) + " row(s) inserted successfully!");
+                Log.v(TAG, "[chronometer.onFinish()] " + String.valueOf(insertedRows) + " row(s) inserted successfully!");
 
                 insertedRows = 0;
             }
         };
 
-        delay = new CountDownTimer(5000, 1000) {
+        delay = new CountDownTimer(DELAY_TIME, DELAY_STEP) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Long minutes = (millisUntilFinished / 1000) / 60;
@@ -119,7 +122,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
             @Override
             public void onFinish() {
                 tvChronometer.setTextColor(getColor(R.color.black));
-                tvChronometer.setText(getString(R.string.chronometer_base_time));
+                tvChronometer.setText(getString(R.string.chronometer_time));
 
                 player.start();
 
@@ -127,10 +130,13 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
 
                 sensorManager.registerListener(AddActivity.this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
                 accelerometerActive = true;
-
-                Log.v(TAG, "[delay.onFinish()] Accelerometer registered successfully!");
             }
         };
+
+        dateFormat = new SimpleDateFormat(getString(R.string.date_format));
+        activityId = ACTIVITY_ID_NOT_DETECTED;
+        userId = sharedPreferences.getInt(getString(R.string.client_user_id_key), USER_ID_ERROR);
+        insertedRows = 0;
 
         ivActivity = (ImageView) findViewById(R.id.iv_activity);
         rgActivity = (RadioGroup) findViewById(R.id.rg_activity);
@@ -151,8 +157,8 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                         rgActivity.getChildAt(i).setEnabled(false);
                     }
 
-                    bStartStop.setText(getString(R.string.stop));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_red));
+                    bStartStop.setText(getString(R.string.stop));
                 } else {
                     delay.cancel();
                     chronometer.cancel();
@@ -162,16 +168,15 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                     }
 
                     tvChronometer.setTextColor(getColor(R.color.black));
-                    tvChronometer.setText(getString(R.string.chronometer_base_time));
+                    tvChronometer.setText(getString(R.string.chronometer_time));
 
-                    bStartStop.setText(getString(R.string.start));
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
+                    bStartStop.setText(getString(R.string.start));
 
                     sensorManager.unregisterListener(AddActivity.this, accelerometer);
                     accelerometerActive = false;
 
-                    Log.v(TAG, "[bStartStop.onClick('Stop')] Accelerometer unregistered successfully!");
-                    Log.v(TAG, String.valueOf(insertedRows) + " row(s) inserted successfully!");
+                    Log.v(TAG, "[bStartStop.onClick()] " + String.valueOf(insertedRows) + " row(s) inserted successfully!");
 
                     insertedRows = 0;
                 }
@@ -185,7 +190,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         switch (view.getId()) {
             case R.id.rb_activity_lie:
                 if (checked) {
-                    activityId = 1;
+                    activityId = ACTIVITY_ID_LIE;
 
                     ivActivity.setImageResource(R.drawable.activity_lie);
                 }
@@ -193,7 +198,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 break;
             case R.id.rb_activity_sit:
                 if (checked) {
-                    activityId = 2;
+                    activityId = ACTIVITY_ID_SIT;
 
                     ivActivity.setImageResource(R.drawable.activity_sit);
                 }
@@ -201,7 +206,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 break;
             case R.id.rb_activity_stand:
                 if (checked) {
-                    activityId = 3;
+                    activityId = ACTIVITY_ID_STAND;
 
                     ivActivity.setImageResource(R.drawable.activity_stand);
                 }
@@ -209,7 +214,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 break;
             case R.id.rb_activity_walk:
                 if (checked) {
-                    activityId = 4;
+                    activityId = ACTIVITY_ID_WALK;
 
                     ivActivity.setImageResource(R.drawable.activity_walk);
                 }
@@ -231,8 +236,6 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         if (accelerometerActive) {
             sensorManager.unregisterListener(AddActivity.this, accelerometer);
             accelerometerActive = false;
-
-            Log.v(TAG, "[onPause()] Accelerometer unregistered successfully!");
         }
     }
 
@@ -249,8 +252,7 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
             sensorManager.unregisterListener(AddActivity.this, accelerometer);
             accelerometerActive = false;
 
-            Log.v(TAG, "[onStop()] Accelerometer unregistered successfully!");
-            Log.v(TAG, String.valueOf(insertedRows) + " row(s) inserted successfully!");
+            Log.v(TAG, "[AddActivity.onStop()] " + String.valueOf(insertedRows) + " row(s) inserted successfully!");
         }
     }
 
@@ -271,17 +273,17 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
 
         ContentValues values = new ContentValues();
 
-        values.put(RawContract.Raws.TIMESTAMP, dateFormat.format(new Date()));
-        values.put(RawContract.Raws.ACTIVITY_ID, activityId);
-        values.put(RawContract.Raws.USER_ID, userId);
-        values.put(RawContract.Raws.GRAVITY_X, gravity.get(0));
-        values.put(RawContract.Raws.GRAVITY_Y, gravity.get(1));
-        values.put(RawContract.Raws.GRAVITY_Z, gravity.get(2));
-        values.put(RawContract.Raws.ACCELERATION_X, acceleration.get(0));
-        values.put(RawContract.Raws.ACCELERATION_Y, acceleration.get(1));
-        values.put(RawContract.Raws.ACCELERATION_Z, acceleration.get(2));
+        values.put(RawsContract.TIMESTAMP, dateFormat.format(new Date()));
+        values.put(RawsContract.ACTIVITY_ID, activityId);
+        values.put(RawsContract.USER_ID, userId);
+        values.put(RawsContract.GRAVITY_X, gravity.get(0));
+        values.put(RawsContract.GRAVITY_Y, gravity.get(1));
+        values.put(RawsContract.GRAVITY_Z, gravity.get(2));
+        values.put(RawsContract.ACCELERATION_X, acceleration.get(0));
+        values.put(RawsContract.ACCELERATION_Y, acceleration.get(1));
+        values.put(RawsContract.ACCELERATION_Z, acceleration.get(2));
 
-        database.insert(RawContract.Raws.TABLE_NAME, null, values);
+        database.insert(RawsContract.TABLE_NAME, null, values);
 
         insertedRows++;
     }

@@ -4,21 +4,16 @@ import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.res.ColorStateList;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.Toast;
 
 public class SettingsActivity extends AppCompatActivity {
-    private static final String CLIENT_CLASSIFIER_ID_KEY = "classifierId";
-
     private Context context;
-
     private SettingsFragment settingsFragment;
-    private Bundle args;
 
-    private FloatingActionButton fab;
+    public static FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -27,16 +22,7 @@ public class SettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_settings);
 
         context = getApplicationContext();
-
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
         settingsFragment = new SettingsFragment();
-
-        args = new Bundle();
-
-        args.putString(CLIENT_CLASSIFIER_ID_KEY, Cookie.preferences.getString(CLIENT_CLASSIFIER_ID_KEY, "1"));
-
-        settingsFragment.setArguments(args);
 
         getFragmentManager().beginTransaction().replace(R.id.layout, settingsFragment).commit();
 
@@ -89,9 +75,5 @@ public class SettingsActivity extends AppCompatActivity {
                 }).start();
             }
         });
-
-        if (!SplashActivity.neuralNetworkActive) {
-            fab.callOnClick();
-        }
     }
 }

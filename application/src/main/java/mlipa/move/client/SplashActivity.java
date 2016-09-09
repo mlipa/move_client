@@ -3,11 +3,11 @@ package mlipa.move.client;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.TextView;
@@ -23,22 +23,33 @@ import java.util.Random;
 public class SplashActivity extends AppCompatActivity {
     private static final String TAG = SplashActivity.class.toString();
 
-    private static final Integer INPUT_NEURONS = 3;
-    private static final Integer HIDDEN_LAYERS = 1;
-    private static final Integer HIDDEN_NEURONS = 3;
+    public static final String CLASSIFIER_ID = "1";
+    public static final Integer INPUT_NEURONS = 3;
+    public static final Integer HIDDEN_LAYERS = 1;
+    public static final Integer HIDDEN_NEURONS = 3;
     private static final Integer OUTPUT_NEURON = 4;
-    private static final Double DESIRED_ACTIVITY_WEIGHT = 1.0;
-    private static final Double UNDESIRED_ACTIVITY_WEIGHT = 0.0;
-    private static final Integer TIME_WINDOW_LENGTH = 2560;
-    private static final Integer LEARNING_ITERATIONS = 10000;
+    public static final Integer LEARNING_ITERATIONS = 10000;
     private static final Integer TEST_ITERATIONS = 1000;
+    public static final Double DESIRED_ACTIVITY_WEIGHT = 1.0;
+    public static final Double UNDESIRED_ACTIVITY_WEIGHT = 0.0;
+    public static final Integer TIME_WINDOW_LENGTH = 2560;
 
-    private Context context;
+    private static final Integer RAWS_SIZE = 6;
+    private static final Double ONE_HUNDERD_PLUS = 100.0;
+    private static final Double ONE_HUNDERD_MINUS = -100.0;
+    private static final Double ZERO = 0.0;
 
+    private static Context context;
+    private static SharedPreferences sharedPreferences;
     public static DatabaseHandler databaseHandler;
     private static SQLiteDatabase database;
 
+    private static NeuralNetwork neuralNetwork;
+    public static Boolean neuralNetworkActive;
+
+    private static Random random;
     private static Calendar calendar;
+
     private static SimpleDateFormat dateFormat;
     private static Date timestampStart;
     private static Date timestampStop;
@@ -48,11 +59,6 @@ public class SplashActivity extends AppCompatActivity {
     private static ArrayList<ArrayList<Integer>> activitiesIdArray;
     private static Integer activitiesIdArrayCounter;
 
-    private static Random random;
-
-    public static NeuralNetwork neuralNetwork;
-    public static Boolean neuralNetworkActive;
-
     private Intent logInIntent;
 
     private TextView tv_message;
@@ -60,11 +66,26 @@ public class SplashActivity extends AppCompatActivity {
     private class SplashTask extends AsyncTask<Void, Void, Void> {
         @Override
         protected Void doInBackground(Void... params) {
+            tv_message = (TextView) findViewById(R.id.tv_message);
+
+            runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    tv_message.setText(getString(R.string.database_message));
+                }
+            });
+
+            context = getApplicationContext();
+            sharedPreferences = getSharedPreferences(getString(R.string.settings_shared_preferences_key), Context.MODE_PRIVATE);
             databaseHandler = new DatabaseHandler(context);
             database = databaseHandler.getWritableDatabase();
 
+            neuralNetworkActive = false;
+
+            random = new Random();
             calendar = Calendar.getInstance();
-            dateFormat = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss.SSS");
+
+            dateFormat = new SimpleDateFormat(getString(R.string.date_format));
             timestampStart = new Date();
             timestampStop = new Date();
             timestampStartArray = new ArrayList<>();
@@ -73,22 +94,29 @@ public class SplashActivity extends AppCompatActivity {
             activitiesIdArray = new ArrayList<>();
             activitiesIdArrayCounter = 0;
 
-            random = new Random();
-
             String[] taProjection = {
-                    RawContract.Raws.TIMESTAMP,
-                    RawContract.Raws.ACTIVITY_ID
+                    RawsContract.TIMESTAMP,
+                    RawsContract.ACTIVITY_ID
             };
 
             Cursor taCursor = database.query(
-                    RawContract.Raws.TABLE_NAME,
+                    RawsContract.TABLE_NAME,
                     taProjection,
                     null, null, null, null, null
             );
 
             if (taCursor.getCount() > 0) {
-                neuralNetwork = new NeuralNetwork(INPUT_NEURONS, HIDDEN_LAYERS, HIDDEN_NEURONS, OUTPUT_NEURON);
-                neuralNetworkActive = true;
+                SharedPreferences.Editor editor = sharedPreferences.edit();
+
+                editor.putString(getString(R.string.classifier_id_shared_preferences_key), CLASSIFIER_ID);
+                editor.putInt(getString(R.string.input_neurons_shared_preferences_key), INPUT_NEURONS);
+                editor.putInt(getString(R.string.hidden_layers_shared_preferences_key), HIDDEN_LAYERS);
+                editor.putInt(getString(R.string.hidden_neurons_shared_preferences_key), HIDDEN_NEURONS);
+                editor.putInt(getString(R.string.learning_iterations_shared_preferences_key), LEARNING_ITERATIONS);
+                editor.putLong(getString(R.string.desired_activity_weight_shared_preferences_key), Double.doubleToRawLongBits(DESIRED_ACTIVITY_WEIGHT));
+                editor.putLong(getString(R.string.undesired_activity_weight_shared_preferences_key), Double.doubleToRawLongBits(UNDESIRED_ACTIVITY_WEIGHT));
+                editor.putInt(getString(R.string.time_window_length_shared_preferences_key), TIME_WINDOW_LENGTH);
+                editor.apply();
 
                 runOnUiThread(new Runnable() {
                     @Override
@@ -116,17 +144,15 @@ public class SplashActivity extends AppCompatActivity {
                 });
 
                 learnNeuralNetwork();
-            } else {
-                neuralNetworkActive = false;
             }
+
+            logInIntent = new Intent(context, LogInActivity.class);
 
             return null;
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            logInIntent = new Intent(context, LogInActivity.class);
-
             startActivity(logInIntent);
 
             finish();
@@ -141,59 +167,51 @@ public class SplashActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_splash);
 
-        context = getApplicationContext();
-
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
-        tv_message = (TextView) findViewById(R.id.tv_message);
-
-        tv_message.setText(getString(R.string.database_message));
-
         new SplashTask().execute();
     }
 
     public static void createTimeWindows() {
         try {
+            Integer timeWindowLength = sharedPreferences.getInt(context.getString(R.string.time_window_length_shared_preferences_key), TIME_WINDOW_LENGTH);
+
             timestampStartArray.clear();
             timestampStopArray.clear();
             activitiesIdArray.clear();
 
             String[] taProjection = {
-                    RawContract.Raws.TIMESTAMP,
-                    RawContract.Raws.ACTIVITY_ID
+                    RawsContract.TIMESTAMP,
+                    RawsContract.ACTIVITY_ID
             };
 
             Cursor taCursor = database.query(
-                    RawContract.Raws.TABLE_NAME,
+                    RawsContract.TABLE_NAME,
                     taProjection,
                     null, null, null, null, null
             );
 
             taCursor.moveToFirst();
 
-            timestampStart = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.TIMESTAMP)));
+            timestampStart = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawsContract.TIMESTAMP)));
             calendar.setTime(timestampStart);
-            calendar.add(Calendar.MILLISECOND, TIME_WINDOW_LENGTH);
+            calendar.add(Calendar.MILLISECOND, timeWindowLength);
             timestampStop = calendar.getTime();
 
             timestampStartArray.add(timestampStart);
             timestampStopArray.add(timestampStop);
             activitiesIdArray.add(new ArrayList<Integer>());
             activitiesIdArrayCounter = 0;
-            activitiesIdArray.get(activitiesIdArrayCounter).add(taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.ACTIVITY_ID)));
+            activitiesIdArray.get(activitiesIdArrayCounter).add(taCursor.getInt(taCursor.getColumnIndex(RawsContract.ACTIVITY_ID)));
 
             taCursor.moveToNext();
 
-            Integer taCount = taCursor.getCount();
-
-            for (int i = 1; i < taCount; i++) {
-                Date timestamp = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawContract.Raws.TIMESTAMP)));
-                Integer activityId = taCursor.getInt(taCursor.getColumnIndex(RawContract.Raws.ACTIVITY_ID));
+            for (int i = 1; i < taCursor.getCount(); i++) {
+                Date timestamp = dateFormat.parse(taCursor.getString(taCursor.getColumnIndex(RawsContract.TIMESTAMP)));
+                Integer activityId = taCursor.getInt(taCursor.getColumnIndex(RawsContract.ACTIVITY_ID));
 
                 if (timestamp.compareTo(timestampStop) == 1) {
                     timestampStart = timestamp;
                     calendar.setTime(timestampStart);
-                    calendar.add(Calendar.MILLISECOND, TIME_WINDOW_LENGTH);
+                    calendar.add(Calendar.MILLISECOND, timeWindowLength);
                     timestampStop = calendar.getTime();
 
                     timestampStartArray.add(timestampStart);
@@ -216,19 +234,19 @@ public class SplashActivity extends AppCompatActivity {
     }
 
     public static void calculateFeatures() {
-        String deleteFeaturesRows = "DELETE FROM " + FeaturesContract.Features.TABLE_NAME + ";";
+        String deleteFeaturesRows = "DELETE FROM " + FeaturesContract.TABLE_NAME + ";";
 
         database.execSQL(deleteFeaturesRows);
 
         String[] xyzProjection = {
-                RawContract.Raws.GRAVITY_X,
-                RawContract.Raws.GRAVITY_Y,
-                RawContract.Raws.GRAVITY_Z,
-                RawContract.Raws.ACCELERATION_X,
-                RawContract.Raws.ACCELERATION_Y,
-                RawContract.Raws.ACCELERATION_Z
+                RawsContract.GRAVITY_X,
+                RawsContract.GRAVITY_Y,
+                RawsContract.GRAVITY_Z,
+                RawsContract.ACCELERATION_X,
+                RawsContract.ACCELERATION_Y,
+                RawsContract.ACCELERATION_Z
         };
-        String xyzSelection = RawContract.Raws.TIMESTAMP + " >= ? AND " + RawContract.Raws.TIMESTAMP + " <= ? AND " + RawContract.Raws.ACTIVITY_ID + " = ?";
+        String xyzSelection = RawsContract.TIMESTAMP + " >= ? AND " + RawsContract.TIMESTAMP + " <= ? AND " + RawsContract.ACTIVITY_ID + " = ?";
 
         while (timestampStartArray.size() > 0) {
             timestampStart = timestampStartArray.get(0);
@@ -251,17 +269,13 @@ public class SplashActivity extends AppCompatActivity {
                 };
 
                 Cursor xyzCursor = database.query(
-                        RawContract.Raws.TABLE_NAME,
+                        RawsContract.TABLE_NAME,
                         xyzProjection,
                         xyzSelection,
                         xyzSelectionArgs,
                         null, null, null
                 );
 
-                ArrayList<Double> min = new ArrayList<>(6);
-                ArrayList<Double> max = new ArrayList<>(6);
-                ArrayList<Double> sum = new ArrayList<>(6);
-                ArrayList<Double> squareSum = new ArrayList<>(6);
                 ArrayList<Double> gravityXArray = new ArrayList<>();
                 ArrayList<Double> gravityYArray = new ArrayList<>();
                 ArrayList<Double> gravityZArray = new ArrayList<>();
@@ -269,12 +283,16 @@ public class SplashActivity extends AppCompatActivity {
                 ArrayList<Double> accelerationYArray = new ArrayList<>();
                 ArrayList<Double> accelerationZArray = new ArrayList<>();
 
+                ArrayList<Double> min = new ArrayList<>(RAWS_SIZE);
+                ArrayList<Double> max = new ArrayList<>(RAWS_SIZE);
+                ArrayList<Double> sum = new ArrayList<>(RAWS_SIZE);
+                ArrayList<Double> squareSum = new ArrayList<>(RAWS_SIZE);
 
-                for (int i = 0; i < 6; i++) {
-                    min.add(100.0);
-                    max.add(-100.0);
-                    sum.add(0.0);
-                    squareSum.add(0.0);
+                for (int i = 0; i < RAWS_SIZE; i++) {
+                    min.add(ONE_HUNDERD_PLUS);
+                    max.add(ONE_HUNDERD_MINUS);
+                    sum.add(ZERO);
+                    squareSum.add(ZERO);
                 }
 
                 xyzCursor.moveToFirst();
@@ -282,12 +300,19 @@ public class SplashActivity extends AppCompatActivity {
                 Integer xyzCount = xyzCursor.getCount();
 
                 for (int i = 0; i < xyzCount; i++) {
-                    Double gravityX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_X));
-                    Double gravityY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_Y));
-                    Double gravityZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_Z));
-                    Double accelerationX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_X));
-                    Double accelerationY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_Y));
-                    Double accelerationZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_Z));
+                    Double gravityX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.GRAVITY_X));
+                    Double gravityY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.GRAVITY_Y));
+                    Double gravityZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.GRAVITY_Z));
+                    Double accelerationX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.ACCELERATION_X));
+                    Double accelerationY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.ACCELERATION_Y));
+                    Double accelerationZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.ACCELERATION_Z));
+
+                    gravityXArray.add(gravityX);
+                    gravityYArray.add(gravityY);
+                    gravityZArray.add(gravityZ);
+                    accelerationXArray.add(accelerationX);
+                    accelerationYArray.add(accelerationY);
+                    accelerationZArray.add(accelerationZ);
 
                     if (gravityX < min.get(0)) {
                         min.set(0, gravityX);
@@ -341,20 +366,13 @@ public class SplashActivity extends AppCompatActivity {
                     squareSum.set(4, squareSum.get(4) + Math.pow(accelerationY, 2));
                     squareSum.set(5, squareSum.get(5) + Math.pow(accelerationZ, 2));
 
-                    gravityXArray.add(gravityX);
-                    gravityYArray.add(gravityY);
-                    gravityZArray.add(gravityZ);
-                    accelerationXArray.add(accelerationX);
-                    accelerationYArray.add(accelerationY);
-                    accelerationZArray.add(accelerationZ);
-
                     xyzCursor.moveToNext();
                 }
 
-                ArrayList<Double> mean = new ArrayList<>(6);
-                ArrayList<Double> energy = new ArrayList<>(6);
+                ArrayList<Double> mean = new ArrayList<>(RAWS_SIZE);
+                ArrayList<Double> energy = new ArrayList<>(RAWS_SIZE);
 
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < RAWS_SIZE; i++) {
                     mean.add(sum.get(i) / xyzCount);
                     energy.add(squareSum.get(i) / xyzCount);
                 }
@@ -399,7 +417,7 @@ public class SplashActivity extends AppCompatActivity {
 
                 xyzCursor.moveToFirst();
 
-                ArrayList<Double> deviationSum = new ArrayList<>(6);
+                ArrayList<Double> deviationSum = new ArrayList<>(RAWS_SIZE);
                 ArrayList<Double> absoluteMedianGravityXArray = new ArrayList<>();
                 ArrayList<Double> absoluteMedianGravityYArray = new ArrayList<>();
                 ArrayList<Double> absoluteMedianGravityZArray = new ArrayList<>();
@@ -407,19 +425,19 @@ public class SplashActivity extends AppCompatActivity {
                 ArrayList<Double> absoluteMedianAccelerationYArray = new ArrayList<>();
                 ArrayList<Double> absoluteMedianAccelerationZArray = new ArrayList<>();
 
-                for (int i = 0; i < 6; i++) {
-                    deviationSum.add(0.0);
+                for (int i = 0; i < RAWS_SIZE; i++) {
+                    deviationSum.add(ZERO);
                 }
 
                 for (int i = 0; i < xyzCount; i++) {
-                    Double gravityX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_X));
-                    Double gravityY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_Y));
-                    Double gravityZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.GRAVITY_Z));
-                    Double accelerationX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_X));
-                    Double accelerationY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_Y));
-                    Double accelerationZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawContract.Raws.ACCELERATION_Z));
+                    Double gravityX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.GRAVITY_X));
+                    Double gravityY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.GRAVITY_Y));
+                    Double gravityZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.GRAVITY_Z));
+                    Double accelerationX = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.ACCELERATION_X));
+                    Double accelerationY = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.ACCELERATION_Y));
+                    Double accelerationZ = xyzCursor.getDouble(xyzCursor.getColumnIndex(RawsContract.ACCELERATION_Z));
 
-                    ArrayList<Double> deviation = new ArrayList<>(6);
+                    ArrayList<Double> deviation = new ArrayList<>(RAWS_SIZE);
 
                     deviation.add(Math.pow(gravityX - mean.get(0), 2));
                     deviation.add(Math.pow(gravityY - mean.get(1), 2));
@@ -428,7 +446,7 @@ public class SplashActivity extends AppCompatActivity {
                     deviation.add(Math.pow(accelerationY - mean.get(4), 2));
                     deviation.add(Math.pow(accelerationZ - mean.get(5), 2));
 
-                    for (int j = 0; j < 6; j++) {
+                    for (int j = 0; j < RAWS_SIZE; j++) {
                         deviationSum.set(j, deviationSum.get(j) + deviation.get(j));
                     }
 
@@ -442,9 +460,9 @@ public class SplashActivity extends AppCompatActivity {
                     xyzCursor.moveToNext();
                 }
 
-                ArrayList<Double> standardDeviation = new ArrayList<>(6);
+                ArrayList<Double> standardDeviation = new ArrayList<>(RAWS_SIZE);
 
-                for (int i = 0; i < 6; i++) {
+                for (int i = 0; i < RAWS_SIZE; i++) {
                     standardDeviation.add(Math.sqrt(deviationSum.get(i) / xyzCount));
                 }
 
@@ -487,100 +505,109 @@ public class SplashActivity extends AppCompatActivity {
 
                 ContentValues values = new ContentValues();
 
-                values.put(FeaturesContract.Features.TIMESTAMP_START, dateFormat.format(timestampStart));
-                values.put(FeaturesContract.Features.TIMESTAMP_STOP, dateFormat.format(timestampStop));
-                values.put(FeaturesContract.Features.ACTIVITY_ID, String.valueOf(activityId));
-                values.put(FeaturesContract.Features.GRAVITY_X_MIN, min.get(0));
-                values.put(FeaturesContract.Features.GRAVITY_Y_MIN, min.get(1));
-                values.put(FeaturesContract.Features.GRAVITY_Z_MIN, min.get(2));
-                values.put(FeaturesContract.Features.ACCELERATION_X_MIN, min.get(3));
-                values.put(FeaturesContract.Features.ACCELERATION_Y_MIN, min.get(4));
-                values.put(FeaturesContract.Features.ACCELERATION_Z_MIN, min.get(5));
-                values.put(FeaturesContract.Features.GRAVITY_X_MAX, max.get(0));
-                values.put(FeaturesContract.Features.GRAVITY_Y_MAX, max.get(1));
-                values.put(FeaturesContract.Features.GRAVITY_Z_MAX, max.get(2));
-                values.put(FeaturesContract.Features.ACCELERATION_X_MAX, max.get(3));
-                values.put(FeaturesContract.Features.ACCELERATION_Y_MAX, max.get(4));
-                values.put(FeaturesContract.Features.ACCELERATION_Z_MAX, max.get(5));
-                values.put(FeaturesContract.Features.GRAVITY_X_MEAN, mean.get(0));
-                values.put(FeaturesContract.Features.GRAVITY_Y_MEAN, mean.get(1));
-                values.put(FeaturesContract.Features.GRAVITY_Z_MEAN, mean.get(2));
-                values.put(FeaturesContract.Features.ACCELERATION_X_MEAN, mean.get(3));
-                values.put(FeaturesContract.Features.ACCELERATION_Y_MEAN, mean.get(4));
-                values.put(FeaturesContract.Features.ACCELERATION_Z_MEAN, mean.get(5));
-                values.put(FeaturesContract.Features.GRAVITY_X_STANDARD_DEVIATION, standardDeviation.get(0));
-                values.put(FeaturesContract.Features.GRAVITY_Y_STANDARD_DEVIATION, standardDeviation.get(1));
-                values.put(FeaturesContract.Features.GRAVITY_Z_STANDARD_DEVIATION, standardDeviation.get(2));
-                values.put(FeaturesContract.Features.ACCELERATION_X_STANDARD_DEVIATION, standardDeviation.get(3));
-                values.put(FeaturesContract.Features.ACCELERATION_Y_STANDARD_DEVIATION, standardDeviation.get(4));
-                values.put(FeaturesContract.Features.ACCELERATION_Z_STANDARD_DEVIATION, standardDeviation.get(5));
-                values.put(FeaturesContract.Features.GRAVITY_X_ABSOLUTE_MEDIAN, absoluteMedianGravityX);
-                values.put(FeaturesContract.Features.GRAVITY_Y_ABSOLUTE_MEDIAN, absoluteMedianGravityY);
-                values.put(FeaturesContract.Features.GRAVITY_Z_ABSOLUTE_MEDIAN, absoluteMedianGravityZ);
-                values.put(FeaturesContract.Features.ACCELERATION_X_ABSOLUTE_MEDIAN, absoluteMedianAccelerationX);
-                values.put(FeaturesContract.Features.ACCELERATION_Y_ABSOLUTE_MEDIAN, absoluteMedianAccelerationY);
-                values.put(FeaturesContract.Features.ACCELERATION_Z_ABSOLUTE_MEDIAN, absoluteMedianAccelerationZ);
-                values.put(FeaturesContract.Features.GRAVITY_X_ENERGY, energy.get(0));
-                values.put(FeaturesContract.Features.GRAVITY_Y_ENERGY, energy.get(1));
-                values.put(FeaturesContract.Features.GRAVITY_Z_ENERGY, energy.get(2));
-                values.put(FeaturesContract.Features.ACCELERATION_X_ENERGY, energy.get(3));
-                values.put(FeaturesContract.Features.ACCELERATION_Y_ENERGY, energy.get(4));
-                values.put(FeaturesContract.Features.ACCELERATION_Z_ENERGY, energy.get(5));
+                values.put(FeaturesContract.TIMESTAMP_START, dateFormat.format(timestampStart));
+                values.put(FeaturesContract.TIMESTAMP_STOP, dateFormat.format(timestampStop));
+                values.put(FeaturesContract.ACTIVITY_ID, String.valueOf(activityId));
+                values.put(FeaturesContract.GRAVITY_X_MIN, min.get(0));
+                values.put(FeaturesContract.GRAVITY_Y_MIN, min.get(1));
+                values.put(FeaturesContract.GRAVITY_Z_MIN, min.get(2));
+                values.put(FeaturesContract.ACCELERATION_X_MIN, min.get(3));
+                values.put(FeaturesContract.ACCELERATION_Y_MIN, min.get(4));
+                values.put(FeaturesContract.ACCELERATION_Z_MIN, min.get(5));
+                values.put(FeaturesContract.GRAVITY_X_MAX, max.get(0));
+                values.put(FeaturesContract.GRAVITY_Y_MAX, max.get(1));
+                values.put(FeaturesContract.GRAVITY_Z_MAX, max.get(2));
+                values.put(FeaturesContract.ACCELERATION_X_MAX, max.get(3));
+                values.put(FeaturesContract.ACCELERATION_Y_MAX, max.get(4));
+                values.put(FeaturesContract.ACCELERATION_Z_MAX, max.get(5));
+                values.put(FeaturesContract.GRAVITY_X_MEAN, mean.get(0));
+                values.put(FeaturesContract.GRAVITY_Y_MEAN, mean.get(1));
+                values.put(FeaturesContract.GRAVITY_Z_MEAN, mean.get(2));
+                values.put(FeaturesContract.ACCELERATION_X_MEAN, mean.get(3));
+                values.put(FeaturesContract.ACCELERATION_Y_MEAN, mean.get(4));
+                values.put(FeaturesContract.ACCELERATION_Z_MEAN, mean.get(5));
+                values.put(FeaturesContract.GRAVITY_X_ENERGY, energy.get(0));
+                values.put(FeaturesContract.GRAVITY_Y_ENERGY, energy.get(1));
+                values.put(FeaturesContract.GRAVITY_Z_ENERGY, energy.get(2));
+                values.put(FeaturesContract.ACCELERATION_X_ENERGY, energy.get(3));
+                values.put(FeaturesContract.ACCELERATION_Y_ENERGY, energy.get(4));
+                values.put(FeaturesContract.ACCELERATION_Z_ENERGY, energy.get(5));
+                values.put(FeaturesContract.GRAVITY_X_STANDARD_DEVIATION, standardDeviation.get(0));
+                values.put(FeaturesContract.GRAVITY_Y_STANDARD_DEVIATION, standardDeviation.get(1));
+                values.put(FeaturesContract.GRAVITY_Z_STANDARD_DEVIATION, standardDeviation.get(2));
+                values.put(FeaturesContract.ACCELERATION_X_STANDARD_DEVIATION, standardDeviation.get(3));
+                values.put(FeaturesContract.ACCELERATION_Y_STANDARD_DEVIATION, standardDeviation.get(4));
+                values.put(FeaturesContract.ACCELERATION_Z_STANDARD_DEVIATION, standardDeviation.get(5));
+                values.put(FeaturesContract.GRAVITY_X_ABSOLUTE_MEDIAN, absoluteMedianGravityX);
+                values.put(FeaturesContract.GRAVITY_Y_ABSOLUTE_MEDIAN, absoluteMedianGravityY);
+                values.put(FeaturesContract.GRAVITY_Z_ABSOLUTE_MEDIAN, absoluteMedianGravityZ);
+                values.put(FeaturesContract.ACCELERATION_X_ABSOLUTE_MEDIAN, absoluteMedianAccelerationX);
+                values.put(FeaturesContract.ACCELERATION_Y_ABSOLUTE_MEDIAN, absoluteMedianAccelerationY);
+                values.put(FeaturesContract.ACCELERATION_Z_ABSOLUTE_MEDIAN, absoluteMedianAccelerationZ);
 
-                database.insert(FeaturesContract.Features.TABLE_NAME, null, values);
+                database.insert(FeaturesContract.TABLE_NAME, null, values);
             }
         }
     }
 
     public static void learnNeuralNetwork() {
         String[] fProjection = {
-                FeaturesContract.Features.ACTIVITY_ID,
-                FeaturesContract.Features.GRAVITY_X_MIN,
-                FeaturesContract.Features.GRAVITY_Y_MIN,
-                FeaturesContract.Features.GRAVITY_Z_MIN,
-                FeaturesContract.Features.ACCELERATION_X_MIN,
-                FeaturesContract.Features.ACCELERATION_Y_MIN,
-                FeaturesContract.Features.ACCELERATION_Z_MIN,
-                FeaturesContract.Features.GRAVITY_X_MAX,
-                FeaturesContract.Features.GRAVITY_Y_MAX,
-                FeaturesContract.Features.GRAVITY_Z_MAX,
-                FeaturesContract.Features.ACCELERATION_X_MAX,
-                FeaturesContract.Features.ACCELERATION_Y_MAX,
-                FeaturesContract.Features.ACCELERATION_Z_MAX,
-                FeaturesContract.Features.GRAVITY_X_MEAN,
-                FeaturesContract.Features.GRAVITY_Y_MEAN,
-                FeaturesContract.Features.GRAVITY_Z_MEAN,
-                FeaturesContract.Features.ACCELERATION_X_MEAN,
-                FeaturesContract.Features.ACCELERATION_Y_MEAN,
-                FeaturesContract.Features.ACCELERATION_Z_MEAN,
-                FeaturesContract.Features.GRAVITY_X_STANDARD_DEVIATION,
-                FeaturesContract.Features.GRAVITY_Y_STANDARD_DEVIATION,
-                FeaturesContract.Features.GRAVITY_Z_STANDARD_DEVIATION,
-                FeaturesContract.Features.ACCELERATION_X_STANDARD_DEVIATION,
-                FeaturesContract.Features.ACCELERATION_Y_STANDARD_DEVIATION,
-                FeaturesContract.Features.ACCELERATION_Z_STANDARD_DEVIATION,
-                FeaturesContract.Features.GRAVITY_X_ABSOLUTE_MEDIAN,
-                FeaturesContract.Features.GRAVITY_Y_ABSOLUTE_MEDIAN,
-                FeaturesContract.Features.GRAVITY_Z_ABSOLUTE_MEDIAN,
-                FeaturesContract.Features.ACCELERATION_X_ABSOLUTE_MEDIAN,
-                FeaturesContract.Features.ACCELERATION_Y_ABSOLUTE_MEDIAN,
-                FeaturesContract.Features.ACCELERATION_Z_ABSOLUTE_MEDIAN,
-                FeaturesContract.Features.GRAVITY_X_ENERGY,
-                FeaturesContract.Features.GRAVITY_Y_ENERGY,
-                FeaturesContract.Features.GRAVITY_Z_ENERGY,
-                FeaturesContract.Features.ACCELERATION_X_ENERGY,
-                FeaturesContract.Features.ACCELERATION_Y_ENERGY,
-                FeaturesContract.Features.ACCELERATION_Z_ENERGY
+                FeaturesContract.ACTIVITY_ID,
+                FeaturesContract.GRAVITY_X_MIN,
+                FeaturesContract.GRAVITY_Y_MIN,
+                FeaturesContract.GRAVITY_Z_MIN,
+                FeaturesContract.ACCELERATION_X_MIN,
+                FeaturesContract.ACCELERATION_Y_MIN,
+                FeaturesContract.ACCELERATION_Z_MIN,
+                FeaturesContract.GRAVITY_X_MAX,
+                FeaturesContract.GRAVITY_Y_MAX,
+                FeaturesContract.GRAVITY_Z_MAX,
+                FeaturesContract.ACCELERATION_X_MAX,
+                FeaturesContract.ACCELERATION_Y_MAX,
+                FeaturesContract.ACCELERATION_Z_MAX,
+                FeaturesContract.GRAVITY_X_MEAN,
+                FeaturesContract.GRAVITY_Y_MEAN,
+                FeaturesContract.GRAVITY_Z_MEAN,
+                FeaturesContract.ACCELERATION_X_MEAN,
+                FeaturesContract.ACCELERATION_Y_MEAN,
+                FeaturesContract.ACCELERATION_Z_MEAN,
+                FeaturesContract.GRAVITY_X_ENERGY,
+                FeaturesContract.GRAVITY_Y_ENERGY,
+                FeaturesContract.GRAVITY_Z_ENERGY,
+                FeaturesContract.ACCELERATION_X_ENERGY,
+                FeaturesContract.ACCELERATION_Y_ENERGY,
+                FeaturesContract.ACCELERATION_Z_ENERGY,
+                FeaturesContract.GRAVITY_X_STANDARD_DEVIATION,
+                FeaturesContract.GRAVITY_Y_STANDARD_DEVIATION,
+                FeaturesContract.GRAVITY_Z_STANDARD_DEVIATION,
+                FeaturesContract.ACCELERATION_X_STANDARD_DEVIATION,
+                FeaturesContract.ACCELERATION_Y_STANDARD_DEVIATION,
+                FeaturesContract.ACCELERATION_Z_STANDARD_DEVIATION,
+                FeaturesContract.GRAVITY_X_ABSOLUTE_MEDIAN,
+                FeaturesContract.GRAVITY_Y_ABSOLUTE_MEDIAN,
+                FeaturesContract.GRAVITY_Z_ABSOLUTE_MEDIAN,
+                FeaturesContract.ACCELERATION_X_ABSOLUTE_MEDIAN,
+                FeaturesContract.ACCELERATION_Y_ABSOLUTE_MEDIAN,
+                FeaturesContract.ACCELERATION_Z_ABSOLUTE_MEDIAN
         };
 
         Cursor fCursor = database.query(
-                FeaturesContract.Features.TABLE_NAME,
+                FeaturesContract.TABLE_NAME,
                 fProjection,
                 null, null, null, null, null
         );
 
-        neuralNetwork = new NeuralNetwork(INPUT_NEURONS, HIDDEN_LAYERS, HIDDEN_NEURONS, OUTPUT_NEURON);
+        Integer inputNeurons = sharedPreferences.getInt(context.getString(R.string.input_neurons_shared_preferences_key), INPUT_NEURONS);
+        Integer hiddenLayers = sharedPreferences.getInt(context.getString(R.string.hidden_layers_shared_preferences_key), HIDDEN_LAYERS);
+        Integer hiddenNeurons = sharedPreferences.getInt(context.getString(R.string.hidden_neurons_shared_preferences_key), HIDDEN_NEURONS);
+        Integer learningIterations = sharedPreferences.getInt(context.getString(R.string.learning_iterations_shared_preferences_key), LEARNING_ITERATIONS);
+        Double desiredActivityWeight = Double.longBitsToDouble(sharedPreferences.getLong(context.getString(R.string.desired_activity_weight_shared_preferences_key), Double.doubleToLongBits(DESIRED_ACTIVITY_WEIGHT)));
+        Double undesiredActivityWeight = Double.longBitsToDouble(sharedPreferences.getLong(context.getString(R.string.undesired_activity_weight_shared_preferences_key), Double.doubleToLongBits(UNDESIRED_ACTIVITY_WEIGHT)));
+
+        neuralNetwork = new NeuralNetwork(inputNeurons, hiddenLayers, hiddenNeurons, OUTPUT_NEURON);
         neuralNetworkActive = true;
+
+        Log.v(TAG, "ARTIFICIAL NEURAL NETWORK (" + inputNeurons + " - " + hiddenLayers + " × " + hiddenNeurons + " - " + OUTPUT_NEURON + ")");
 
         Integer fCount = fCursor.getCount();
 
@@ -593,23 +620,23 @@ public class SplashActivity extends AppCompatActivity {
             activities.add(new ArrayList<Double>());
 
             for (int j = 1; j <= OUTPUT_NEURON; j++) {
-                if (j == fCursor.getDouble(fCursor.getColumnIndex(FeaturesContract.Features.ACTIVITY_ID))) {
-                    activities.get(i).add(DESIRED_ACTIVITY_WEIGHT);
+                if (j == fCursor.getDouble(fCursor.getColumnIndex(FeaturesContract.ACTIVITY_ID))) {
+                    activities.get(i).add(desiredActivityWeight);
                 } else {
-                    activities.get(i).add(UNDESIRED_ACTIVITY_WEIGHT);
+                    activities.get(i).add(undesiredActivityWeight);
                 }
             }
 
             features.add(new ArrayList<Double>());
 
-            for (int j = 1; j <= INPUT_NEURONS; j++) {
+            for (int j = 1; j <= inputNeurons; j++) {
                 features.get(i).add(fCursor.getDouble(j));
             }
 
             fCursor.moveToNext();
         }
 
-        for (int i = 0; i < LEARNING_ITERATIONS; i++) {
+        for (int i = 0; i < learningIterations; i++) {
             Integer r = random.nextInt(fCount);
 
             neuralNetwork.trainNetwork(features.get(r), activities.get(r));
@@ -668,13 +695,14 @@ public class SplashActivity extends AppCompatActivity {
 
             for (int k = 0; k < OUTPUT_NEURON; k++) {
                 Integer result = predictedActivitiesTable.get(j).get(k);
+                String resultString = result.toString();
 
                 if (result / 100 > 0) {
-                    builder.append(result + " | ");
+                    builder.append(resultString + " | ");
                 } else if (result / 10 > 0) {
-                    builder.append(" " + result + " | ");
+                    builder.append(" " + resultString + " | ");
                 } else {
-                    builder.append("  " + result + " | ");
+                    builder.append("  " + resultString + " | ");
                 }
             }
 

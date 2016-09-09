@@ -4,7 +4,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
@@ -22,13 +21,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class ProfileActivity extends AppCompatActivity {
-    private static final String TAG = ProfileActivity.class.toString();
-
-    private static final String SERVER_SUCCESS_KEY = "success";
-    private static final String SERVER_MESSAGE_KEY = "message";
-    private static final String CLIENT_NAME_KEY = "name";
-    private static final String CLIENT_USERNAME_KEY = "username";
-    private static final String CLIENT_EMAIL_KEY = "email";
+    private final String TAG = ProfileActivity.class.toString();
 
     private Context context;
     private Intent intent;
@@ -52,8 +45,6 @@ public class ProfileActivity extends AppCompatActivity {
         intent = getIntent();
         queue = Volley.newRequestQueue(context);
 
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
-
         logInIntent = new Intent(context, LogInActivity.class);
 
         civAvatar = (CircularImageView) findViewById(R.id.civ_avatar);
@@ -62,9 +53,9 @@ public class ProfileActivity extends AppCompatActivity {
         tvEmail = (TextView) findViewById(R.id.tv_email);
         bLogOut = (Button) findViewById(R.id.b_log_out);
 
-        tvName.setText(intent.getStringExtra(CLIENT_NAME_KEY));
-        tvUsername.setText(intent.getStringExtra(CLIENT_USERNAME_KEY));
-        tvEmail.setText(intent.getStringExtra(CLIENT_EMAIL_KEY));
+        tvName.setText(intent.getStringExtra(getString(R.string.client_name_key)));
+        tvUsername.setText(intent.getStringExtra(getString(R.string.client_username_key)));
+        tvEmail.setText(intent.getStringExtra(getString(R.string.client_email_key)));
 
         bLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -82,10 +73,10 @@ public class ProfileActivity extends AppCompatActivity {
                                 try {
                                     JSONObject jsonResponse = new JSONObject(response);
 
-                                    if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
-                                        String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
+                                    if (jsonResponse.getBoolean(getString(R.string.server_success_key))) {
+                                        String message = jsonResponse.getString(getString(R.string.server_message_key));
 
-                                        Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
+                                        Log.v(TAG, "[bLogOut.onResponse()] " + getString(R.string.server_message_key) + " = " + message);
 
                                         logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                         startActivity(logInIntent);
@@ -98,7 +89,7 @@ public class ProfileActivity extends AppCompatActivity {
                             }
                         };
 
-                        queue.add(new LogOutRequest(logOutListener));
+                        queue.add(new LogOutRequest(context, logOutListener));
                     }
                 });
                 builder.setNegativeButton(R.string.no, null);

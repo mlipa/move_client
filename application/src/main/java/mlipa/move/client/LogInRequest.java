@@ -1,5 +1,7 @@
 package mlipa.move.client;
 
+import android.content.Context;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
@@ -12,17 +14,17 @@ import java.util.Map;
 public class LogInRequest extends StringRequest {
     private static final String LOG_IN_URL = "http://move-p.herokuapp.com/m_log_in";
 
-    private static final String CLIENT_USERNAME_KEY = "username";
-    private static final String CLIENT_PASSWORD_KEY = "password";
-
+    private Context context;
     private Map<String, String> params;
 
-    public LogInRequest(String username, String password, Response.Listener<String> listener) {
+    public LogInRequest(Context context, String username, String password, Response.Listener<String> listener) {
         super(Method.POST, LOG_IN_URL, listener, null);
 
+        this.context = context;
+
         params = new HashMap<>();
-        params.put(CLIENT_USERNAME_KEY, username);
-        params.put(CLIENT_PASSWORD_KEY, password);
+        params.put(context.getString(R.string.client_username_key), username);
+        params.put(context.getString(R.string.client_password_key), password);
     }
 
     @Override
@@ -32,7 +34,7 @@ public class LogInRequest extends StringRequest {
 
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-        Cookie.checkSessionCookie(response.headers);
+        Cookie.checkSessionCookie(context, response.headers);
 
         return super.parseNetworkResponse(response);
     }
@@ -45,7 +47,7 @@ public class LogInRequest extends StringRequest {
             headers = new HashMap<>();
         }
 
-        Cookie.addSessionCookie(headers);
+        Cookie.addSessionCookie(context, headers);
 
         return headers;
     }

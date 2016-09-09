@@ -8,8 +8,8 @@ public class Neuron {
     public Double delta;
     public Double output;
 
-    public ArrayList<NeuronConnection> previous = new ArrayList<NeuronConnection>();
-    public ArrayList<NeuronConnection> next = new ArrayList<NeuronConnection>();
+    public ArrayList<NeuronConnection> previous = new ArrayList<>();
+    public ArrayList<NeuronConnection> next = new ArrayList<>();
 
     public Neuron() {
         Random r = new Random();

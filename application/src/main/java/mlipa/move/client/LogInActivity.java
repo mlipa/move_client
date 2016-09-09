@@ -8,7 +8,6 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
-import android.preference.PreferenceManager;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
@@ -24,17 +23,11 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class LogInActivity extends AppCompatActivity {
-    private static final String TAG = LogInActivity.class.toString();
-
-    private static final String SERVER_SUCCESS_KEY = "success";
-    private static final String SERVER_MESSAGE_KEY = "message";
-    private static final String SERVER_USER_ID_KEY = "user_id";
-    private static final String SERVER_USER_USERNAME_KEY = "user_username";
-    private static final String CLIENT_USER_ID_KEY = "userId";
+    private final String TAG = LogInActivity.class.toString();
 
     private Context context;
     private RequestQueue queue;
-
+    private SharedPreferences sharedPreferences;
     private SQLiteDatabase database;
 
     private Intent dashboardIntent;
@@ -51,10 +44,8 @@ public class LogInActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         queue = Volley.newRequestQueue(context);
-
+        sharedPreferences = getSharedPreferences(getString(R.string.cookie_shared_preferences_key), Context.MODE_PRIVATE);
         database = SplashActivity.databaseHandler.getWritableDatabase();
-
-        Cookie.preferences = PreferenceManager.getDefaultSharedPreferences(context);
 
         dashboardIntent = new Intent(context, DashboardActivity.class);
 
@@ -89,23 +80,25 @@ public class LogInActivity extends AppCompatActivity {
                                 public void onResponse(String response) {
                                     try {
                                         JSONObject jsonResponse = new JSONObject(response);
-                                        String message = jsonResponse.getString(SERVER_MESSAGE_KEY);
+                                        String message = jsonResponse.getString(getString(R.string.server_message_key));
 
-                                        if (jsonResponse.getBoolean(SERVER_SUCCESS_KEY)) {
+                                        if (jsonResponse.getBoolean(getString(R.string.server_success_key))) {
                                             etUsername.setText("");
                                             etUsername.clearFocus();
                                             etPassword.setText("");
                                             etPassword.clearFocus();
 
+                                            String userId = jsonResponse.getString(getString(R.string.server_user_id_key));
+
                                             String[] iuProjection = {
-                                                    UsersContract.Users._ID,
-                                                    UsersContract.Users.USERNAME
+                                                    UsersContract._ID,
+                                                    UsersContract.USERNAME
                                             };
-                                            String iuSelection = UsersContract.Users._ID + " = ?";
-                                            String[] iuSelectionArgs = {jsonResponse.getString(SERVER_USER_ID_KEY)};
+                                            String iuSelection = UsersContract._ID + " = ?";
+                                            String[] iuSelectionArgs = {userId};
 
                                             Cursor iuCursor = database.query(
-                                                    UsersContract.Users.TABLE_NAME,
+                                                    UsersContract.TABLE_NAME,
                                                     iuProjection,
                                                     iuSelection,
                                                     iuSelectionArgs,
@@ -114,35 +107,40 @@ public class LogInActivity extends AppCompatActivity {
 
                                             if (iuCursor.getCount() == 0) {
                                                 ContentValues values = new ContentValues();
+                                                String username = jsonResponse.getString(getString(R.string.server_username_key));
 
-                                                values.put(UsersContract.Users._ID, jsonResponse.getString(SERVER_USER_ID_KEY));
-                                                values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
+                                                values.put(UsersContract._ID, userId);
+                                                values.put(UsersContract.USERNAME, username);
 
-                                                Long id = database.insert(UsersContract.Users.TABLE_NAME, null, values);
+                                                Long id = database.insert(UsersContract.TABLE_NAME, null, values);
 
-                                                Log.v(TAG, "Row (id " + String.valueOf(id) + ") created successfully!");
+                                                Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_user_id_key) + " = " + userId);
+                                                Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_username_key) + " = " + username);
+                                                Log.v(TAG, "[logInListener.onResponse()] Row inserted successfully!");
                                             } else if (iuCursor.getCount() == 1) {
                                                 iuCursor.moveToFirst();
 
-                                                if (!iuCursor.getString(iuCursor.getColumnIndex(UsersContract.Users.USERNAME)).equals(jsonResponse.getString(SERVER_USER_USERNAME_KEY))) {
+                                                if (!iuCursor.getString(iuCursor.getColumnIndex(UsersContract.USERNAME)).equals(username)) {
                                                     ContentValues values = new ContentValues();
 
-                                                    values.put(UsersContract.Users.USERNAME, jsonResponse.getString(SERVER_USER_USERNAME_KEY));
+                                                    values.put(UsersContract.USERNAME, username);
 
                                                     Integer updatedRows = database.update(
-                                                            UsersContract.Users.TABLE_NAME,
+                                                            UsersContract.TABLE_NAME,
                                                             values,
                                                             iuSelection,
                                                             iuSelectionArgs);
 
-                                                    Log.v(TAG, String.valueOf(updatedRows) + " row(s) updated successfully!");
+                                                    Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_user_id_key) + " = " + userId);
+                                                    Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_username_key) + " = " + username);
+                                                    Log.v(TAG, "[logInListener.onResponse()] " + String.valueOf(updatedRows) + " row(s) updated successfully!");
                                                 }
                                             }
 
-                                            SharedPreferences.Editor editor = Cookie.preferences.edit();
+                                            SharedPreferences.Editor editor = sharedPreferences.edit();
 
-                                            editor.putInt(CLIENT_USER_ID_KEY, Integer.parseInt(jsonResponse.getString(SERVER_USER_ID_KEY)));
-                                            editor.commit();
+                                            editor.putInt(getString(R.string.client_user_id_key), Integer.parseInt(userId));
+                                            editor.apply();
 
                                             dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(dashboardIntent);
@@ -150,7 +148,7 @@ public class LogInActivity extends AppCompatActivity {
 
                                         dialog.dismiss();
 
-                                        Log.v(TAG, SERVER_MESSAGE_KEY + " = " + message);
+                                        Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_message_key) + " = " + message);
 
                                         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                                     } catch (JSONException e) {
@@ -159,7 +157,7 @@ public class LogInActivity extends AppCompatActivity {
                                 }
                             };
 
-                            queue.add(new LogInRequest(username, password, logInListener));
+                            queue.add(new LogInRequest(context, username, password, logInListener));
                         }
                     }).start();
                 }

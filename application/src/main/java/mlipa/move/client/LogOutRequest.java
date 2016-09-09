@@ -1,5 +1,7 @@
 package mlipa.move.client;
 
+import android.content.Context;
+
 import com.android.volley.AuthFailureError;
 import com.android.volley.NetworkResponse;
 import com.android.volley.Response;
@@ -12,13 +14,17 @@ import java.util.Map;
 public class LogOutRequest extends StringRequest {
     private static final String LOG_OUT_URL = "http://move-p.herokuapp.com/m_log_out";
 
-    public LogOutRequest(Response.Listener<String> listener) {
+    private Context context;
+
+    public LogOutRequest(Context context, Response.Listener<String> listener) {
         super(Method.GET, LOG_OUT_URL, listener, null);
+
+        this.context = context;
     }
 
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-        Cookie.checkSessionCookie(response.headers);
+        Cookie.checkSessionCookie(context, response.headers);
 
         return super.parseNetworkResponse(response);
     }
@@ -31,7 +37,7 @@ public class LogOutRequest extends StringRequest {
             headers = new HashMap<>();
         }
 
-        Cookie.addSessionCookie(headers);
+        Cookie.addSessionCookie(context, headers);
 
         return headers;
     }
