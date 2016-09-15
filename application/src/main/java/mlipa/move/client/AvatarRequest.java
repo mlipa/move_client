@@ -13,19 +13,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class AvatarRequest extends ImageRequest {
-    private static final String AVATAR_URL = "http://move-p.herokuapp.com/m_avatar/";
-
     private Context context;
 
     public AvatarRequest(Context context, String filename, Response.Listener<Bitmap> listener) {
-        super(AVATAR_URL + filename, listener, 0, 0, null, null);
+        super(context.getString(R.string.url_avatar) + filename, listener, 0, 0, null, null);
 
         this.context = context;
     }
 
     @Override
     protected Response<Bitmap> parseNetworkResponse(NetworkResponse response) {
-        Cookie.checkSessionCookie(context, response.headers);
+        Cookie.checkCookieSession(context, response.headers);
 
         return super.parseNetworkResponse(response);
     }
@@ -38,7 +36,7 @@ public class AvatarRequest extends ImageRequest {
             headers = new HashMap<>();
         }
 
-        Cookie.addSessionCookie(context, headers);
+        Cookie.addCookieSession(context, headers);
 
         return headers;
     }

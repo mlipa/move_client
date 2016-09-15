@@ -12,19 +12,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class ProfileRequest extends StringRequest {
-    private static final String PROFILE_URL = "http://move-p.herokuapp.com/m_profile";
-
     private Context context;
 
     public ProfileRequest(Context context, Response.Listener<String> listener) {
-        super(Method.GET, PROFILE_URL, listener, null);
+        super(Method.GET, context.getString(R.string.url_profile), listener, null);
 
         this.context = context;
     }
 
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-        Cookie.checkSessionCookie(context, response.headers);
+        Cookie.checkCookieSession(context, response.headers);
 
         return super.parseNetworkResponse(response);
     }
@@ -37,7 +35,7 @@ public class ProfileRequest extends StringRequest {
             headers = new HashMap<>();
         }
 
-        Cookie.addSessionCookie(context, headers);
+        Cookie.addCookieSession(context, headers);
 
         return headers;
     }

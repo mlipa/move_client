@@ -11,13 +11,25 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 
-public class LogOutRequest extends StringRequest {
+public class PredictionRequest extends StringRequest {
     private Context context;
+    private Map<String, String> params;
 
-    public LogOutRequest(Context context, Response.Listener<String> listener) {
-        super(Method.GET, context.getString(R.string.url_log_out), listener, null);
+    public PredictionRequest(Context context, String timestamp, String activityId, String classifierId, String userId, Response.Listener<String> listener) {
+        super(Method.POST, context.getString(R.string.url_prediction), listener, null);
 
         this.context = context;
+        params = new HashMap<>();
+
+        params.put(context.getString(R.string.client_timestamp), timestamp);
+        params.put(context.getString(R.string.client_activity_id), activityId);
+        params.put(context.getString(R.string.client_classifier_id), classifierId);
+        params.put(context.getString(R.string.client_user_id), userId);
+    }
+
+    @Override
+    public Map<String, String> getParams() {
+        return params;
     }
 
     @Override

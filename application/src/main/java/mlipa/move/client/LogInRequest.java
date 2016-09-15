@@ -12,19 +12,17 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class LogInRequest extends StringRequest {
-    private static final String LOG_IN_URL = "http://move-p.herokuapp.com/m_log_in";
-
     private Context context;
     private Map<String, String> params;
 
     public LogInRequest(Context context, String username, String password, Response.Listener<String> listener) {
-        super(Method.POST, LOG_IN_URL, listener, null);
+        super(Method.POST, context.getString(R.string.url_log_in), listener, null);
 
         this.context = context;
-
         params = new HashMap<>();
-        params.put(context.getString(R.string.client_username_key), username);
-        params.put(context.getString(R.string.client_password_key), password);
+
+        params.put(context.getString(R.string.client_username), username);
+        params.put(context.getString(R.string.client_password), password);
     }
 
     @Override
@@ -34,7 +32,7 @@ public class LogInRequest extends StringRequest {
 
     @Override
     protected Response<String> parseNetworkResponse(NetworkResponse response) {
-        Cookie.checkSessionCookie(context, response.headers);
+        Cookie.checkCookieSession(context, response.headers);
 
         return super.parseNetworkResponse(response);
     }
@@ -47,7 +45,7 @@ public class LogInRequest extends StringRequest {
             headers = new HashMap<>();
         }
 
-        Cookie.addSessionCookie(context, headers);
+        Cookie.addCookieSession(context, headers);
 
         return headers;
     }

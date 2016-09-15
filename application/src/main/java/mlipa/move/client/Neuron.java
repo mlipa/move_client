@@ -5,23 +5,23 @@ import java.util.Random;
 
 public class Neuron {
     private Double bias;
-    public Double delta;
     public Double output;
+    public Double delta;
 
-    public ArrayList<NeuronConnection> previous = new ArrayList<>();
-    public ArrayList<NeuronConnection> next = new ArrayList<>();
+    public ArrayList<NeuronsConnection> previous = new ArrayList<>();
+    public ArrayList<NeuronsConnection> next = new ArrayList<>();
 
     public Neuron() {
-        Random r = new Random();
+        Random random = new Random();
 
-        bias = r.nextDouble();
+        bias = random.nextDouble();
     }
 
     public void calculateOutput() {
         Double sum = bias;
 
         for (int i = 0; i < previous.size(); i++) {
-            sum += previous.get(i).source.output * previous.get(i).weight;
+            sum += previous.get(i).head.output * previous.get(i).weight;
         }
 
         output = 1 / (1 + Math.exp(-1 * sum));
@@ -32,10 +32,10 @@ public class Neuron {
     }
 
     public void updateBiasAndWeights() {
-        bias -= NeuralNetwork.ETA * delta;
+        bias -= ArtificialNeuralNetwork.learningConstant * delta;
 
         for (int i = 0; i < previous.size(); i++) {
-            previous.get(i).weight -= NeuralNetwork.ETA * delta * previous.get(i).source.output;
+            previous.get(i).weight -= ArtificialNeuralNetwork.learningConstant * delta * previous.get(i).head.output;
         }
     }
 }

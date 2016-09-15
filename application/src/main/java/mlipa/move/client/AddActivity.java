@@ -13,6 +13,8 @@ import android.os.Bundle;
 import android.os.CountDownTimer;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.KeyEvent;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.ImageView;
@@ -28,26 +30,34 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
     private final String TAG = AddActivity.class.toString();
 
     private Context context;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences settingsPreferences;
+    private SharedPreferences profilePreferences;
     private SQLiteDatabase database;
+    private MediaPlayer player;
 
     private SensorManager sensorManager;
     private Sensor accelerometer;
     private Boolean accelerometerActive;
 
-    private MediaPlayer player;
+    private Integer chronometerTime;
+    private Integer delayTime;
+    private Integer chronometerMinutes;
+    private Integer chronometerSeconds;
+    private Integer delayMinutes;
+    private Integer delaySeconds;
+
     private CountDownTimer chronometer;
     private CountDownTimer delay;
 
-    private SimpleDateFormat dateFormat;
+    private SimpleDateFormat dateFormatter;
     private Integer activityId;
     private Integer userId;
     private Integer insertedRows;
 
     private ImageView ivActivity;
-    private RadioGroup rgActivity;
+    private RadioGroup rgActivities;
     private RadioButton rbActivityLie;
-    private TextView tvChronometer;
+    private TextView tvChronometerDelay;
     private Button bStartStop;
 
     @Override
@@ -57,114 +67,134 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         setContentView(R.layout.activity_add);
 
         context = getApplicationContext();
-        sharedPreferences = getSharedPreferences(getString(R.string.cookie_shared_preferences_key), Context.MODE_PRIVATE);
+        settingsPreferences = getSharedPreferences(getString(R.string.shared_preferences_settings), Context.MODE_PRIVATE);
+        profilePreferences = getSharedPreferences(getString(R.string.shared_preferences_profile), Context.MODE_PRIVATE);
         database = SplashActivity.databaseHandler.getWritableDatabase();
+        player = MediaPlayer.create(context, R.raw.notify);
 
         sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
         accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
         accelerometerActive = false;
 
-        player = MediaPlayer.create(context, R.raw.notify);
+        Double settingsPreferencesChronometerTime = Double.longBitsToDouble(settingsPreferences.getLong(getString(R.string.shared_preferences_settings_chronometer_time), Double.doubleToLongBits(Constants.DEFAULT_CHRONOMETER_TIME))) * 1000.0;
+        Double settingsPreferencesDelayTime = Double.longBitsToDouble(settingsPreferences.getLong(getString(R.string.shared_preferences_settings_delay_time), Double.doubleToLongBits(Constants.DEFAULT_DELAY_TIME))) * 1000.0;
+        chronometerTime = settingsPreferencesChronometerTime.intValue();
+        delayTime = settingsPreferencesDelayTime.intValue();
+        chronometerMinutes = (chronometerTime / 1000) / 60;
+        chronometerSeconds = (chronometerTime / 1000) % 60;
+        delayMinutes = (delayTime / 1000) / 60;
+        delaySeconds = (delayTime / 1000) % 60;
 
-        chronometer = new CountDownTimer(R.integer.chronometer_time, R.integer.chronometer_step) {
+        chronometer = new CountDownTimer(chronometerTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Long minutes = (millisUntilFinished / 1000) / 60;
                 Long seconds = (millisUntilFinished / 1000) % 60;
 
-                tvChronometer.setText(String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
+                tvChronometerDelay.setText(String.format(getString(R.string.formatter_chronometer_delay), minutes, seconds));
             }
 
             @Override
             public void onFinish() {
-                for (int i = 0; i < rgActivity.getChildCount(); i++) {
-                    rgActivity.getChildAt(i).setEnabled(true);
-                }
-
-                tvChronometer.setText(getString(R.string.chronometer_time));
-
-                bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
-                bStartStop.setText(getString(R.string.start));
-
                 player.start();
 
                 sensorManager.unregisterListener(AddActivity.this, accelerometer);
                 accelerometerActive = false;
+
+                for (int i = 0; i < rgActivities.getChildCount(); i++) {
+                    rgActivities.getChildAt(i).setEnabled(true);
+                }
+
+                tvChronometerDelay.setText(String.format(getString(R.string.formatter_chronometer_delay), chronometerMinutes, chronometerSeconds));
+
+                bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
+                bStartStop.setText(getString(R.string.add_activity_start));
+
+                SettingsActivity.addActivityFlag = true;
 
                 Log.v(TAG, "[chronometer.onFinish()] " + String.valueOf(insertedRows) + " row(s) inserted successfully!");
 
                 insertedRows = 0;
             }
         };
-
-        delay = new CountDownTimer(R.integer.delay_time, R.integer.chronometer_step) {
+        delay = new CountDownTimer(delayTime, 1000) {
             @Override
             public void onTick(long millisUntilFinished) {
                 Long minutes = (millisUntilFinished / 1000) / 60;
                 Long seconds = (millisUntilFinished / 1000) % 60;
 
-                tvChronometer.setTextColor(getColor(R.color.bootstrap_red));
-                tvChronometer.setText(String.format("%02d", minutes) + ":" + String.format("%02d", seconds));
+                tvChronometerDelay.setText(String.format(getString(R.string.formatter_chronometer_delay), minutes, seconds));
             }
 
             @Override
             public void onFinish() {
-                tvChronometer.setTextColor(getColor(R.color.black));
-                tvChronometer.setText(getString(R.string.chronometer_time));
-
                 player.start();
-
-                chronometer.start();
 
                 sensorManager.registerListener(AddActivity.this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
                 accelerometerActive = true;
+
+                chronometer.start();
+
+                tvChronometerDelay.setTextColor(getColor(R.color.black));
+                tvChronometerDelay.setText(String.format(getString(R.string.formatter_chronometer_delay), chronometerMinutes, chronometerSeconds));
             }
         };
 
-        dateFormat = new SimpleDateFormat(getString(R.string.date_format));
-        activityId = R.integer.activity_id_not_detected;
-        userId = sharedPreferences.getInt(getString(R.string.client_user_id_key), R.integer.user_id_error);
+        dateFormatter = new SimpleDateFormat(getString(R.string.formatter_date));
+        activityId = Constants.ACTIVITY_NOT_DETECTED_ID;
+        userId = profilePreferences.getInt(getString(R.string.shared_preferences_profile_user_id), Constants.USER_NOT_DETECTED_ID);
         insertedRows = 0;
 
         ivActivity = (ImageView) findViewById(R.id.iv_activity);
-        rgActivity = (RadioGroup) findViewById(R.id.rg_activity);
+        rgActivities = (RadioGroup) findViewById(R.id.rg_activities);
         rbActivityLie = (RadioButton) findViewById(R.id.rb_activity_lie);
-        tvChronometer = (TextView) findViewById(R.id.tv_chronometer);
+        tvChronometerDelay = (TextView) findViewById(R.id.tv_delay_chronometer);
         bStartStop = (Button) findViewById(R.id.b_start_stop);
 
         rbActivityLie.toggle();
         onRadioButtonClicked(rbActivityLie);
 
+        tvChronometerDelay.setText(String.format(getString(R.string.formatter_chronometer_delay), chronometerMinutes, chronometerSeconds));
+
         bStartStop.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                if (bStartStop.getText().equals(getString(R.string.start))) {
+            public void onClick(View view) {
+                if (bStartStop.getText().equals(getString(R.string.add_activity_start))) {
                     delay.start();
 
-                    for (int i = 0; i < rgActivity.getChildCount(); i++) {
-                        rgActivity.getChildAt(i).setEnabled(false);
+                    for (int i = 0; i < rgActivities.getChildCount(); i++) {
+                        rgActivities.getChildAt(i).setEnabled(false);
                     }
+
+                    tvChronometerDelay.setTextColor(getColor(R.color.bootstrap_red));
+                    tvChronometerDelay.setText(String.format(getString(R.string.formatter_chronometer_delay), delayMinutes, delaySeconds));
 
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_red));
-                    bStartStop.setText(getString(R.string.stop));
+                    bStartStop.setText(getString(R.string.add_activity_stop));
                 } else {
-                    delay.cancel();
-                    chronometer.cancel();
+                    if (accelerometerActive) {
+                        player.start();
 
-                    for (int i = 0; i < rgActivity.getChildCount(); i++) {
-                        rgActivity.getChildAt(i).setEnabled(true);
+                        sensorManager.unregisterListener(AddActivity.this, accelerometer);
+                        accelerometerActive = false;
+
+                        SettingsActivity.addActivityFlag = true;
+
+                        Log.v(TAG, "[bStartStop.onClick()] " + String.valueOf(insertedRows) + " row(s) inserted successfully!");
                     }
 
-                    tvChronometer.setTextColor(getColor(R.color.black));
-                    tvChronometer.setText(getString(R.string.chronometer_time));
+                    chronometer.cancel();
+                    delay.cancel();
+
+                    for (int i = 0; i < rgActivities.getChildCount(); i++) {
+                        rgActivities.getChildAt(i).setEnabled(true);
+                    }
+
+                    tvChronometerDelay.setTextColor(getColor(R.color.black));
+                    tvChronometerDelay.setText(String.format(getString(R.string.formatter_chronometer_delay), chronometerMinutes, chronometerSeconds));
 
                     bStartStop.setBackgroundColor(getColor(R.color.bootstrap_blue));
-                    bStartStop.setText(getString(R.string.start));
-
-                    sensorManager.unregisterListener(AddActivity.this, accelerometer);
-                    accelerometerActive = false;
-
-                    Log.v(TAG, "[bStartStop.onClick()] " + String.valueOf(insertedRows) + " row(s) inserted successfully!");
+                    bStartStop.setText(getString(R.string.add_activity_start));
 
                     insertedRows = 0;
                 }
@@ -172,44 +202,27 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         });
     }
 
-    public void onRadioButtonClicked(View view) {
-        Boolean checked = ((RadioButton) view).isChecked();
-
-        switch (view.getId()) {
-            case R.id.rb_activity_lie:
-                if (checked) {
-                    activityId = R.integer.activity_id_lie;
-
-                    ivActivity.setImageResource(R.drawable.activity_lie);
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                if (bStartStop.getText().equals(getString(R.string.add_activity_stop))) {
+                    bStartStop.callOnClick();
                 }
-
-                break;
-            case R.id.rb_activity_sit:
-                if (checked) {
-                    activityId = R.integer.activity_id_sit;
-
-                    ivActivity.setImageResource(R.drawable.activity_sit);
-                }
-
-                break;
-            case R.id.rb_activity_stand:
-                if (checked) {
-                    activityId = R.integer.activity_id_stand;
-
-                    ivActivity.setImageResource(R.drawable.activity_stand);
-                }
-
-                break;
-            case R.id.rb_activity_walk:
-                if (checked) {
-                    activityId = R.integer.activity_id_walk;
-
-                    ivActivity.setImageResource(R.drawable.activity_walk);
-                }
-
-                break;
             default:
-                break;
+                return super.onOptionsItemSelected(item);
+        }
+    }
+
+    @Override
+    public boolean onKeyDown(int keyCode, KeyEvent event) {
+        switch (keyCode) {
+            case KeyEvent.KEYCODE_BACK:
+                if (bStartStop.getText().equals(getString(R.string.add_activity_stop))) {
+                    bStartStop.callOnClick();
+                }
+            default:
+                return super.onKeyDown(keyCode, event);
         }
     }
 
@@ -218,50 +231,21 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
     }
 
     @Override
-    protected void onPause() {
-        super.onPause();
-
-        if (accelerometerActive) {
-            sensorManager.unregisterListener(AddActivity.this, accelerometer);
-            accelerometerActive = false;
-        }
-    }
-
-    @Override
-    protected void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    protected void onStop() {
-        super.onStop();
-
-        if (accelerometerActive) {
-            sensorManager.unregisterListener(AddActivity.this, accelerometer);
-            accelerometerActive = false;
-
-            Log.v(TAG, "[AddActivity.onStop()] " + String.valueOf(insertedRows) + " row(s) inserted successfully!");
-        }
-    }
-
-    @Override
     public void onSensorChanged(SensorEvent event) {
-        final Double alpha = 0.8;
-
         ArrayList<Double> gravity = new ArrayList<>(3);
         ArrayList<Double> acceleration = new ArrayList<>(3);
 
         for (int i = 0; i < 3; i++) {
             gravity.add(0.0);
-            acceleration.add(0.0);
+            gravity.set(i, Constants.ACCELERATION_ALPHA * gravity.get(i) + (1 - Constants.ACCELERATION_ALPHA) * event.values[i]);
 
-            gravity.set(i, alpha * gravity.get(i) + (1 - alpha) * event.values[i]);
+            acceleration.add(0.0);
             acceleration.set(i, event.values[i] - gravity.get(i));
         }
 
         ContentValues values = new ContentValues();
 
-        values.put(RawsContract.TIMESTAMP, dateFormat.format(new Date()));
+        values.put(RawsContract.TIMESTAMP, dateFormatter.format(new Date()));
         values.put(RawsContract.ACTIVITY_ID, activityId);
         values.put(RawsContract.USER_ID, userId);
         values.put(RawsContract.GRAVITY_X, gravity.get(0));
@@ -274,5 +258,46 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
         database.insert(RawsContract.TABLE_NAME, null, values);
 
         insertedRows++;
+    }
+
+    public void onRadioButtonClicked(View view) {
+        Boolean checked = ((RadioButton) view).isChecked();
+
+        switch (view.getId()) {
+            case R.id.rb_activity_lie:
+                if (checked) {
+                    activityId = Constants.ACTIVITY_LIE_ID;
+
+                    ivActivity.setImageResource(R.drawable.activity_lie);
+                }
+
+                break;
+            case R.id.rb_activity_sit:
+                if (checked) {
+                    activityId = Constants.ACTIVITY_SIT_ID;
+
+                    ivActivity.setImageResource(R.drawable.activity_sit);
+                }
+
+                break;
+            case R.id.rb_activity_stand:
+                if (checked) {
+                    activityId = Constants.ACTIVITY_STAND_ID;
+
+                    ivActivity.setImageResource(R.drawable.activity_stand);
+                }
+
+                break;
+            case R.id.rb_activity_walk:
+                if (checked) {
+                    activityId = Constants.ACTIVITY_WALK_ID;
+
+                    ivActivity.setImageResource(R.drawable.activity_walk);
+                }
+
+                break;
+            default:
+                break;
+        }
     }
 }

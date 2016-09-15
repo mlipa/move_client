@@ -27,7 +27,7 @@ public class LogInActivity extends AppCompatActivity {
 
     private Context context;
     private RequestQueue queue;
-    private SharedPreferences sharedPreferences;
+    private SharedPreferences preferences;
     private SQLiteDatabase database;
 
     private Intent dashboardIntent;
@@ -44,7 +44,7 @@ public class LogInActivity extends AppCompatActivity {
 
         context = getApplicationContext();
         queue = Volley.newRequestQueue(context);
-        sharedPreferences = getSharedPreferences(getString(R.string.cookie_shared_preferences_key), Context.MODE_PRIVATE);
+        preferences = getSharedPreferences(getString(R.string.shared_preferences_profile), Context.MODE_PRIVATE);
         database = SplashActivity.databaseHandler.getWritableDatabase();
 
         dashboardIntent = new Intent(context, DashboardActivity.class);
@@ -55,19 +55,19 @@ public class LogInActivity extends AppCompatActivity {
 
         bLogIn.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 final String username = etUsername.getText().toString();
                 final String password = etPassword.getText().toString();
 
                 if (username.trim().length() == 0) {
-                    etUsername.setError(getString(R.string.required_field_message));
+                    etUsername.setError(getString(R.string.message_required));
                 } else if (password.trim().length() == 0) {
-                    etPassword.setError(getString(R.string.required_field_message));
+                    etPassword.setError(getString(R.string.message_required));
                 } else {
                     final ProgressDialog dialog = new ProgressDialog(LogInActivity.this);
 
-                    dialog.setTitle(getString(R.string.log_in));
-                    dialog.setMessage(getString(R.string.log_in_message));
+                    dialog.setTitle(getString(R.string.title_log_in));
+                    dialog.setMessage(getString(R.string.message_log_in));
                     dialog.setProgress(ProgressDialog.STYLE_SPINNER);
                     dialog.setCancelable(false);
                     dialog.show();
@@ -80,47 +80,47 @@ public class LogInActivity extends AppCompatActivity {
                                 public void onResponse(String response) {
                                     try {
                                         JSONObject jsonResponse = new JSONObject(response);
-                                        String message = jsonResponse.getString(getString(R.string.server_message_key));
+                                        String message = jsonResponse.getString(getString(R.string.server_message));
 
-                                        if (jsonResponse.getBoolean(getString(R.string.server_success_key))) {
+                                        if (jsonResponse.getBoolean(getString(R.string.server_success))) {
                                             etUsername.setText("");
                                             etUsername.clearFocus();
                                             etPassword.setText("");
                                             etPassword.clearFocus();
 
-                                            String userId = jsonResponse.getString(getString(R.string.server_user_id_key));
+                                            String userId = jsonResponse.getString(getString(R.string.server_user_id));
+                                            String username = jsonResponse.getString(getString(R.string.server_username));
 
-                                            String[] iuProjection = {
+                                            String[] usersProjection = {
                                                     UsersContract._ID,
                                                     UsersContract.USERNAME
                                             };
-                                            String iuSelection = UsersContract._ID + " = ?";
-                                            String[] iuSelectionArgs = {userId};
+                                            String usersSelection = UsersContract._ID + " = ?";
+                                            String[] usersSelectionArgs = {userId};
 
-                                            Cursor iuCursor = database.query(
+                                            Cursor usersCursor = database.query(
                                                     UsersContract.TABLE_NAME,
-                                                    iuProjection,
-                                                    iuSelection,
-                                                    iuSelectionArgs,
+                                                    usersProjection,
+                                                    usersSelection,
+                                                    usersSelectionArgs,
                                                     null, null, null
                                             );
 
-                                            if (iuCursor.getCount() == 0) {
+                                            if (usersCursor.getCount() == 0) {
                                                 ContentValues values = new ContentValues();
-                                                String username = jsonResponse.getString(getString(R.string.server_username_key));
 
                                                 values.put(UsersContract._ID, userId);
                                                 values.put(UsersContract.USERNAME, username);
 
-                                                Long id = database.insert(UsersContract.TABLE_NAME, null, values);
+                                                database.insert(UsersContract.TABLE_NAME, null, values);
 
-                                                Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_user_id_key) + " = " + userId);
-                                                Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_username_key) + " = " + username);
+                                                Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_user_id) + " = " + userId);
+                                                Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_username) + " = " + username);
                                                 Log.v(TAG, "[logInListener.onResponse()] Row inserted successfully!");
-                                            } else if (iuCursor.getCount() == 1) {
-                                                iuCursor.moveToFirst();
+                                            } else if (usersCursor.getCount() == 1) {
+                                                usersCursor.moveToFirst();
 
-                                                if (!iuCursor.getString(iuCursor.getColumnIndex(UsersContract.USERNAME)).equals(username)) {
+                                                if (!usersCursor.getString(usersCursor.getColumnIndex(UsersContract.USERNAME)).equals(username)) {
                                                     ContentValues values = new ContentValues();
 
                                                     values.put(UsersContract.USERNAME, username);
@@ -128,27 +128,26 @@ public class LogInActivity extends AppCompatActivity {
                                                     Integer updatedRows = database.update(
                                                             UsersContract.TABLE_NAME,
                                                             values,
-                                                            iuSelection,
-                                                            iuSelectionArgs);
+                                                            usersSelection,
+                                                            usersSelectionArgs);
 
-                                                    Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_user_id_key) + " = " + userId);
-                                                    Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_username_key) + " = " + username);
+                                                    Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_user_id) + " = " + userId);
+                                                    Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_username) + " = " + username);
                                                     Log.v(TAG, "[logInListener.onResponse()] " + String.valueOf(updatedRows) + " row(s) updated successfully!");
                                                 }
                                             }
 
-                                            SharedPreferences.Editor editor = sharedPreferences.edit();
+                                            SharedPreferences.Editor editor = preferences.edit();
 
-                                            editor.putInt(getString(R.string.client_user_id_key), Integer.parseInt(userId));
+                                            editor.putInt(getString(R.string.shared_preferences_profile_user_id), Integer.parseInt(userId));
                                             editor.apply();
 
-                                            dashboardIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
                                             startActivity(dashboardIntent);
                                         }
 
                                         dialog.dismiss();
 
-                                        Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_message_key) + " = " + message);
+                                        Log.v(TAG, "[logInListener.onResponse()] " + getString(R.string.server_message) + " = " + message);
 
                                         Toast.makeText(context, message, Toast.LENGTH_LONG).show();
                                     } catch (JSONException e) {

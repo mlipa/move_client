@@ -8,8 +8,8 @@ import android.util.Log;
 public class DatabaseHandler extends SQLiteOpenHelper {
     private final String TAG = DatabaseHandler.class.toString();
 
-    public static final String DATABASE_NAME = "m_move.db";
-    public static final Integer DATABASE_VERSION = 3;
+    private static final String DATABASE_NAME = "m_move.db";
+    private static final Integer DATABASE_VERSION = 3; // TODO: CHANGE TO "1"
 
     public DatabaseHandler(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
@@ -83,9 +83,8 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 FeaturesContract.GRAVITY_Z_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
                 FeaturesContract.ACCELERATION_X_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
                 FeaturesContract.ACCELERATION_Y_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
-                FeaturesContract.ACCELERATION_Z_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, ";
-
-        createFeaturesTable += "FOREIGN KEY (" + FeaturesContract.ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.TABLE_NAME + "(" + ActivitiesContract._ID + "));";
+                FeaturesContract.ACCELERATION_Z_ABSOLUTE_MEDIAN + " DOUBLE NOT NULL, " +
+                "FOREIGN KEY (" + FeaturesContract.ACTIVITY_ID + ") REFERENCES " + ActivitiesContract.TABLE_NAME + "(" + ActivitiesContract._ID + "));";
 
         String createPredictionsTable = "CREATE TABLE " + PredictionsContract.TABLE_NAME + " (" +
                 PredictionsContract._ID + "  INTEGER PRIMARY KEY, " +
@@ -104,7 +103,7 @@ public class DatabaseHandler extends SQLiteOpenHelper {
         database.execSQL(createFeaturesTable);
         database.execSQL(createPredictionsTable);
 
-        String insertActivities = "INSERT INTO " + ActivitiesContract.TABLE_NAME + " (" +
+        String insertActivitiesRows = "INSERT INTO " + ActivitiesContract.TABLE_NAME + " (" +
                 ActivitiesContract.NAME + ") VALUES " +
                 "('Lie'), " +
                 "('Sit'), " +
@@ -112,12 +111,12 @@ public class DatabaseHandler extends SQLiteOpenHelper {
                 "('Walk'), " +
                 "('Not detected');";
 
-        String insertClassifiers = "INSERT INTO " + ClassifiersContract.TABLE_NAME + "(" +
+        String insertClassifiersRows = "INSERT INTO " + ClassifiersContract.TABLE_NAME + "(" +
                 ClassifiersContract.NAME + ") VALUES " +
                 "('Artificial neural network');";
 
-        database.execSQL(insertActivities);
-        database.execSQL(insertClassifiers);
+        database.execSQL(insertActivitiesRows);
+        database.execSQL(insertClassifiersRows);
 
         Log.v(TAG, "[DatabaseHandler.onCreate()] " + DATABASE_NAME + " (version " + DATABASE_VERSION + ") created successfully!");
     }

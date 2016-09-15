@@ -3,6 +3,7 @@ package mlipa.move.client;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -24,8 +25,8 @@ public class ProfileActivity extends AppCompatActivity {
     private final String TAG = ProfileActivity.class.toString();
 
     private Context context;
-    private Intent intent;
     private RequestQueue queue;
+    private SharedPreferences preferences;
 
     private Intent logInIntent;
 
@@ -42,8 +43,8 @@ public class ProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_profile);
 
         context = getApplicationContext();
-        intent = getIntent();
         queue = Volley.newRequestQueue(context);
+        preferences = getSharedPreferences(getString(R.string.shared_preferences_profile), Context.MODE_PRIVATE);
 
         logInIntent = new Intent(context, LogInActivity.class);
 
@@ -53,46 +54,51 @@ public class ProfileActivity extends AppCompatActivity {
         tvEmail = (TextView) findViewById(R.id.tv_email);
         bLogOut = (Button) findViewById(R.id.b_log_out);
 
-        tvName.setText(intent.getStringExtra(getString(R.string.client_name_key)));
-        tvUsername.setText(intent.getStringExtra(getString(R.string.client_username_key)));
-        tvEmail.setText(intent.getStringExtra(getString(R.string.client_email_key)));
+        tvName.setText(preferences.getString(getString(R.string.shared_preferences_profile_name), getString(R.string.nothing)));
+        tvUsername.setText(preferences.getString(getString(R.string.shared_preferences_profile_username), getString(R.string.nothing)));
+        tvEmail.setText(preferences.getString(getString(R.string.shared_preferences_profile_email), getString(R.string.nothing)));
 
         bLogOut.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
                 AlertDialog.Builder builder = new AlertDialog.Builder(ProfileActivity.this);
 
-                builder.setTitle(R.string.log_out);
-                builder.setMessage(R.string.log_out_message);
-                builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                builder.setTitle(R.string.title_log_out);
+                builder.setMessage(R.string.message_log_out);
+                builder.setPositiveButton(R.string.button_yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Response.Listener<String> logOutListener = new Response.Listener<String>() {
+                        new Thread(new Runnable() {
                             @Override
-                            public void onResponse(String response) {
-                                try {
-                                    JSONObject jsonResponse = new JSONObject(response);
+                            public void run() {
+                                Response.Listener<String> logOutListener = new Response.Listener<String>() {
+                                    @Override
+                                    public void onResponse(String response) {
+                                        try {
+                                            JSONObject jsonResponse = new JSONObject(response);
 
-                                    if (jsonResponse.getBoolean(getString(R.string.server_success_key))) {
-                                        String message = jsonResponse.getString(getString(R.string.server_message_key));
+                                            if (jsonResponse.getBoolean(getString(R.string.server_success))) {
+                                                String message = jsonResponse.getString(getString(R.string.server_message));
 
-                                        Log.v(TAG, "[bLogOut.onResponse()] " + getString(R.string.server_message_key) + " = " + message);
+                                                Log.v(TAG, "[bLogOut.onResponse()] " + getString(R.string.server_message) + " = " + message);
 
-                                        logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-                                        startActivity(logInIntent);
+                                                logInIntent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                                                startActivity(logInIntent);
 
-                                        Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                                Toast.makeText(context, message, Toast.LENGTH_LONG).show();
+                                            }
+                                        } catch (JSONException e) {
+                                            e.printStackTrace();
+                                        }
                                     }
-                                } catch (JSONException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        };
+                                };
 
-                        queue.add(new LogOutRequest(context, logOutListener));
+                                queue.add(new LogOutRequest(context, logOutListener));
+                            }
+                        }).start();
                     }
                 });
-                builder.setNegativeButton(R.string.no, null);
+                builder.setNegativeButton(R.string.button_no, null);
                 builder.create().show();
             }
         });

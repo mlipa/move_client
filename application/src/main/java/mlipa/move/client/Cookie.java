@@ -6,39 +6,35 @@ import android.content.SharedPreferences;
 import java.util.Map;
 
 public class Cookie {
-    private static final String SET_COOKIE_KEY = "Set-Cookie";
-    private static final String COOKIE_KEY = "Cookie";
-    private static final String SESSION_KEY = "session";
-
-    public static void checkSessionCookie(Context context, Map<String, String> headers) {
-        if (headers.containsKey(SET_COOKIE_KEY) && headers.get(SET_COOKIE_KEY).startsWith(SESSION_KEY)) {
-            String cookie = headers.get(SET_COOKIE_KEY);
+    public static void checkCookieSession(Context context, Map<String, String> headers) {
+        if (headers.containsKey(context.getString(R.string.shared_preferences_cookie_set_cookie)) && headers.get(context.getString(R.string.shared_preferences_cookie_set_cookie)).startsWith(context.getString(R.string.shared_preferences_cookie_session))) {
+            String cookie = headers.get(context.getString(R.string.shared_preferences_cookie_set_cookie));
 
             if (cookie.trim().length() > 0) {
-                SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.cookie_shared_preferences_key), Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
+                SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.shared_preferences_cookie), Context.MODE_PRIVATE);
+                SharedPreferences.Editor editor = preferences.edit();
 
-                editor.putString(SESSION_KEY, cookie.split(";")[0]);
+                editor.putString(context.getString(R.string.shared_preferences_cookie_session), cookie.split(";")[0]);
                 editor.apply();
             }
         }
     }
 
-    public static void addSessionCookie(Context context, Map<String, String> headers) {
-        SharedPreferences sharedPreferences = context.getSharedPreferences(context.getString(R.string.cookie_shared_preferences_key), Context.MODE_PRIVATE);
-        String session = sharedPreferences.getString(SESSION_KEY, "");
+    public static void addCookieSession(Context context, Map<String, String> headers) {
+        SharedPreferences preferences = context.getSharedPreferences(context.getString(R.string.shared_preferences_cookie), Context.MODE_PRIVATE);
+        String session = preferences.getString(context.getString(R.string.shared_preferences_cookie_session), "");
 
         if (session.trim().length() > 0) {
             StringBuilder builder = new StringBuilder();
 
             builder.append(session);
 
-            if (headers.containsKey(COOKIE_KEY)) {
+            if (headers.containsKey(context.getString(R.string.shared_preferences_cookie_cookie))) {
                 builder.append("; ");
-                builder.append(headers.get(COOKIE_KEY));
+                builder.append(headers.get(context.getString(R.string.shared_preferences_cookie_cookie)));
             }
 
-            headers.put(COOKIE_KEY, builder.toString());
+            headers.put(context.getString(R.string.shared_preferences_cookie_cookie), builder.toString());
         }
     }
 }
