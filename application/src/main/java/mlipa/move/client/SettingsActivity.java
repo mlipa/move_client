@@ -119,9 +119,9 @@ public class SettingsActivity extends AppCompatActivity {
             case android.R.id.home:
                 if (windowLengthChanged || artificialNeuralNetworkChanged) {
                     showReLearnDialog();
-                }
 
-                return true;
+                    return true;
+                }
             default:
                 return super.onOptionsItemSelected(item);
         }

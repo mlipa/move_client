@@ -158,7 +158,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                         return false;
                     }
-                } else if (key.equals(R.string.settings_hidden_layers_key)) {
+                } else if (key.equals(getString(R.string.settings_hidden_layers_key))) {
                     if (newValueInteger >= Constants.HIDDEN_LAYERS_MIN && newValueInteger <= Constants.HIDDEN_LAYER_MAX) {
                         editTextPreference.setText(String.valueOf(newValueInteger));
                         editTextPreference.setSummary(String.format(getString(R.string.formatter_edit_text_preference_summary_artificial_neural_network_number), String.valueOf(newValueInteger), Constants.HIDDEN_LAYERS_MIN, Constants.HIDDEN_LAYER_MAX));
@@ -177,7 +177,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                         return false;
                     }
-                } else if (key.equals(R.string.settings_hidden_neurons_key)) {
+                } else if (key.equals(getString(R.string.settings_hidden_neurons_key))) {
                     if (newValueInteger >= Constants.HIDDEN_NEURONS_MIN && newValueInteger <= Constants.HIDDEN_NEURONS_MAX) {
                         editTextPreference.setText(String.valueOf(newValueInteger));
                         editTextPreference.setSummary(String.format(getString(R.string.formatter_edit_text_preference_summary_artificial_neural_network_number), String.valueOf(newValueInteger), Constants.HIDDEN_NEURONS_MIN, Constants.HIDDEN_NEURONS_MAX));
@@ -196,7 +196,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                         return false;
                     }
-                } else if (key.equals(R.string.settings_input_divisor_key)) {
+                } else if (key.equals(getString(R.string.settings_input_divisor_key))) {
                     if (newValueInteger >= Constants.INPUT_DIVISOR_MIN && newValueInteger <= Constants.INPUT_DIVISOR_MAX) {
                         editTextPreference.setText(String.valueOf(newValueInteger));
                         editTextPreference.setSummary(String.format(getString(R.string.formatter_edit_text_preference_summary_artificial_neural_network_number), String.valueOf(newValueInteger), Constants.INPUT_DIVISOR_MIN, Constants.INPUT_DIVISOR_MAX));
@@ -215,7 +215,7 @@ public class SettingsFragment extends PreferenceFragment {
 
                         return false;
                     }
-                } else if (key.equals(R.string.settings_learning_iterations_key)) {
+                } else if (key.equals(getString(R.string.settings_learning_iterations_key))) {
                     if (newValueInteger >= Constants.LEARNING_ITERATIONS_MIN && newValueInteger <= Constants.LEARNING_ITERATIONS_MAX) {
                         editTextPreference.setText(String.valueOf(newValueInteger));
                         editTextPreference.setSummary(String.format(getString(R.string.formatter_edit_text_preference_summary_artificial_neural_network_number), String.valueOf(newValueInteger), Constants.LEARNING_ITERATIONS_MIN, Constants.LEARNING_ITERATIONS_MAX));
