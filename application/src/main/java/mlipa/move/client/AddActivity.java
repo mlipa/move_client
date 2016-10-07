@@ -296,6 +296,22 @@ public class AddActivity extends AppCompatActivity implements SensorEventListene
                 }
 
                 break;
+            case R.id.rb_activity_run:
+                if (checked) {
+                    activityId = Constants.ACTIVITY_RUN_ID;
+
+                    ivActivity.setImageResource(R.drawable.activity_run);
+                }
+
+                break;
+            case R.id.rb_activity_cycling:
+                if (checked) {
+                    activityId = Constants.ACTIVITY_CYCLING_ID;
+
+                    ivActivity.setImageResource(R.drawable.activity_cycling);
+                }
+
+                break;
             default:
                 break;
         }

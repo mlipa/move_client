@@ -1,145 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <!-- Shared preferences keys. -->
-    <string name="cookie_shared_preferences_key">cookieSharedPreferencesKey</string>
-    <string name="settings_shared_preferences_key">sharedPreferencesSettingsKey</string>
-    <string name="classifier_id_shared_preferences_key">spClassifierId</string>
-    <string name="input_neurons_shared_preferences_key">spInputNeurons</string>
-    <string name="hidden_layers_shared_preferences_key">spHiddenLayers</string>
-    <string name="hidden_neurons_shared_preferences_key">spHiddenNeurons</string>
-    <string name="learning_iterations_shared_preferences_key">spLearningIterations</string>
-    <string name="desired_activity_weight_shared_preferences_key">spDdesiredActivityWeight</string>
-    <string name="undesired_activity_weight_shared_preferences_key">spUndesiredActivityWeight</string>
-    <string name="time_window_length_shared_preferences_key">spTimeWindowLength</string>
-
-    <!-- Client keys. -->
-    <string name="client_username_key">username</string>
-    <string name="client_password_key">password</string>
-    <string name="client_user_id_key">userId</string>
-    <string name="client_name_key">name</string>
-    <string name="client_email_key">email</string>
-
-    <!-- Server keys. -->
-    <string name="server_success_key">success</string>
-    <string name="server_message_key">message</string>
-    <string name="server_user_id_key">user_id</string>
-    <string name="server_username_key">username</string>
-    <string name="server_name_key">name</string>
-    <string name="server_email_key">email</string>
-    <string name="server_avatar_key">avatar</string>
-    <string name="server_filename_key">filename</string>
-
     <!-- Activity labels. -->
-    <string name="move">Move</string>
-    <string name="dashboard">Dashboard</string>
-    <string name="add_activity">Add activity</string>
-    <string name="settings">Settings</string>
-    <string name="profile">Profile</string>
+    <string name="activity_move">Move</string>
+    <string name="activity_dashboard">Dashboard</string>
+    <string name="activity_add_activity">Add activity</string>
+    <string name="activity_settings">Settings</string>
+    <string name="activity_profile">Profile</string>
 
-    <!-- Splash. -->
-    <string name="date_format">dd/MM/yyyy HH:mm:ss.SSS</string>
-    <string name="database_message">Creating database to store your results…</string>
-    <string name="time_windows_message">Creating time windows to calculate features…</string>
-    <string name="features_message">Creating features to learn…</string>
-    <string name="learning_message">Learning to give you better results…</string>
+    <!-- Log in activity. -->
+    <string name="log_in_username">Username</string>
+    <string name="log_in_password">Password</string>
+    <string name="log_in_log_in">Log in</string>
 
-    <!-- Log in. -->
-    <string name="username">Username</string>
-    <string name="password">Password</string>
-    <string name="log_in">Log in</string>
-    <string name="log_in_message">Wait a minute, Move is connecting to server…</string>
-    <string name="required_field_message">Please fill out this field.</string>
+    <!-- Dashboard activity. -->
+    <string name="dashboard_current_activity">Current activity</string>
+    <string name="dashboard_last_activities">Last activities</string>
+    <string name="dashboard_gravity">Gravity</string>
+    <string name="dashboard_accelerometer">Accelerometer</string>
+    <string name="dashboard_x">x:</string>
+    <string name="dashboard_y">y:</string>
+    <string name="dashboard_z">z:</string>
+    <string name="dashboard_unit">[m/s²]</string>
 
-    <!-- Dashboard -->
-    <string name="current_activity">Current activity</string>
-    <string name="last_activities">Last activities</string>
-    <string name="gravity">Gravity</string>
-    <string name="accelerometer">Accelerometer</string>
-    <string name="x">x: </string>
-    <string name="y">y: </string>
-    <string name="z">z: </string>
-    <string name="raws_unit">[m/s²]</string>
-    <string name="first_things_first">First things first</string>
-    <string name="first_things_first_message">Please give Move some results to start with! Otherwise it can\'t do anything more.</string>
-    <string name="one_last_step">One last step</string>
-    <string name="one_last_step_message">Last thing to take full advantage of Move is to learn an algorithm how to predict your activities!</string>
-    <string name="log_out">Log out</string>
-    <string name="ok">Ok</string>
-    <string name="log_out_message">Do you really want to leave?</string>
-    <string name="no">No</string>
-    <string name="yes">Yes</string>
+    <!-- Add activity activity. -->
+    <string name="add_activity_activity">Activity</string>
+    <string name="add_activity_lie">Lie</string>
+    <string name="add_activity_sit">Sit</string>
+    <string name="add_activity_stand">Stand</string>
+    <string name="add_activity_walk">Walk</string>
+    <string name="add_activity_run">Run</string>
+    <string name="add_activity_cycling">Cycling</string>
+    <string name="add_activity_delay_chronometer">Chronometer</string>
+    <string name="add_activity_start">Start</string>
+    <string name="add_activity_stop">Stop</string>
 
-    <!-- Add activity. -->
-    <string name="activity">Activity</string>
-    <string name="lie">Lie</string>
-    <string name="sit">Sit</string>
-    <string name="stand">Stand</string>
-    <string name="walk">Walk</string>
-    <string name="chronometer">Chronometer</string>
-    <string name="delay_time">00:05</string>
-    <string name="chronometer_time">02:00</string>
-    <string name="start">Start</string>
-    <string name="stop">Stop</string>
+    <!-- Profile activity. -->
+    <string name="profile_name">Name</string>
+    <string name="profile_username">Username</string>
+    <string name="profile_email">E-mail</string>
+    <string name="profile_log_out">Log out</string>
 
-    <!-- Profile. -->
-    <string name="name">Name</string>
-    <string name="email">E-mail</string>
-    <string name="nothing">…</string>
-
-    <!-- Settings. -->
-    <string name="classifier">Classifier</string>
-    <string name="input_neurons">Input neurons</string>
-    <string name="hidden_layers">Hidden layers</string>
-    <string name="hidden_neurons">Hidden neurons</string>
-    <string name="learning_iterations">Learning iterations</string>
-    <string name="desired_activity_weight">Desired activity weight</string>
-    <string name="undesired_activity_weight">Undesired activity weight</string>
-    <string name="time_window_length">Time window length</string>
-    <string name="range">Range:</string>
-    <string name="time_unit">milliseconds</string>
-    <string name="re_learn">Re-learn</string>
-    <string name="re_learn_message">Settings have changed, Move must re-learn to give better results!</string>
-    <string name="learning">Learning</string>
-    <string name="requested_range_message">Please match the requested range.</string>
-    <string name="success_toast">Right! All settings has been changed successfully!</string>
-    <string name="learning_toast">Done! Learning completed successfully!</string>
+    <!-- Settings activity. -->
+    <string name="settings_time">Time</string>
+    <string name="settings_chronometer_time">Chronometer time</string>
+    <string name="settings_delay_time">Delay time</string>
+    <string name="settings_window_length">Window length</string>
+    <string name="settings_classification">Classification</string>
+    <string name="settings_classifier">Classifier</string>
+    <string name="settings_artificial_neural_network">Artificial neural network</string>
+    <string name="settings_input_neurons">Input neurons</string>
+    <string name="settings_hidden_layers">Hidden layers</string>
+    <string name="settings_hidden_neurons">Hidden neurons</string>
+    <string name="settings_input_divisor">Input divisor</string>
+    <string name="settings_learning_constant">Learning constant</string>
+    <string name="settings_learning_iterations">Learning iterations</string>
+    <string name="settings_desired_activity_weight">Desired activity weight</string>
+    <string name="settings_undesired_activity_weight">Undesired activity weight</string>
 
     <!-- Settings keys. -->
-    <string name="classifier_key">classifier</string>
-    <string-array name="classifier_entries">
+    <string name="settings_chronometer_time_key">settingsChronometerTimeKey</string>
+    <string name="settings_delay_time_key">settingsDelayTimeKey</string>
+    <string name="settings_window_length_key">settingsWindowLengthKey</string>
+    <string name="settings_classifier_key">settingsClassifierKey</string>
+    <string-array name="settings_classifier_entries">
         <item>Artificial neural network</item>
     </string-array>
-    <string-array name="classifier_entry_values">
+    <string-array name="settings_classifier_entry_values">
         <item>1</item>
     </string-array>
-    <string name="input_neurons_key">inputNeurons</string>
-    <string name="hidden_layers_key">hiddenLayers</string>
-    <string name="hidden_neurons_key">hiddenNeurons</string>
-    <string name="learning_iterations_key">learningIterations</string>
-    <string name="desired_activity_weight_key">desiredActivityWeight</string>
-    <string name="undesired_activity_weight_key">undesiredActivityWeight</string>
-    <string name="time_window_length_key">timeWindowLength</string>
+    <string name="settings_input_neurons_key">settingsInputNeuronsKey</string>
+    <string name="settings_hidden_layers_key">settingsHiddenLayersKey</string>
+    <string name="settings_hidden_neurons_key">settingsHiddenNeuronsKey</string>
+    <string name="settings_input_divisor_key">settingsInputDivisorKey</string>
+    <string name="settings_learning_constant_key">settingsLearningConstantKey</string>
+    <string name="settings_learning_iterations_key">settingsLearningIterationsKey</string>
+    <string name="settings_desired_activity_weight_key">settingsDesiredActivityWeightKey</string>
+    <string name="settings_undesired_activity_weight_key">settingsUndesiredActivityWeightKey</string>
 
-    <!-- Integers. -->
-    <integer name="divisor">10</integer>
-    <integer name="chronometer_time">120000</integer>
-    <integer name="chronometer_step">1000</integer>
-    <integer name="delay_time">5000</integer>
-    <integer name="delay_step">1000</integer>
-    <integer name="activity_id_lie">1</integer>
-    <integer name="activity_id_sit">2</integer>
-    <integer name="activity_id_stand">3</integer>
-    <integer name="activity_id_walk">4</integer>
-    <integer name="activity_id_not_detected">5</integer>
-    <integer name="user_id_error">-1</integer>
-    <integer name="input_neurons_min">1</integer>
-    <integer name="input_neurons_max">36</integer>
-    <integer name="hidden_layers_min">1</integer>
-    <integer name="hidden_layers_max">5</integer>
-    <integer name="hidden_neurons_min">1</integer>
-    <integer name="hidden_neurons_max">36</integer>
-    <integer name="learning_iterations_min">100</integer>
-    <integer name="learning_iterations_max">1000000</integer>
-    <integer name="time_window_length_min">2500</integer>
-    <integer name="time_window_length_max">5000</integer>
+    <!-- Menus. -->
+    <string name="menu_settings">Settings</string>
+    <string name="menu_profile">Profile</string>
+
+    <!-- Titles, messages, buttons and toasts. -->
+    <string name="title_log_in">Log in</string>
+    <string name="message_log_in">Move is connecting to server…</string>
+    <string name="message_required">Please fill out this field.</string>
+    <string name="title_first_things_first">First things first</string>
+    <string name="message_first_things_first">Please give Move some results to start with! Otherwise it can\'t do anything more.</string>
+    <string name="title_one_last_step">One last step</string>
+    <string name="message_one_last_step">Last thing to take full advantage of Move is to learn algorithm how to predict your activities!</string>
+    <string name="title_learning">Learning</string>
+    <string name="message_time_windows">Creating time windows to calculate features…</string>
+    <string name="message_features">Creating features to learn…</string>
+    <string name="message_learn">Learning to give you better results…</string>
+    <string name="title_re_learn">Re-learn</string>
+    <string name="message_re_learn">Click on Move button below to re-learn with new settings.</string>
+    <string name="title_log_out">Log out</string>
+    <string name="message_log_out">Do you really want to leave?</string>
+    <string name="button_ok">Ok</string>
+    <string name="button_yes">Yes</string>
+    <string name="button_no">No</string>
+    <string name="toast_settings">Right! All settings has been changed successfully!</string>
+    <string name="toast_requested">Please match the requested range.</string>
+    <string name="toast_learn">Done! Learning completed successfully!</string>
+
+    <!-- Utilities. -->
+    <string name="nothing">&#160;</string>
+    <string name="formatter_date">dd/MM/yyyy HH:mm:ss.SSS</string>
+    <string name="formatter_gravity_acceleration">&#160;%1$.8f&#160;</string>
+    <string name="formatter_chronometer_delay">%1$02d:%2$02d</string>
+    <string name="formatter_edit_text_preference_summary_time">%1$s (%2$.1f - %3$.1f) [s]</string>
+    <string name="formatter_edit_text_preference_summary_artificial_neural_network_number">%1$s (%2$d - %3$d)</string>
+    <string name="formatter_edit_text_preference_summary_artificial_neural_network_number_decimal">%1$s (%2$.1f - %3$.1f)</string>
+
+    <!-- URLs. -->
+    <string name="url_log_in">http://move-p.herokuapp.com/m_log_in</string>
+    <string name="url_prediction">http://move-p.herokuapp.com/m_prediction</string>
+    <string name="url_profile">http://move-p.herokuapp.com/m_profile</string>
+    <string name="url_avatar">http://move-p.herokuapp.com/m_avatar/</string>
+    <string name="url_log_out">http://move-p.herokuapp.com/m_log_out</string>
+
+    <!-- Server keys. -->
+    <string name="server_success">success</string>
+    <string name="server_message">message</string>
+    <string name="server_prediction_id">prediction_id</string>
+    <string name="server_timestamp">timestamp</string>
+    <string name="server_activity_id">activity_id</string>
+    <string name="server_classifier_id">classifier_id</string>
+    <string name="server_user_id">user_id</string>
+    <string name="server_name">name</string>
+    <string name="server_username">username</string>
+    <string name="server_email">email</string>
+    <string name="server_avatar">avatar</string>
+    <string name="server_filename">filename</string>
+
+    <!-- Client keys. -->
+    <string name="client_timestamp">timestamp</string>
+    <string name="client_activity_id">activityId</string>
+    <string name="client_classifier_id">classifierId</string>
+    <string name="client_user_id">userId</string>
+    <string name="client_username">username</string>
+    <string name="client_password">password</string>
+
+    <!-- Shared preferences Cookie keys. -->
+    <string name="shared_preferences_cookie">sharedPreferencesCookie</string>
+    <string name="shared_preferences_cookie_set_cookie">Set-Cookie</string>
+    <string name="shared_preferences_cookie_cookie">Cookie</string>
+    <string name="shared_preferences_cookie_session">session</string>
+
+    <!-- Shared preferences Settings keys. -->
+    <string name="shared_preferences_settings">sharedPreferencesSettings</string>
+    <string name="shared_preferences_settings_chronometer_time">sharedPreferencesSettingsChronometerTime</string>
+    <string name="shared_preferences_settings_delay_time">sharedPreferencesSettingsDelayTime</string>
+    <string name="shared_preferences_settings_window_length">sharedPreferencesSettingsWindowLength</string>
+    <string name="shared_preferences_settings_classifier_id">sharedPreferencesSettingsClassifierId</string>
+    <string name="shared_preferences_settings_input_neurons">sharedPreferencesSettingsInputNeurons</string>
+    <string name="shared_preferences_settings_hidden_layers">sharedPreferencesSettingsHiddenLayers</string>
+    <string name="shared_preferences_settings_hidden_neurons">sharedPreferencesSettingsHiddenNeurons</string>
+    <string name="shared_preferences_settings_input_divisor">sharedPreferencesSettingsInputDivisor</string>
+    <string name="shared_preferences_settings_learning_constant">sharedPreferencesSettingsLearningConstant</string>
+    <string name="shared_preferences_settings_learning_iterations">sharedPreferencesSettingsLearningIterations</string>
+    <string name="shared_preferences_settings_desired_activity_weight">sharedPreferencesSettingsDesiredActivityWeight</string>
+    <string name="shared_preferences_settings_undesired_activity_weight">sharedPreferencesSettingsUndesiredActivityWeight</string>
+
+    <!-- Shared preferences Profile keys. -->
+    <string name="shared_preferences_profile">sharedPreferencesProfile</string>
+    <string name="shared_preferences_profile_user_id">sharedPreferencesProfileUserId</string>
+    <string name="shared_preferences_profile_name">sharedPreferencesProfileName</string>
+    <string name="shared_preferences_profile_username">sharedPreferencesProfileUsername</string>
+    <string name="shared_preferences_profile_email">sharedPreferencesProfileEmail</string>
 </resources>

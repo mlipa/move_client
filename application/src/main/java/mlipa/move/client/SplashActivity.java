@@ -648,12 +648,12 @@ public class SplashActivity extends AppCompatActivity {
 
         Log.v(TAG, "ARTIFICIAL NEURAL NETWORK (" + inputNeurons + " - " + hiddenLayers + " × " + hiddenNeurons + " - " + Constants.OUTPUT_NEURONS + ")");
         Log.v(TAG, "Accuracy: " + String.valueOf((correct * 100.0) / (correct + incorrect)) + "%");
-        Log.v(TAG, "Activities: a - lie, b - sit, c - stand, d - walk");
-        Log.v(TAG, "-------------------------");
-        Log.v(TAG, "|  a  |  b  |  c  |  d  |");
-        Log.v(TAG, "|-----+-----+-----+-----| classified as:");
+        Log.v(TAG, "Activities: a - lie, b - sit, c - stand, d - walk, e - run, f - cycling");
+        Log.v(TAG, "-------------------------------------");
+        Log.v(TAG, "|  a  |  b  |  c  |  d  |  e  |  f  |");
+        Log.v(TAG, "|-----+-----+-----+-----+-----+-----| classified as:");
 
-        String activityLabels = "abcd";
+        String activityLabels = "abcdef";
 
         for (int i = 0; i < Constants.OUTPUT_NEURONS; i++) {
             StringBuilder builder = new StringBuilder();
@@ -676,6 +676,6 @@ public class SplashActivity extends AppCompatActivity {
 
             Log.v(TAG, builder.toString());
         }
-        Log.v(TAG, "-------------------------");
+        Log.v(TAG, "-------------------------------------");
     }
 }

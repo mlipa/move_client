@@ -5,10 +5,10 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
+    android:paddingBottom="@dimen/margin_vertical"
+    android:paddingLeft="@dimen/margin_horizontal"
+    android:paddingRight="@dimen/margin_horizontal"
+    android:paddingTop="@dimen/margin_vertical"
     tools:context="mlipa.move.client.ProfileActivity">
 
     <com.mikhaellopez.circularimageview.CircularImageView
@@ -24,8 +24,8 @@
         android:id="@+id/tv_name_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/name"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:text="@string/profile_name"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -40,8 +40,8 @@
         android:id="@+id/tv_username_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/username"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:text="@string/profile_username"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -56,8 +56,8 @@
         android:id="@+id/tv_email_label"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
-        android:text="@string/email"
+        android:layout_marginTop="@dimen/margin_vertical"
+        android:text="@string/profile_email"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <TextView
@@ -73,8 +73,8 @@
         style="?android:textAppearanceSmall"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/activity_vertical_margin"
+        android:layout_marginTop="@dimen/margin_vertical"
         android:background="@color/bootstrap_red"
-        android:text="@string/log_out"
+        android:text="@string/profile_log_out"
         android:textColor="@color/white" />
 </LinearLayout>
